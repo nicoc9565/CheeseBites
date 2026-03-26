@@ -27,445 +27,485 @@
     <!-- Contenido arriba del fondo -->
     <div class="page">
       <!-- Header -->
-      <header
-        class="sticky top-0 z-50 bg-[#ffca44]/95 backdrop-blur border-b border-black/10"
-      >
-        <div
-          class="mx-auto max-w-6xl px-4 sm:px-6 py-3 flex items-center justify-between gap-3"
-        >
-          <a href="#top" class="flex items-center gap-3">
-            <img
-              src="./img/Logo-CheeseBites.png"
-              alt="CHEESE BITES"
-              class="h-9 w-9 rounded-xl bg-[#75aadb]/20 object-contain"
-            />
-            <div class="leading-tight">
+      <header class="fixed top-4 inset-x-0 z-50 px-4">
+        <div class="mx-auto max-w-6xl">
+          <div
+            class="rounded-[2rem] bg-[#ffca44]/90 backdrop-blur-md border border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.1)] px-6 py-3 flex items-center justify-between gap-3"
+          >
+            <a href="#top" class="flex items-center gap-3 group">
               <div
-                class="font-extrabold tracking-tight flex items-center gap-2"
+                class="h-10 w-10 rounded-xl bg-white/20 p-1.5 transition-transform group-hover:scale-110"
               >
-                CHEESE BITES
                 <img
-                  src="./img/Bandera-Argentina.webp"
-                  alt="Argentina flag"
-                  class="h-4 w-auto rounded-sm"
+                  src="./img/Logo-CheeseBites.png"
+                  alt="CHEESE BITES"
+                  class="h-full w-full object-contain"
                 />
               </div>
-
-              <div class="text-xs text-black/70">
-                Born in Argentina • Baked in the USA
+              <div class="leading-tight">
+                <div
+                  class="font-extrabold tracking-tight flex items-center gap-2 text-[#0b0f19]"
+                >
+                  CHEESE BITES
+                  <img
+                    src="./img/Bandera-Argentina.webp"
+                    alt="Argentina flag"
+                    class="h-4 w-auto rounded-sm shadow-sm"
+                    style="filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3))"
+                  />
+                </div>
+                <div
+                  class="text-[10px] font-bold text-black/60 uppercase tracking-tighter"
+                >
+                  Born in ARG • Baked in USA
+                </div>
               </div>
-            </div>
-          </a>
+            </a>
 
-          <nav
-            class="hidden md:flex items-center gap-6 text-sm font-extrabold text-black/80"
-          >
-            <a class="hover:text-black" href="#top">Home</a>
-            <a class="hover:text-black" href="#instructions">Instructions</a>
-            <a class="hover:text-black" href="#order">Order</a>
-          </nav>
+            <nav
+              class="hidden md:flex items-center gap-2 text-sm font-extrabold text-black/80"
+            >
+              <a
+                class="px-4 py-2 rounded-xl hover:bg-black/5 hover:text-black transition-colors"
+                href="#top"
+                >Home</a
+              >
+              <a
+                class="px-4 py-2 rounded-xl hover:bg-black/5 hover:text-black transition-colors"
+                href="#instructions"
+                >Instructions</a
+              >
+              <a
+                class="px-4 py-2 rounded-xl hover:bg-black/5 hover:text-black transition-colors"
+                href="#order"
+                >Order</a
+              >
+            </nav>
 
-          <a
-            href="#order"
-            class="inline-flex items-center justify-center rounded-2xl bg-black px-4 py-2 text-sm font-extrabold text-white hover:opacity-90 btn-lift"
-          >
-            Order now
-          </a>
+            <a
+              href="#order"
+              class="inline-flex items-center justify-center rounded-full bg-black px-6 py-2.5 text-xs font-black uppercase tracking-widest text-white hover:opacity-90 btn-lift shadow-lg shadow-black/20"
+            >
+              Order now
+            </a>
+          </div>
         </div>
       </header>
 
       <!-- HERO -->
       <section id="top" class="section grain relative overflow-hidden">
-        <div class="mx-auto max-w-6xl px-4 sm:px-6 py-16 lg:py-20">
-          <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-            <div class="lg:col-span-7 reveal z-10">
-              <div
-                class="inline-flex items-center gap-2 rounded-full bg-[#75aadb]/15 text-[#75aadb] px-4 py-2 text-xs font-extrabold tracking-wide mb-6"
-              >
-                HANDCRAFTED DELIGHTS
+        <div
+          class="mx-auto max-w-6xl px-4 sm:px-6 py-16 lg:py-24 relative z-10"
+        >
+          <div
+            class="reveal rounded-[2.5rem] bg-white border border-black/5 shadow-[0_30px_60px_rgba(11,15,25,0.15)] overflow-hidden"
+          >
+            <div
+              class="grid lg:grid-cols-12 gap-12 lg:gap-16 items-center p-10 lg:p-14"
+            >
+              <div class="lg:col-span-7 space-y-8">
+                <div>
+                  <div
+                    class="inline-flex items-center gap-2 rounded-full bg-[#75aadb]/15 text-[#75aadb] px-4 py-2 text-xs font-extrabold tracking-wide mb-6"
+                  >
+                    HANDCRAFTED DELIGHTS
+                  </div>
+
+                  <h1
+                    class="text-5xl sm:text-6xl font-extrabold tracking-tight leading-[1.05] flex flex-wrap items-center gap-3 font-display"
+                  >
+                    <span class="text-[#0b0f19]">CHEESE</span>
+                    <span
+                      class="text-[#ffca44] drop-shadow-[0_2px_0_rgba(0,0,0,0.1)]"
+                      >BITES</span
+                    >
+                    <img
+                      src="./img/Bandera-Argentina.webp"
+                      alt="Argentina flag"
+                      class="h-10 w-auto rounded-md shadow-sm"
+                    />
+                  </h1>
+
+                  <p
+                    class="mt-6 text-lg text-black/75 max-w-lg leading-relaxed font-medium"
+                  >
+                    Deliciously crafted with yuca flour, butter, eggs, milk,
+                    parmesan cheese, gouda cheese, and salt. Crisp on the
+                    outside, warm and cheesy on the inside.
+                  </p>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-4 items-center">
+                  <a
+                    href="#order"
+                    class="w-full sm:w-auto btn-lift inline-flex items-center justify-center rounded-full bg-[#ffca44] px-8 py-4 text-base font-extrabold text-black shadow-lg shadow-[#ffca44]/30 hover:brightness-95"
+                  >
+                    Order Your Pack Now
+                  </a>
+                  <a
+                    href="#instructions"
+                    class="w-full sm:w-auto inline-flex items-center justify-center rounded-full border-2 border-[#75aadb]/40 bg-white px-8 py-4 text-base font-extrabold text-[#75aadb] hover:bg-[#75aadb]/10 transition-colors"
+                  >
+                    How to Bake
+                  </a>
+                </div>
+
+                <p
+                  class="text-xs font-semibold text-black/50 italic pt-2 border-t border-black/5 max-w-sm"
+                >
+                  *May contain peanuts/wheat. Refrigeration required.
+                </p>
               </div>
 
-              <h1
-                class="text-5xl sm:text-6xl font-extrabold tracking-tight leading-[1.05] flex flex-wrap items-center gap-3 font-display"
-              >
-                <span class="text-[#0b0f19]">CHEESE</span>
-                <span
-                  class="text-[#ffca44] drop-shadow-[0_2px_0_rgba(0,0,0,.1)]"
-                  >BITES</span
-                >
-                <img
-                  src="./img/Bandera-Argentina.webp"
-                  alt="Argentina flag"
-                  class="h-10 w-auto rounded-md shadow-sm"
-                />
-              </h1>
-
-              <p
-                class="mt-6 text-lg text-black/75 max-w-lg leading-relaxed font-medium"
-              >
-                Deliciously crafted with yuca flour, butter, eggs, milk,
-                parmesan cheese, gouda cheese, and salt. Crisp on the outside,
-                warm and cheesy on the inside.
-              </p>
-
-              <div class="mt-8 flex flex-col sm:flex-row gap-4 items-center">
-                <a
-                  href="#order"
-                  class="w-full sm:w-auto btn-lift inline-flex items-center justify-center rounded-full bg-[#ffca44] px-8 py-4 text-base font-extrabold text-black shadow-lg shadow-[#ffca44]/30 hover:brightness-95"
-                >
-                  Order Your Pack Now
-                </a>
-                <a
-                  href="#instructions"
-                  class="w-full sm:w-auto inline-flex items-center justify-center rounded-full border-2 border-[#75aadb]/40 bg-white/50 px-8 py-4 text-base font-extrabold text-[#75aadb] hover:bg-[#75aadb]/10 transition-colors"
-                >
-                  How to Bake
-                </a>
-              </div>
-
-              <p class="mt-5 text-xs font-semibold text-black/50 italic">
-                *May contain peanuts/wheat. Refrigeration required.
-              </p>
-            </div>
-
-            <div class="lg:col-span-5 reveal relative">
-              <div
-                class="absolute -inset-4 bg-gradient-to-tr from-[#ffca44]/40 to-[#75aadb]/40 rounded-[3rem] blur-2xl opacity-50"
-              ></div>
-
-              <div
-                class="relative rounded-[2.5rem] bg-white border border-white/80 shadow-[0_20px_40px_rgba(11,15,25,.15)] overflow-hidden rotate-[-2deg] hover:rotate-0 transition-transform duration-500"
-              >
-                <img
-                  src="./img/IMG_6309.jpg"
-                  alt="CHEESE BITES"
-                  class="w-full h-[360px] sm:h-[420px] object-cover scale-105"
-                />
+              <div class="lg:col-span-5 relative">
+                <div
+                  class="absolute -inset-4 bg-gradient-to-tr from-[#ffca44]/40 to-[#75aadb]/40 rounded-[3rem] blur-2xl opacity-50"
+                ></div>
 
                 <div
-                  class="absolute bottom-5 right-5 sm:bottom-6 sm:right-6 bg-white/95 backdrop-blur-sm p-3 pr-5 rounded-3xl shadow-xl border border-black/5 flex items-center gap-3"
+                  class="relative rounded-[2.5rem] bg-white border border-white/80 shadow-[0_20px_40px_rgba(11,15,25,0.15)] overflow-hidden rotate-[-2deg] hover:rotate-0 transition-transform duration-500 group"
                 >
+                  <img
+                    src="./img/IMG_6309.jpg"
+                    alt="CHEESE BITES"
+                    class="w-full h-[360px] sm:h-[420px] object-cover scale-105 group-hover:scale-100 transition-transform duration-500"
+                  />
+
                   <div
-                    class="bg-[#ffca44] text-black rounded-full h-12 w-12 flex items-center justify-center font-extrabold text-lg"
+                    class="absolute bottom-5 right-5 sm:bottom-6 sm:right-6 bg-white/95 backdrop-blur-sm p-3 pr-5 rounded-3xl shadow-xl border border-black/5 flex items-center gap-3"
                   >
-                    $15
-                  </div>
-                  <div class="text-sm font-bold leading-tight">
-                    <span class="block text-black">6 units</span>
-                    <span class="block text-black/60 text-xs">per box</span>
+                    <div
+                      class="bg-[#ffca44] text-black rounded-full h-12 w-12 flex items-center justify-center font-extrabold text-lg"
+                    >
+                      $15
+                    </div>
+                    <div class="text-sm font-bold leading-tight">
+                      <span class="block text-black">6 units</span>
+                      <span class="block text-black/60 text-xs">per box</span>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="mt-16 reveal relative z-10">
-            <div
-              class="rounded-3xl bg-white/60 backdrop-blur-md border border-black/5 shadow-sm p-6 sm:px-10"
+          <div class="mt-12 lg:mt-16 reveal relative z-10">
+            <ul
+              class="flex flex-wrap justify-center items-center gap-6 text-sm font-extrabold text-black/80"
             >
-              <ul
-                class="flex flex-wrap justify-center sm:justify-between items-center gap-6 text-sm font-extrabold text-black/80"
+              <li
+                class="rounded-full bg-white px-5 py-3 shadow-lg border border-black/5 flex items-center gap-3 transition-transform hover:-translate-y-1"
               >
-                <li class="flex items-center gap-2">
-                  <span
-                    class="flex items-center justify-center w-7 h-7 rounded-full bg-[#ffca44]/20 text-[#ffca44]"
+                <span
+                  class="flex items-center justify-center w-7 h-7 rounded-full bg-[#ffca44]/20 text-[#ffca44]"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    <svg
-                      class="h-4 w-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="3"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </span>
-                  Gluten Free
-                </li>
-                <li class="flex items-center gap-2">
-                  <span
-                    class="flex items-center justify-center w-7 h-7 rounded-full bg-[#75aadb]/20 text-[#75aadb]"
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="3"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </span>
+                Gluten Free
+              </li>
+
+              <li
+                class="rounded-full bg-white px-5 py-3 shadow-lg border border-black/5 flex items-center gap-3 transition-transform hover:-translate-y-1"
+              >
+                <span
+                  class="flex items-center justify-center w-7 h-7 rounded-full bg-[#75aadb]/20 text-[#75aadb]"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    <svg
-                      class="h-4 w-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="3"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </span>
-                  Pair with coffee or tea
-                </li>
-                <li class="flex items-center gap-2">
-                  <span
-                    class="flex items-center justify-center w-7 h-7 rounded-full bg-[#ffca44]/20 text-[#ffca44]"
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="3"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </span>
+                Pair with coffee or tea
+              </li>
+
+              <li
+                class="rounded-full bg-white px-5 py-3 shadow-lg border border-black/5 flex items-center gap-3 transition-transform hover:-translate-y-1"
+              >
+                <span
+                  class="flex items-center justify-center w-7 h-7 rounded-full bg-[#ffca44]/20 text-[#ffca44]"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    <svg
-                      class="h-4 w-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="3"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </span>
-                  Snacks
-                </li>
-                <li class="flex items-center gap-2">
-                  <span
-                    class="flex items-center justify-center w-7 h-7 rounded-full bg-[#75aadb]/20 text-[#75aadb]"
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="3"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </span>
+                Snacks
+              </li>
+
+              <li
+                class="rounded-full bg-white px-5 py-3 shadow-lg border border-black/5 flex items-center gap-3 transition-transform hover:-translate-y-1"
+              >
+                <span
+                  class="flex items-center justify-center w-7 h-7 rounded-full bg-[#75aadb]/20 text-[#75aadb]"
+                >
+                  <svg
+                    class="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
                   >
-                    <svg
-                      class="h-4 w-4"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="3"
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </span>
-                  Great to share with friends
-                </li>
-              </ul>
-            </div>
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="3"
+                      d="M5 13l4 4L19 7"
+                    />
+                  </svg>
+                </span>
+                Great to share with friends
+              </li>
+            </ul>
           </div>
         </div>
       </section>
 
       <!-- INSTRUCTIONS -->
-      <section id="instructions" class="section grain relative">
-        <div class="mx-auto max-w-6xl px-4 sm:px-6 py-16 lg:py-24">
+      <section id="instructions" class="section grain relative overflow-hidden">
+        <div
+          class="mx-auto max-w-6xl px-4 sm:px-6 py-16 lg:py-24 relative z-10"
+        >
           <div
-            class="flex flex-col sm:flex-row sm:items-end justify-between gap-6 mb-12 lg:mb-16 reveal"
+            class="reveal rounded-[2.5rem] bg-white border border-black/5 shadow-[0_30px_60px_rgba(11,15,25,0.15)] overflow-hidden"
           >
-            <div>
-              <div
-                class="inline-flex items-center gap-2 rounded-full bg-[#75aadb]/15 text-[#75aadb] px-4 py-2 text-xs font-extrabold tracking-wide"
-              >
-                QUICK + FOOLPROOF
-              </div>
-              <h2
-                class="mt-4 text-4xl sm:text-5xl font-extrabold tracking-tight font-display text-[#0b0f19]"
-              >
-                Baking Instructions
-              </h2>
-              <p class="mt-3 text-lg text-black/65 max-w-2xl font-medium">
-                Crisp outside, soft inside. Follow these steps and you’ll get
-                the “fresh baked” bite every time.
-              </p>
-            </div>
-            <a
-              href="#order"
-              class="inline-flex items-center justify-center rounded-full bg-[#ffca44] px-6 py-3 text-sm font-extrabold text-black hover:brightness-95 transition-all shadow-md shadow-[#ffca44]/20 btn-lift shrink-0"
+            <div
+              class="px-8 pt-10 lg:px-14 lg:pt-14 flex flex-col sm:flex-row sm:items-end justify-between gap-6"
             >
-              Order 6 for $15
-            </a>
-          </div>
-
-          <div class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start">
-            <div class="order-2 lg:order-1 reveal relative">
-              <div
-                class="absolute -inset-4 bg-gradient-to-br from-[#75aadb]/20 to-transparent rounded-[3rem] blur-xl opacity-70"
-              ></div>
-
-              <div
-                class="relative rounded-[2.5rem] border border-black/5 bg-white shadow-2xl overflow-hidden group"
+              <div>
+                <div
+                  class="inline-flex items-center gap-2 rounded-full bg-[#75aadb]/15 text-[#75aadb] px-4 py-2 text-xs font-extrabold tracking-wide"
+                >
+                  QUICK + FOOLPROOF
+                </div>
+                <h2
+                  class="mt-4 text-4xl sm:text-5xl font-extrabold tracking-tight font-display text-[#0b0f19]"
+                >
+                  Baking Instructions
+                </h2>
+                <p class="mt-3 text-lg text-black/65 max-w-2xl font-medium">
+                  Crisp outside, soft inside. Follow these steps and you’ll get
+                  the “fresh baked” bite every time.
+                </p>
+              </div>
+              <a
+                href="#order"
+                class="inline-flex items-center justify-center rounded-full bg-[#ffca44] px-6 py-3 text-sm font-extrabold text-black hover:brightness-95 transition-all shadow-md shadow-[#ffca44]/20 btn-lift shrink-0"
               >
-                <img
-                  src="./img/IMG_6312.jpg"
-                  alt="Cheese Bites ready to bake"
-                  class="w-full h-[400px] lg:h-[550px] object-cover transition-transform duration-700 group-hover:scale-105"
-                />
+                Order 6 for $15
+              </a>
+            </div>
+
+            <div
+              class="grid lg:grid-cols-2 gap-12 lg:gap-16 items-start p-8 lg:p-14"
+            >
+              <div class="order-2 lg:order-1 relative">
+                <div
+                  class="absolute -inset-4 bg-gradient-to-br from-[#75aadb]/20 to-transparent rounded-[3rem] blur-xl opacity-70"
+                ></div>
 
                 <div
-                  class="absolute bottom-6 left-6 right-6 sm:left-auto sm:w-72"
+                  class="relative rounded-[2.5rem] border border-black/5 bg-white shadow-2xl overflow-hidden group"
+                >
+                  <img
+                    src="./img/IMG_6312.jpg"
+                    alt="Cheese Bites ready to bake"
+                    class="w-full h-[400px] lg:h-[550px] object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+
+                  <div
+                    class="absolute bottom-6 left-6 right-6 sm:left-auto sm:w-72"
+                  >
+                    <div
+                      class="rounded-3xl bg-white/95 backdrop-blur-md border border-white/50 shadow-xl p-5"
+                    >
+                      <div class="flex items-start justify-between gap-3">
+                        <div>
+                          <div
+                            class="text-[10px] font-extrabold text-black/50 tracking-wider uppercase"
+                          >
+                            Best Result
+                          </div>
+                          <div
+                            class="mt-1 text-base font-extrabold text-black leading-tight"
+                          >
+                            Golden top + cheesy center
+                          </div>
+                        </div>
+                        <div
+                          class="rounded-full bg-[#ffca44] px-3 py-1.5 text-xs font-extrabold text-black"
+                        >
+                          15–30m
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="order-1 lg:order-2">
+                <div
+                  class="rounded-3xl bg-[#edf2f7] border border-black/10 p-8 shadow-lg"
                 >
                   <div
-                    class="rounded-3xl bg-white/95 backdrop-blur-md border border-white/50 shadow-xl p-5 transition-transform group-hover:-translate-y-1"
+                    class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-black/10"
                   >
-                    <div class="flex items-start justify-between gap-3">
+                    <h3
+                      class="text-2xl font-extrabold tracking-tight text-[#0b0f19]"
+                    >
+                      Bake or Airfry
+                    </h3>
+                    <div
+                      class="inline-flex items-center gap-2 rounded-full bg-white text-red-600 px-4 py-2 text-xs font-extrabold shadow-sm border border-red-100"
+                    >
+                      <span
+                        class="inline-flex h-2 w-2 rounded-full bg-red-500 animate-pulse"
+                      ></span>
+                      Refrigeration required
+                    </div>
+                  </div>
+
+                  <div class="space-y-6 relative">
+                    <div class="relative pl-14">
+                      <div
+                        class="absolute left-[1.125rem] top-10 bottom-[-1.5rem] w-[2px] bg-black/10 rounded-full"
+                      ></div>
+                      <div
+                        class="absolute left-0 top-0 h-10 w-10 rounded-2xl bg-[#ffca44] text-black font-extrabold flex items-center justify-center shadow-md"
+                      >
+                        1
+                      </div>
+                      <div class="text-base font-extrabold text-black">
+                        Pre-heat
+                      </div>
+                      <div class="mt-1 text-sm font-medium text-black/60">
+                        Oven <span class="font-bold text-black">370°F</span> /
+                        Airfry <span class="font-bold text-black">365°F</span>
+                      </div>
+                    </div>
+
+                    <div class="relative pl-14">
+                      <div
+                        class="absolute left-[1.125rem] top-10 bottom-[-1.5rem] w-[2px] bg-black/10 rounded-full"
+                      ></div>
+                      <div
+                        class="absolute left-0 top-0 h-10 w-10 rounded-2xl bg-white border border-black/10 text-black/60 font-extrabold flex items-center justify-center shadow-md"
+                      >
+                        2
+                      </div>
+                      <div class="text-base font-extrabold text-black">
+                        Open the box
+                      </div>
+                      <div class="mt-1 text-sm font-medium text-black/60">
+                        Remove the chipas and place them on a tray.
+                      </div>
+                    </div>
+
+                    <div class="relative pl-14">
+                      <div
+                        class="absolute left-[1.125rem] top-10 bottom-[-1.5rem] w-[2px] bg-black/10 rounded-full"
+                      ></div>
+                      <div
+                        class="absolute left-0 top-0 h-10 w-10 rounded-2xl bg-white border border-black/10 text-black/60 font-extrabold flex items-center justify-center shadow-md"
+                      >
+                        3
+                      </div>
+                      <div class="text-base font-extrabold text-black">
+                        Place on baking sheet
+                      </div>
+                      <div class="mt-1 text-sm font-medium text-black/60">
+                        Leave a little space so they
+                        <span class="text-black font-semibold">grow evenly</span
+                        >.
+                      </div>
+                    </div>
+
+                    <div class="relative pl-14">
+                      <div
+                        class="absolute left-[1.125rem] top-10 bottom-[-1.5rem] w-[2px] bg-black/10 rounded-full"
+                      ></div>
+                      <div
+                        class="absolute left-0 top-0 h-10 w-10 rounded-2xl bg-white border border-black/10 text-black/60 font-extrabold flex items-center justify-center shadow-md"
+                      >
+                        4
+                      </div>
+                      <div class="text-base font-extrabold text-black">
+                        Bake
+                      </div>
+                      <div class="mt-1 text-sm font-medium text-black/60">
+                        Oven
+                        <span class="font-bold text-black">15–30 min</span> /
+                        Airfry
+                        <span class="font-bold text-black">15–18 min</span>
+                      </div>
+                    </div>
+
+                    <div class="relative pl-14">
+                      <div
+                        class="absolute left-0 top-0 h-10 w-10 rounded-2xl bg-[#75aadb] text-white font-extrabold flex items-center justify-center shadow-md shadow-[#75aadb]/30"
+                      >
+                        5
+                      </div>
+                      <div class="text-base font-extrabold text-[#75aadb]">
+                        Enjoy!
+                      </div>
+                      <div class="mt-1 text-sm font-medium text-black/60">
+                        Best served warm.
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="mt-10 space-y-4 pt-6 border-t border-black/10">
+                    <div
+                      class="rounded-2xl bg-white border border-black/5 shadow-sm p-5 flex items-start gap-3 text-sm"
+                    >
+                      <span class="text-xl">💡</span>
                       <div>
                         <div
-                          class="text-[10px] font-extrabold text-black/50 tracking-wider"
+                          class="text-xs font-extrabold text-black/60 tracking-wider uppercase"
                         >
-                          BEST RESULT
+                          Pro Tip
                         </div>
-                        <div class="mt-1 text-base font-extrabold text-black">
-                          Golden top + cheesy center
-                        </div>
-                      </div>
-                      <div
-                        class="rounded-full bg-[#ffca44] px-3 py-1.5 text-xs font-extrabold text-black shrink-0"
-                      >
-                        15–30 min
+                        <p class="mt-1 font-semibold text-black/80">
+                          For extra crisp texture, leave them 2–3 minutes
+                          longer.
+                        </p>
                       </div>
                     </div>
                     <div
-                      class="mt-4 flex flex-wrap gap-2 text-xs font-bold text-black/70"
+                      class="text-[10px] font-semibold text-black/40 text-center uppercase tracking-widest pt-2"
                     >
-                      <span
-                        class="rounded-full bg-[#75aadb]/10 text-[#75aadb] px-3 py-1.5"
-                        >Oven 370°F</span
-                      >
-                      <span
-                        class="rounded-full bg-[#75aadb]/10 text-[#75aadb] px-3 py-1.5"
-                        >Airfry 365°F</span
-                      >
+                      *May contain peanuts / may contain wheat
                     </div>
                   </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="order-1 lg:order-2 reveal">
-              <div
-                class="rounded-[2.5rem] bg-white border border-black/5 shadow-[0_8px_30px_rgba(0,0,0,0.04)] p-8 sm:p-10"
-              >
-                <div
-                  class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8 pb-6 border-b border-black/5"
-                >
-                  <h3
-                    class="text-2xl font-extrabold tracking-tight text-[#0b0f19]"
-                  >
-                    Bake or Airfry
-                  </h3>
-                  <div
-                    class="inline-flex items-center gap-2 rounded-full bg-red-50 text-red-600 px-4 py-2 text-xs font-extrabold"
-                  >
-                    <span
-                      class="inline-flex h-2 w-2 rounded-full bg-red-500 animate-pulse"
-                    ></span>
-                    Refrigeration required
-                  </div>
-                </div>
-
-                <div class="space-y-6 relative">
-                  <div class="relative pl-14">
-                    <div
-                      class="absolute left-[1.125rem] top-10 bottom-[-1.5rem] w-[2px] bg-black/5 rounded-full"
-                    ></div>
-                    <div
-                      class="absolute left-0 top-0 h-10 w-10 rounded-2xl bg-[#ffca44] text-black font-extrabold flex items-center justify-center shadow-sm"
-                    >
-                      1
-                    </div>
-                    <div class="text-base font-extrabold text-black">
-                      Pre-heat
-                    </div>
-                    <div class="mt-1 text-sm font-medium text-black/60">
-                      Oven <span class="font-bold text-black">370°F</span> /
-                      Airfry <span class="font-bold text-black">365°F</span>
-                    </div>
-                  </div>
-
-                  <div class="relative pl-14">
-                    <div
-                      class="absolute left-[1.125rem] top-10 bottom-[-1.5rem] w-[2px] bg-black/5 rounded-full"
-                    ></div>
-                    <div
-                      class="absolute left-0 top-0 h-10 w-10 rounded-2xl bg-black/5 text-black/60 font-extrabold flex items-center justify-center border border-black/10"
-                    >
-                      2
-                    </div>
-                    <div class="text-base font-extrabold text-black">
-                      Open the box
-                    </div>
-                    <div class="mt-1 text-sm font-medium text-black/60">
-                      Remove the chipas and place them on a tray.
-                    </div>
-                  </div>
-
-                  <div class="relative pl-14">
-                    <div
-                      class="absolute left-[1.125rem] top-10 bottom-[-1.5rem] w-[2px] bg-black/5 rounded-full"
-                    ></div>
-                    <div
-                      class="absolute left-0 top-0 h-10 w-10 rounded-2xl bg-black/5 text-black/60 font-extrabold flex items-center justify-center border border-black/10"
-                    >
-                      3
-                    </div>
-                    <div class="text-base font-extrabold text-black">
-                      Place on baking sheet
-                    </div>
-                    <div class="mt-1 text-sm font-medium text-black/60">
-                      Leave a little space so they
-                      <span class="text-black font-semibold">grow evenly</span>.
-                    </div>
-                  </div>
-
-                  <div class="relative pl-14">
-                    <div
-                      class="absolute left-[1.125rem] top-10 bottom-[-1.5rem] w-[2px] bg-black/5 rounded-full"
-                    ></div>
-                    <div
-                      class="absolute left-0 top-0 h-10 w-10 rounded-2xl bg-black/5 text-black/60 font-extrabold flex items-center justify-center border border-black/10"
-                    >
-                      4
-                    </div>
-                    <div class="text-base font-extrabold text-black">Bake</div>
-                    <div class="mt-1 text-sm font-medium text-black/60">
-                      Oven <span class="font-bold text-black">15–30 min</span> /
-                      Airfry <span class="font-bold text-black">15–18 min</span>
-                    </div>
-                  </div>
-
-                  <div class="relative pl-14">
-                    <div
-                      class="absolute left-0 top-0 h-10 w-10 rounded-2xl bg-[#75aadb] text-white font-extrabold flex items-center justify-center shadow-sm shadow-[#75aadb]/30"
-                    >
-                      5
-                    </div>
-                    <div class="text-base font-extrabold text-[#75aadb]">
-                      Enjoy!
-                    </div>
-                    <div class="mt-1 text-sm font-medium text-black/60">
-                      Best served warm.
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="mt-10 rounded-2xl bg-[#ffca44]/10 border border-[#ffca44]/20 p-5"
-                >
-                  <div class="flex items-start gap-3">
-                    <span class="text-xl">💡</span>
-                    <div>
-                      <div
-                        class="text-xs font-extrabold text-black/60 tracking-wider"
-                      >
-                        PRO TIP
-                      </div>
-                      <p class="mt-1 text-sm font-semibold text-black/80">
-                        For extra crisp texture, leave them 2–3 minutes longer.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
-                <div
-                  class="mt-6 text-xs font-semibold text-black/40 text-center"
-                >
-                  *May contain peanuts / may contain wheat
                 </div>
               </div>
             </div>
@@ -474,254 +514,235 @@
       </section>
 
       <!-- ORDER -->
-      <section id="order" class="section grain relative">
-        <div class="mx-auto max-w-6xl px-4 sm:px-6 py-16 lg:py-24">
-          <div class="flex justify-center">
-            <div class="w-full max-w-5xl">
+      <section id="order" class="section grain relative overflow-hidden">
+        <div
+          class="mx-auto max-w-6xl px-4 sm:px-6 py-16 lg:py-24 relative z-10"
+        >
+          <div
+            class="reveal rounded-[2.5rem] bg-white border border-black/5 shadow-[0_30px_60px_rgba(11,15,25,0.15)] overflow-hidden flex flex-col lg:flex-row"
+          >
+            <div
+              class="lg:w-2/5 bg-gradient-to-br from-[#75aadb] to-[#5a90c4] p-10 lg:p-14 text-white flex flex-col justify-between relative overflow-hidden"
+            >
               <div
-                class="rounded-[2.5rem] bg-white border border-black/10 shadow-[0_30px_60px_rgba(11,15,25,.15)] overflow-hidden reveal flex flex-col lg:flex-row"
-              >
+                class="absolute top-0 right-0 -mt-16 -mr-16 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl pointer-events-none"
+              ></div>
+
+              <div class="relative z-10">
                 <div
-                  class="lg:w-2/5 bg-gradient-to-br from-[#75aadb] to-[#5a90c4] p-10 lg:p-12 text-white flex flex-col justify-between relative overflow-hidden"
+                  class="inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-xs font-extrabold tracking-wide mb-6"
                 >
-                  <div
-                    class="absolute top-0 right-0 -mt-16 -mr-16 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl pointer-events-none"
-                  ></div>
-
-                  <div class="relative z-10">
-                    <div
-                      class="inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-xs font-extrabold tracking-wide mb-6"
-                    >
-                      CHEESE BITES
-                    </div>
-                    <h2
-                      class="text-3xl sm:text-4xl font-extrabold tracking-tight font-display mb-4"
-                    >
-                      Order Request
-                    </h2>
-                    <p
-                      class="text-white/80 font-medium text-sm sm:text-base mb-10 leading-relaxed"
-                    >
-                      Tell us your delivery details and quantity. We’ll reach
-                      out to confirm your order and coordinate delivery.
-                    </p>
-
-                    <ul class="space-y-5">
-                      <li
-                        class="flex items-center gap-3 font-extrabold text-sm"
-                      >
-                        <div
-                          class="flex items-center justify-center w-8 h-8 rounded-full bg-white/20 text-lg"
-                        >
-                          📦
-                        </div>
-                        6 units per box
-                      </li>
-                      <li
-                        class="flex items-center gap-3 font-extrabold text-sm"
-                      >
-                        <div
-                          class="flex items-center justify-center w-8 h-8 rounded-full bg-[#ffca44] text-black"
-                        >
-                          <svg
-                            class="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="3"
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                        </div>
-                        Tax free
-                      </li>
-                      <li
-                        class="flex items-center gap-3 font-extrabold text-sm"
-                      >
-                        <div
-                          class="flex items-center justify-center w-8 h-8 rounded-full bg-[#ffca44] text-black"
-                        >
-                          <svg
-                            class="h-4 w-4"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="3"
-                              d="M5 13l4 4L19 7"
-                            />
-                          </svg>
-                        </div>
-                        Free shipping
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div
-                    class="relative z-10 mt-12 pt-8 border-t border-white/20"
-                  >
-                    <p class="text-xs font-bold text-white/60 mb-1">
-                      QUESTIONS?
-                    </p>
-                    <p class="text-sm font-extrabold">
-                      cheesebitesllc@gmail.com
-                    </p>
-                  </div>
+                  CHEESE BITES
                 </div>
-
-                <div
-                  class="lg:w-3/5 p-10 lg:p-12 bg-[#f8fafc] border-l border-black/5"
+                <h2
+                  class="text-3xl sm:text-4xl font-extrabold tracking-tight font-display mb-4 leading-tight"
                 >
-                  <form id="orderForm" class="space-y-5">
-                    <div>
-                      <label
-                        class="block text-[11px] font-extrabold text-black/50 uppercase tracking-wider mb-2"
-                        >Full Name</label
-                      >
-                      <input
-                        required
-                        name="name"
-                        placeholder="John Doe"
-                        class="w-full rounded-2xl border border-black/5 bg-white shadow-sm px-5 py-4 font-semibold text-black outline-none transition-all placeholder:text-black/30 focus:shadow-md focus:ring-2 focus:ring-[#ffca44] focus:border-[#ffca44]"
-                      />
-                    </div>
+                  Order Request
+                </h2>
+                <p
+                  class="text-white/80 font-medium text-sm sm:text-base mb-10 leading-relaxed"
+                >
+                  Tell us your delivery details and quantity. We’ll reach out to
+                  confirm your order and coordinate delivery.
+                </p>
 
-                    <div class="grid sm:grid-cols-2 gap-5">
-                      <div>
-                        <label
-                          class="block text-[11px] font-extrabold text-black/50 uppercase tracking-wider mb-2"
-                          >Phone</label
-                        >
-                        <input
-                          required
-                          name="phone"
-                          type="tel"
-                          placeholder="(xxx) xxx-xxxx"
-                          class="w-full rounded-2xl border border-black/5 bg-white shadow-sm px-5 py-4 font-semibold text-black outline-none transition-all placeholder:text-black/30 focus:shadow-md focus:ring-2 focus:ring-[#ffca44] focus:border-[#ffca44]"
-                        />
-                      </div>
-                      <div>
-                        <label
-                          class="block text-[11px] font-extrabold text-black/50 uppercase tracking-wider mb-2"
-                          >Email</label
-                        >
-                        <input
-                          required
-                          type="email"
-                          name="email"
-                          placeholder="you@email.com"
-                          class="w-full rounded-2xl border border-black/5 bg-white shadow-sm px-5 py-4 font-semibold text-black outline-none transition-all placeholder:text-black/30 focus:shadow-md focus:ring-2 focus:ring-[#ffca44] focus:border-[#ffca44]"
-                        />
-                      </div>
-                    </div>
-
-                    <div>
-                      <label
-                        class="block text-[11px] font-extrabold text-black/50 uppercase tracking-wider mb-2"
-                        >Delivery Address</label
-                      >
-                      <input
-                        required
-                        name="address"
-                        placeholder="Street, City, State, ZIP"
-                        class="w-full rounded-2xl border border-black/5 bg-white shadow-sm px-5 py-4 font-semibold text-black outline-none transition-all placeholder:text-black/30 focus:shadow-md focus:ring-2 focus:ring-[#ffca44] focus:border-[#ffca44]"
-                      />
-                    </div>
-
+                <ul class="space-y-5">
+                  <li class="flex items-center gap-3 font-extrabold text-sm">
                     <div
-                      class="mt-8 relative overflow-hidden rounded-2xl bg-white border border-black/5 shadow-md p-4 pl-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                      class="flex items-center justify-center w-8 h-8 rounded-full bg-white/20 text-lg"
                     >
-                      <div
-                        class="absolute inset-y-0 left-0 w-2 bg-[#ffca44]"
-                      ></div>
-
-                      <div>
-                        <div
-                          class="text-[11px] font-extrabold text-black/50 uppercase tracking-wider"
-                        >
-                          Total amount
-                        </div>
-                        <div class="text-3xl font-black text-[#0b0f19] mt-0.5">
-                          $<span id="priceTotal">15</span>
-                        </div>
-                      </div>
-
-                      <div
-                        class="flex items-center gap-4 bg-[#f8fafc] rounded-xl p-1.5 border border-black/5"
-                      >
-                        <div class="text-xs font-bold text-black/60 pl-3">
-                          Quantity:
-                        </div>
-                        <div
-                          class="flex items-center bg-white rounded-lg shadow-sm border border-black/5"
-                        >
-                          <button
-                            type="button"
-                            class="h-10 w-10 flex items-center justify-center rounded-lg font-extrabold text-lg text-black hover:bg-black/5 transition-colors"
-                            aria-label="Decrease quantity"
-                            onclick="stepQty(-1)"
-                          >
-                            −
-                          </button>
-
-                          <input
-                            id="qtyInput"
-                            required
-                            type="number"
-                            min="1"
-                            value="1"
-                            name="quantity"
-                            class="h-10 w-12 bg-transparent text-center font-extrabold text-black outline-none pointer-events-none"
-                            style="-moz-appearance: textfield"
-                          />
-
-                          <button
-                            type="button"
-                            class="h-10 w-10 flex items-center justify-center rounded-lg font-extrabold text-lg text-black hover:bg-black/5 transition-colors"
-                            aria-label="Increase quantity"
-                            onclick="stepQty(1)"
-                          >
-                            +
-                          </button>
-                        </div>
-                      </div>
+                      📦
                     </div>
-
-                    <div>
-                      <label
-                        class="block text-[11px] font-extrabold text-black/50 uppercase tracking-wider mb-2 mt-4"
-                        >Note (Optional)</label
+                    6 units per box
+                  </li>
+                  <li class="flex items-center gap-3 font-extrabold text-sm">
+                    <div
+                      class="flex items-center justify-center w-8 h-8 rounded-full bg-[#ffca44] text-black"
+                    >
+                      <svg
+                        class="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
                       >
-                      <textarea
-                        name="notes"
-                        rows="2"
-                        placeholder="Any delivery notes, preferred time, gate code, etc."
-                        class="w-full rounded-2xl border border-black/5 bg-white shadow-sm px-5 py-4 font-semibold text-black outline-none transition-all placeholder:text-black/30 focus:shadow-md focus:ring-2 focus:ring-[#ffca44] focus:border-[#ffca44] resize-none"
-                      ></textarea>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="3"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
                     </div>
-
-                    <div class="pt-4">
-                      <button
-                        type="submit"
-                        class="w-full btn-lift rounded-2xl bg-[#ffca44] px-5 py-4 text-base font-black uppercase tracking-wide text-black hover:brightness-95 shadow-xl shadow-[#ffca44]/30"
+                    Tax free
+                  </li>
+                  <li class="flex items-center gap-3 font-extrabold text-sm">
+                    <div
+                      class="flex items-center justify-center w-8 h-8 rounded-full bg-[#ffca44] text-black"
+                    >
+                      <svg
+                        class="h-4 w-4"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
                       >
-                        Send Order Request
-                      </button>
-                      <p
-                        id="formMsg"
-                        class="mt-3 text-sm font-semibold text-green-600 text-center"
-                      ></p>
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="3"
+                          d="M5 13l4 4L19 7"
+                        />
+                      </svg>
                     </div>
-                  </form>
-                </div>
+                    Free shipping
+                  </li>
+                </ul>
               </div>
+
+              <div class="relative z-10 mt-12 pt-8 border-t border-white/20">
+                <p
+                  class="text-xs font-bold text-white/60 mb-1 tracking-widest uppercase"
+                >
+                  Questions?
+                </p>
+                <p class="text-sm font-extrabold">cheesebitesllc@gmail.com</p>
+              </div>
+            </div>
+
+            <div class="lg:w-3/5 p-10 lg:p-14 bg-[#f8fafc]">
+              <form id="orderForm" class="space-y-6">
+                <div>
+                  <label
+                    class="block text-[11px] font-extrabold text-black/50 uppercase tracking-wider mb-2"
+                    >Full Name</label
+                  >
+                  <input
+                    required
+                    name="name"
+                    placeholder="John Doe"
+                    class="w-full rounded-2xl border border-black/5 bg-white shadow-sm px-5 py-4 font-semibold text-black outline-none transition-all focus:shadow-md focus:ring-2 focus:ring-[#ffca44]"
+                  />
+                </div>
+
+                <div class="grid sm:grid-cols-2 gap-5">
+                  <div>
+                    <label
+                      class="block text-[11px] font-extrabold text-black/50 uppercase tracking-wider mb-2"
+                      >Phone</label
+                    >
+                    <input
+                      required
+                      name="phone"
+                      type="tel"
+                      placeholder="(xxx) xxx-xxxx"
+                      class="w-full rounded-2xl border border-black/5 bg-white shadow-sm px-5 py-4 font-semibold text-black outline-none transition-all focus:shadow-md focus:ring-2 focus:ring-[#ffca44]"
+                    />
+                  </div>
+                  <div>
+                    <label
+                      class="block text-[11px] font-extrabold text-black/50 uppercase tracking-wider mb-2"
+                      >Email</label
+                    >
+                    <input
+                      required
+                      type="email"
+                      name="email"
+                      placeholder="you@email.com"
+                      class="w-full rounded-2xl border border-black/5 bg-white shadow-sm px-5 py-4 font-semibold text-black outline-none transition-all focus:shadow-md focus:ring-2 focus:ring-[#ffca44]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    class="block text-[11px] font-extrabold text-black/50 uppercase tracking-wider mb-2"
+                    >Delivery Address</label
+                  >
+                  <input
+                    required
+                    name="address"
+                    placeholder="Street, City, State, ZIP"
+                    class="w-full rounded-2xl border border-black/5 bg-white shadow-sm px-5 py-4 font-semibold text-black outline-none transition-all focus:shadow-md focus:ring-2 focus:ring-[#ffca44]"
+                  />
+                </div>
+
+                <div
+                  class="mt-8 relative overflow-hidden rounded-2xl bg-white border border-black/5 shadow-md p-5 pl-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                >
+                  <div class="absolute inset-y-0 left-0 w-2 bg-[#ffca44]"></div>
+                  <div>
+                    <div
+                      class="text-[11px] font-extrabold text-black/50 uppercase tracking-wider"
+                    >
+                      Total amount
+                    </div>
+                    <div class="text-4xl font-black text-[#0b0f19] mt-0.5">
+                      $<span id="priceTotal">15</span>
+                    </div>
+                  </div>
+
+                  <div
+                    class="flex items-center gap-4 bg-[#f8fafc] rounded-xl p-2 border border-black/5"
+                  >
+                    <div class="text-xs font-bold text-black/60 pl-2">
+                      Quantity:
+                    </div>
+                    <div
+                      class="flex items-center bg-white rounded-lg shadow-sm border border-black/5 overflow-hidden"
+                    >
+                      <button
+                        type="button"
+                        class="h-10 w-10 font-black text-lg hover:bg-black/5 transition-colors"
+                        onclick="stepQty(-1)"
+                      >
+                        −
+                      </button>
+                      <input
+                        id="qtyInput"
+                        required
+                        type="number"
+                        min="1"
+                        value="1"
+                        name="quantity"
+                        class="h-10 w-12 text-center font-extrabold text-black outline-none pointer-events-none"
+                        style="-moz-appearance: textfield"
+                      />
+                      <button
+                        type="button"
+                        class="h-10 w-10 font-black text-lg hover:bg-black/5 transition-colors"
+                        onclick="stepQty(1)"
+                      >
+                        +
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <label
+                    class="block text-[11px] font-extrabold text-black/50 uppercase tracking-wider mb-2 mt-4"
+                    >Note (Optional)</label
+                  >
+                  <textarea
+                    name="notes"
+                    rows="2"
+                    placeholder="Any notes or gate codes..."
+                    class="w-full rounded-2xl border border-black/5 bg-white shadow-sm px-5 py-4 font-semibold text-black outline-none transition-all focus:shadow-md focus:ring-2 focus:ring-[#ffca44] resize-none"
+                  ></textarea>
+                </div>
+
+                <div class="pt-4">
+                  <button
+                    type="submit"
+                    class="w-full btn-lift rounded-2xl bg-[#ffca44] px-5 py-5 text-base font-black uppercase tracking-widest text-black hover:brightness-95 shadow-xl shadow-[#ffca44]/30"
+                  >
+                    Send Order Request
+                  </button>
+                  <p
+                    id="formMsg"
+                    class="mt-4 text-sm font-bold text-center"
+                  ></p>
+                </div>
+              </form>
             </div>
           </div>
         </div>
