@@ -10,7 +10,16 @@ html {
 }
 body {
   overflow-x: hidden;
+  font-family: "Inter", sans-serif;
+  color: #0b0f19;
 }
+h1,
+h2,
+h3,
+.font-display {
+  font-family: "Poppins", sans-serif;
+}
+
 /* CTA lift */
 .btn-lift {
   transition:
