@@ -68,7 +68,7 @@
       `*Order:* ${payload.qty} boxes ($${payload.total})\n` +
       `*Notes:* ${payload.notes}`;
 
-    const myPhoneNumber = "5493764138482";
+    const myPhoneNumber = "19083464064";
     const smsURL = `sms:+${myPhoneNumber}?body=${encodeURIComponent(message)}`;
 
     window.open(smsURL, "_self");
