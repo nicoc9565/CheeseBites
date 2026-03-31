@@ -69,7 +69,7 @@
       `*Notes:* ${payload.notes}`;
 
     const myPhoneNumber = "19083464064";
-    const smsURL = `sms:+${myPhoneNumber}?body=${encodeURIComponent(message)}`;
+    const smsURL = `sms:${myPhoneNumber}&body=${encodeURIComponent(message)}`;
 
     window.open(smsURL, "_self");
 
