@@ -207,6 +207,36 @@
     }, 1200);
   });
 
+  // === FLOATING ORDER BUTTON (mobile) ===
+  const floatingOrder = document.getElementById("floatingOrder");
+  if (floatingOrder) {
+    const heroSection = document.getElementById("top");
+    const orderSection = document.getElementById("order");
+    const showFloat = () => {
+      floatingOrder.classList.remove("translate-y-24", "opacity-0", "pointer-events-none");
+      floatingOrder.classList.add("translate-y-0", "opacity-100");
+      floatingOrder.removeAttribute("aria-hidden");
+    };
+    const hideFloat = () => {
+      floatingOrder.classList.add("translate-y-24", "opacity-0", "pointer-events-none");
+      floatingOrder.classList.remove("translate-y-0", "opacity-100");
+      floatingOrder.setAttribute("aria-hidden", "true");
+    };
+    const floatObserver = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((en) => {
+          if (en.target === heroSection && !en.isIntersecting) showFloat();
+          if (en.target === heroSection && en.isIntersecting) hideFloat();
+          if (en.target === orderSection && en.isIntersecting) hideFloat();
+          if (en.target === orderSection && !en.isIntersecting && window.scrollY > orderSection.offsetTop) showFloat();
+        });
+      },
+      { threshold: 0.2 },
+    );
+    if (heroSection) floatObserver.observe(heroSection);
+    if (orderSection) floatObserver.observe(orderSection);
+  }
+
   // === FAQ ACCORDION ===
   document.querySelectorAll(".faq-question").forEach((btn) => {
     btn.addEventListener("click", () => {
