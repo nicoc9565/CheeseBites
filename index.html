@@ -565,7 +565,7 @@
           class="mx-auto max-w-6xl px-4 sm:px-6 py-16 lg:py-24 relative z-10"
         >
           <div
-            class="reveal rounded-[2.5rem] bg-white border border-black/5 shadow-[0_30px_60px_rgba(11,15,25,0.15)] overflow-hidden flex flex-col lg:flex-row"
+            class="reveal relative rounded-[2.5rem] bg-white border border-black/5 shadow-[0_30px_60px_rgba(11,15,25,0.15)] overflow-hidden flex flex-col lg:flex-row"
           >
             <div
               class="lg:w-2/5 bg-gradient-to-br from-[#75aadb] to-[#5a90c4] p-10 lg:p-14 text-white flex flex-col justify-between relative overflow-hidden"
@@ -654,95 +654,89 @@
               </div>
             </div>
 
-            <div class="lg:w-3/5 p-10 lg:p-14 bg-[#f8fafc]">
-              <form id="orderForm" class="space-y-6">
-                <div>
-                  <label
-                    class="block text-[11px] font-extrabold text-black/50 uppercase tracking-wider mb-2"
-                    >Full Name</label
-                  >
+            <div class="lg:w-3/5 p-8 sm:p-10 lg:p-12 bg-[#f8fafc]">
+              <form id="orderForm" novalidate>
+
+                <!-- Name -->
+                <div class="field-group mb-5">
+                  <label for="fieldName" class="field-label">Full Name</label>
                   <input
+                    id="fieldName"
                     required
                     name="name"
                     placeholder="John Doe"
-                    class="w-full rounded-2xl border border-black/5 bg-white shadow-sm px-5 py-4 font-semibold text-black outline-none transition-all focus:shadow-md focus:ring-2 focus:ring-[#ffca44]"
+                    autocomplete="name"
+                    class="field-input"
                   />
+                  <span class="field-error" id="fieldNameError"></span>
                 </div>
 
-                <div class="grid sm:grid-cols-2 gap-5">
-                  <div>
-                    <label
-                      class="block text-[11px] font-extrabold text-black/50 uppercase tracking-wider mb-2"
-                      >Phone</label
-                    >
+                <!-- Phone + Email -->
+                <div class="grid sm:grid-cols-2 gap-4 mb-5">
+                  <div class="field-group">
+                    <label for="fieldPhone" class="field-label">Phone</label>
                     <input
+                      id="fieldPhone"
                       required
                       name="phone"
                       type="tel"
                       placeholder="(xxx) xxx-xxxx"
-                      class="w-full rounded-2xl border border-black/5 bg-white shadow-sm px-5 py-4 font-semibold text-black outline-none transition-all focus:shadow-md focus:ring-2 focus:ring-[#ffca44]"
+                      autocomplete="tel"
+                      class="field-input"
                     />
+                    <span class="field-error" id="fieldPhoneError"></span>
                   </div>
-                  <div>
-                    <label
-                      class="block text-[11px] font-extrabold text-black/50 uppercase tracking-wider mb-2"
-                      >Email</label
-                    >
+                  <div class="field-group">
+                    <label for="fieldEmail" class="field-label">Email</label>
                     <input
+                      id="fieldEmail"
                       required
                       type="email"
                       name="email"
                       placeholder="you@email.com"
-                      class="w-full rounded-2xl border border-black/5 bg-white shadow-sm px-5 py-4 font-semibold text-black outline-none transition-all focus:shadow-md focus:ring-2 focus:ring-[#ffca44]"
+                      autocomplete="email"
+                      class="field-input"
                     />
+                    <span class="field-error" id="fieldEmailError"></span>
                   </div>
                 </div>
 
-                <div>
-                  <label
-                    class="block text-[11px] font-extrabold text-black/50 uppercase tracking-wider mb-2"
-                    >Delivery Address</label
-                  >
+                <!-- Address -->
+                <div class="field-group mb-5">
+                  <label for="fieldAddress" class="field-label">Delivery Address</label>
                   <input
+                    id="fieldAddress"
                     required
                     name="address"
                     placeholder="Street, City, State, ZIP"
-                    class="w-full rounded-2xl border border-black/5 bg-white shadow-sm px-5 py-4 font-semibold text-black outline-none transition-all focus:shadow-md focus:ring-2 focus:ring-[#ffca44]"
+                    autocomplete="street-address"
+                    class="field-input"
                   />
+                  <span class="field-error" id="fieldAddressError"></span>
                 </div>
 
+                <!-- Quantity + Total -->
                 <div
-                  class="mt-8 relative overflow-hidden rounded-2xl bg-white border border-black/5 shadow-md p-5 pl-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
+                  class="mb-5 relative overflow-hidden rounded-2xl bg-white border border-black/5 shadow-md p-5 pl-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4"
                 >
                   <div class="absolute inset-y-0 left-0 w-2 bg-[#ffca44]"></div>
                   <div>
-                    <div
-                      class="text-[11px] font-extrabold text-black/50 uppercase tracking-wider"
-                    >
+                    <div class="text-[11px] font-extrabold text-black/50 uppercase tracking-wider">
                       Total amount
                     </div>
                     <div class="text-4xl font-black text-[#0b0f19] mt-0.5">
                       $<span id="priceTotal">15</span>
                     </div>
                   </div>
-
-                  <div
-                    class="flex items-center gap-4 bg-[#f8fafc] rounded-xl p-2 border border-black/5"
-                  >
-                    <div class="text-xs font-bold text-black/60 pl-2">
-                      Quantity:
-                    </div>
-                    <div
-                      class="flex items-center bg-white rounded-lg shadow-sm border border-black/5 overflow-hidden"
-                    >
+                  <div class="flex items-center gap-4 bg-[#f8fafc] rounded-xl p-2 border border-black/5">
+                    <div class="text-xs font-bold text-black/60 pl-2">Quantity:</div>
+                    <div class="flex items-center bg-white rounded-lg shadow-sm border border-black/5 overflow-hidden">
                       <button
                         type="button"
+                        aria-label="Decrease quantity"
                         class="h-10 w-10 font-black text-lg hover:bg-black/5 transition-colors"
                         onclick="stepQty(-1)"
-                      >
-                        -
-                      </button>
-
+                      >−</button>
                       <input
                         id="qtyInput"
                         required
@@ -750,35 +744,33 @@
                         min="1"
                         value="1"
                         name="quantity"
+                        aria-label="Quantity"
                         class="no-spin h-10 w-12 text-center font-extrabold text-black outline-none pointer-events-none"
                       />
-
                       <button
                         type="button"
+                        aria-label="Increase quantity"
                         class="h-10 w-10 font-black text-lg hover:bg-black/5 transition-colors"
                         onclick="stepQty(1)"
-                      >
-                        +
-                      </button>
+                      >+</button>
                     </div>
                   </div>
                 </div>
 
-                <div>
-                  <label
-                    class="block text-[11px] font-extrabold text-black/50 uppercase tracking-wider mb-2 mt-4"
-                    >Note (Optional)</label
-                  >
+                <!-- Notes -->
+                <div class="field-group mb-6">
+                  <label for="fieldNotes" class="field-label">Note (Optional)</label>
                   <textarea
+                    id="fieldNotes"
                     name="notes"
                     rows="2"
                     placeholder="Any notes or gate codes..."
-                    class="w-full rounded-2xl border border-black/5 bg-white shadow-sm px-5 py-4 font-semibold text-black outline-none transition-all focus:shadow-md focus:ring-2 focus:ring-[#ffca44] resize-none"
+                    class="field-input resize-none"
                   ></textarea>
                 </div>
 
-                <div class="pt-4 space-y-3">
-                  <!-- Primary: iMessage / SMS -->
+                <!-- Buttons -->
+                <div class="space-y-3">
                   <button
                     id="btnSMS"
                     type="button"
@@ -789,8 +781,6 @@
                     </svg>
                     Send Order via iMessage / SMS
                   </button>
-
-                  <!-- Secondary: WhatsApp (works in Instagram browser) -->
                   <button
                     id="btnWhatsApp"
                     type="submit"
@@ -801,14 +791,248 @@
                     </svg>
                     Send via WhatsApp
                   </button>
-
-                  <p
-                    id="formMsg"
-                    class="mt-2 text-sm font-bold text-center min-h-[1.25rem]"
-                  ></p>
                 </div>
               </form>
             </div>
+
+            <!-- Order Confirmation Overlay -->
+            <div
+              id="orderConfirmation"
+              class="hidden absolute inset-0 bg-white z-20 flex flex-col items-center justify-center p-8 sm:p-12 text-center"
+            >
+              <img
+                src="./img/Thanks-You.png"
+                alt="Thank you for your order!"
+                class="w-36 sm:w-48 mb-6 drop-shadow-lg"
+              />
+              <div class="flex items-center justify-center gap-0.5 mb-4 text-[#ffca44] text-2xl" aria-label="5 stars">
+                ★★★★★
+              </div>
+              <h3 class="text-3xl sm:text-4xl font-extrabold text-[#0b0f19] font-display mb-3">
+                Order Sent!
+              </h3>
+              <p class="text-black/60 font-medium max-w-sm mb-8 leading-relaxed text-sm sm:text-base">
+                Your Messages app should open — just hit <strong>Send</strong> to complete your order. We'll confirm delivery shortly!
+              </p>
+              <button
+                id="btnNewOrder"
+                class="btn-lift rounded-full bg-[#ffca44] px-8 py-3.5 font-extrabold text-black text-sm uppercase tracking-widest shadow-lg shadow-[#ffca44]/30 hover:brightness-95"
+              >
+                Place Another Order
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- REVIEWS -->
+      <section id="reviews" class="section grain relative overflow-hidden">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 py-16 lg:py-20 relative z-10">
+
+          <div class="reveal text-center mb-12">
+            <div class="inline-flex items-center gap-2 rounded-full bg-[#75aadb]/15 text-[#75aadb] px-4 py-2 text-xs font-extrabold tracking-wide mb-4">
+              WHAT CUSTOMERS SAY
+            </div>
+            <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight font-display text-[#0b0f19]">
+              Happy Bites
+            </h2>
+            <p class="mt-3 text-lg text-black/60 font-medium max-w-lg mx-auto">
+              Over 50 satisfied customers and counting.
+            </p>
+          </div>
+
+          <div class="grid md:grid-cols-3 gap-6">
+            <!-- Review 1 -->
+            <div class="reveal rounded-3xl bg-white border border-black/5 shadow-lg p-7 flex flex-col gap-4">
+              <div class="text-[#ffca44] text-xl tracking-wide">★★★★★</div>
+              <p class="text-black/70 font-medium leading-relaxed text-sm flex-1">
+                "These are absolutely addictive! I ordered 3 boxes and they were gone within two days. The perfect snack with my morning coffee."
+              </p>
+              <div class="flex items-center gap-3 pt-4 border-t border-black/5">
+                <div class="h-10 w-10 rounded-full bg-[#ffca44]/30 flex items-center justify-center font-extrabold text-sm text-[#0b0f19] shrink-0">SM</div>
+                <div>
+                  <div class="text-sm font-extrabold text-[#0b0f19]">Sarah M.</div>
+                  <div class="text-xs text-black/40 font-medium">New Jersey</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Review 2 -->
+            <div class="reveal rounded-3xl bg-white border border-black/5 shadow-lg p-7 flex flex-col gap-4">
+              <div class="text-[#ffca44] text-xl tracking-wide">★★★★★</div>
+              <p class="text-black/70 font-medium leading-relaxed text-sm flex-1">
+                "My whole family loves them. Crispy outside, soft inside — exactly as described. Already on my third order and couldn't be happier!"
+              </p>
+              <div class="flex items-center gap-3 pt-4 border-t border-black/5">
+                <div class="h-10 w-10 rounded-full bg-[#75aadb]/30 flex items-center justify-center font-extrabold text-sm text-[#0b0f19] shrink-0">JT</div>
+                <div>
+                  <div class="text-sm font-extrabold text-[#0b0f19]">James T.</div>
+                  <div class="text-xs text-black/40 font-medium">New York</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Review 3 -->
+            <div class="reveal rounded-3xl bg-white border border-black/5 shadow-lg p-7 flex flex-col gap-4">
+              <div class="text-[#ffca44] text-xl tracking-wide">★★★★★</div>
+              <p class="text-black/70 font-medium leading-relaxed text-sm flex-1">
+                "I'm Argentine and these taste just like home! So happy I found them here in the US. They come out perfect every single time."
+              </p>
+              <div class="flex items-center gap-3 pt-4 border-t border-black/5">
+                <div class="h-10 w-10 rounded-full bg-[#ffca44]/30 flex items-center justify-center font-extrabold text-sm text-[#0b0f19] shrink-0">ML</div>
+                <div>
+                  <div class="text-sm font-extrabold text-[#0b0f19]">Maria L.</div>
+                  <div class="text-xs text-black/40 font-medium">Florida</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section id="faq" class="section grain relative overflow-hidden">
+        <div class="mx-auto max-w-3xl px-4 sm:px-6 py-16 lg:py-20 relative z-10">
+
+          <div class="reveal text-center mb-12">
+            <div class="inline-flex items-center gap-2 rounded-full bg-[#ffca44]/20 text-[#0b0f19] px-4 py-2 text-xs font-extrabold tracking-wide mb-4">
+              GOT QUESTIONS?
+            </div>
+            <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight font-display text-[#0b0f19]">
+              FAQ
+            </h2>
+            <p class="mt-3 text-lg text-black/60 font-medium">
+              Everything you need to know before ordering.
+            </p>
+          </div>
+
+          <div class="reveal space-y-3">
+
+            <div class="faq-item rounded-2xl bg-white border border-black/5 shadow-sm overflow-hidden">
+              <button class="faq-question w-full text-left px-6 py-5 flex items-center justify-between gap-4 font-extrabold text-[#0b0f19] text-sm sm:text-base" aria-expanded="false">
+                <span>What area do you deliver to?</span>
+                <svg class="faq-icon h-5 w-5 shrink-0 text-[#75aadb] transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <div class="faq-answer px-6 text-black/60 font-medium text-sm leading-relaxed">
+                <p class="pb-5">We currently deliver within New Jersey and surrounding areas including New York. If you're outside our usual zone, just reach out — we'll do our best to accommodate!</p>
+              </div>
+            </div>
+
+            <div class="faq-item rounded-2xl bg-white border border-black/5 shadow-sm overflow-hidden">
+              <button class="faq-question w-full text-left px-6 py-5 flex items-center justify-between gap-4 font-extrabold text-[#0b0f19] text-sm sm:text-base" aria-expanded="false">
+                <span>How should I store them before baking?</span>
+                <svg class="faq-icon h-5 w-5 shrink-0 text-[#75aadb] transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <div class="faq-answer px-6 text-black/60 font-medium text-sm leading-relaxed">
+                <p class="pb-5">Keep them refrigerated until you're ready to bake. They stay fresh for up to 7 days in the fridge. You can also freeze them for up to 2 months — just bake straight from frozen, adding 5 extra minutes.</p>
+              </div>
+            </div>
+
+            <div class="faq-item rounded-2xl bg-white border border-black/5 shadow-sm overflow-hidden">
+              <button class="faq-question w-full text-left px-6 py-5 flex items-center justify-between gap-4 font-extrabold text-[#0b0f19] text-sm sm:text-base" aria-expanded="false">
+                <span>Are they really gluten free?</span>
+                <svg class="faq-icon h-5 w-5 shrink-0 text-[#75aadb] transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <div class="faq-answer px-6 text-black/60 font-medium text-sm leading-relaxed">
+                <p class="pb-5">Yes! Cheese Bites are made with yuca (cassava) flour, which is 100% gluten free. However, they are prepared in a kitchen that may handle wheat products, so we recommend caution if you have a severe gluten allergy.</p>
+              </div>
+            </div>
+
+            <div class="faq-item rounded-2xl bg-white border border-black/5 shadow-sm overflow-hidden">
+              <button class="faq-question w-full text-left px-6 py-5 flex items-center justify-between gap-4 font-extrabold text-[#0b0f19] text-sm sm:text-base" aria-expanded="false">
+                <span>How many come in a box and what's the price?</span>
+                <svg class="faq-icon h-5 w-5 shrink-0 text-[#75aadb] transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <div class="faq-answer px-6 text-black/60 font-medium text-sm leading-relaxed">
+                <p class="pb-5">Each box comes with 6 cheese bites for $15, tax free with free delivery. You can order multiple boxes — the more, the merrier!</p>
+              </div>
+            </div>
+
+            <div class="faq-item rounded-2xl bg-white border border-black/5 shadow-sm overflow-hidden">
+              <button class="faq-question w-full text-left px-6 py-5 flex items-center justify-between gap-4 font-extrabold text-[#0b0f19] text-sm sm:text-base" aria-expanded="false">
+                <span>How long does delivery take?</span>
+                <svg class="faq-icon h-5 w-5 shrink-0 text-[#75aadb] transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <div class="faq-answer px-6 text-black/60 font-medium text-sm leading-relaxed">
+                <p class="pb-5">After we confirm your order, delivery is typically within 1–2 days depending on your location and our availability. We'll coordinate a convenient time directly with you via text.</p>
+              </div>
+            </div>
+
+            <div class="faq-item rounded-2xl bg-white border border-black/5 shadow-sm overflow-hidden">
+              <button class="faq-question w-full text-left px-6 py-5 flex items-center justify-between gap-4 font-extrabold text-[#0b0f19] text-sm sm:text-base" aria-expanded="false">
+                <span>Can I place a bulk or custom order?</span>
+                <svg class="faq-icon h-5 w-5 shrink-0 text-[#75aadb] transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
+              </button>
+              <div class="faq-answer px-6 text-black/60 font-medium text-sm leading-relaxed">
+                <p class="pb-5">Absolutely! We love doing large orders for events, parties, and gatherings. Just reach out via email at <a href="mailto:cheesebitesllc@gmail.com" class="text-[#75aadb] font-semibold underline">cheesebitesllc@gmail.com</a> or text us directly and we'll work something out.</p>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- GALLERY / INSTAGRAM -->
+      <section id="gallery" class="section grain relative overflow-hidden">
+        <div class="mx-auto max-w-6xl px-4 sm:px-6 py-16 lg:py-20 relative z-10">
+
+          <div class="reveal text-center mb-12">
+            <div class="inline-flex items-center gap-2 rounded-full bg-[#ffca44]/20 text-[#0b0f19] px-4 py-2 text-xs font-extrabold tracking-wide mb-4">
+              FOLLOW OUR JOURNEY
+            </div>
+            <h2 class="text-4xl sm:text-5xl font-extrabold tracking-tight font-display text-[#0b0f19]">
+              Fresh from the Kitchen
+            </h2>
+            <p class="mt-3 text-lg text-black/60 font-medium">
+              Follow us on Instagram for daily bites &amp; behind the scenes.
+            </p>
+          </div>
+
+          <!-- Gallery grid — replace images with your latest Instagram photos -->
+          <div class="reveal grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+            <div class="gallery-item">
+              <img src="./img/IMG_6309.jpg" alt="Cheese Bites fresh out of the oven" loading="lazy" />
+            </div>
+            <div class="gallery-item">
+              <img src="./img/IMG_6312.jpg" alt="Cheese Bites ready to bake" loading="lazy" />
+            </div>
+            <div class="gallery-item">
+              <img src="./img/chipa.webp" alt="Chipa artesanal" loading="lazy" />
+            </div>
+            <div class="gallery-item">
+              <img src="./img/IMG_6312.jpg" alt="Cheese Bites platter" loading="lazy" />
+            </div>
+            <div class="gallery-item">
+              <img src="./img/chipa.webp" alt="Golden cheese bites" loading="lazy" />
+            </div>
+            <div class="gallery-item flex items-center justify-center bg-gradient-to-br from-[#ffca44]/20 to-[#75aadb]/20 rounded-[1.25rem] aspect-square">
+              <a
+                href="https://www.instagram.com/cheesebites.chipa/"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex flex-col items-center gap-3 text-center p-4"
+              >
+                <svg class="h-10 w-10 text-[#0b0f19]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                </svg>
+                <span class="font-extrabold text-sm text-[#0b0f19]">@cheesebites.chipa</span>
+                <span class="text-xs text-black/50 font-medium">View more →</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="reveal mt-10 text-center">
+            <a
+              href="https://www.instagram.com/cheesebites.chipa/"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn-lift inline-flex items-center gap-3 rounded-full bg-[#0b0f19] text-white px-8 py-4 font-extrabold text-sm hover:opacity-90 shadow-xl shadow-black/20"
+            >
+              <svg class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+              </svg>
+              Follow @cheesebites.chipa
+            </a>
           </div>
         </div>
       </section>
