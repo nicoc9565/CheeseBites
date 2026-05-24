@@ -121,7 +121,7 @@
     window.open(waURL, "_blank");
 
     showMsg("WhatsApp opened! Send the message to complete your order.");
-    resetForm(submitBtn, "Send Order via WhatsApp");
+    resetForm(submitBtn, "Send via WhatsApp");
   });
 
   // === SMS FALLBACK (secondary) ===
