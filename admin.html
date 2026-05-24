@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cheese Bites — Admin</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@700;800&display=swap" rel="stylesheet" />
+    <style>
+      body { font-family: "Inter", sans-serif; }
+      h1, h2 { font-family: "Poppins", sans-serif; }
+      #dropzone.drag-over { border-color: #ffca44; background: #fffbeb; }
+      .photo-card img { aspect-ratio: 1/1; object-fit: cover; }
+      .spinner {
+        width: 20px; height: 20px;
+        border: 3px solid rgba(0,0,0,0.15);
+        border-top-color: #0b0f19;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        display: inline-block;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl shadow-xl p-8 w-full max-w-sm">
+        <div class="text-center mb-8">
+          <div class="text-4xl mb-3">🧀</div>
+          <h1 class="text-2xl font-bold text-[#0b0f19]">Admin Panel</h1>
+          <p class="text-sm text-gray-500 mt-1">Cheese Bites Gallery Manager</p>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Password</label>
+            <input
+              id="passwordInput"
+              type="password"
+              placeholder="Enter admin password"
+              class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 font-semibold text-[#0b0f19] outline-none focus:border-[#ffca44] focus:ring-4 focus:ring-yellow-100 transition"
+            />
+            <p id="loginError" class="text-red-500 text-xs font-semibold mt-2 hidden">Incorrect password. Try again.</p>
+          </div>
+          <button
+            id="loginBtn"
+            class="w-full bg-[#ffca44] hover:brightness-95 active:brightness-90 text-[#0b0f19] font-bold py-3 rounded-2xl transition"
+          >
+            Sign In
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div id="dashboard" class="hidden">
+      <!-- Header -->
+      <header class="bg-white border-b border-gray-100 sticky top-0 z-10">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">🧀</span>
+            <div>
+              <h1 class="text-lg font-bold text-[#0b0f19] leading-none">Cheese Bites</h1>
+              <p class="text-xs text-gray-400">Gallery Manager</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <a href="/" target="_blank" class="text-sm text-gray-500 hover:text-[#0b0f19] transition">View Site ↗</a>
+            <button id="logoutBtn" class="text-sm text-gray-500 hover:text-red-500 transition">Sign Out</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="max-w-5xl mx-auto px-4 py-8 space-y-8">
+
+        <!-- Upload zone -->
+        <section class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+          <h2 class="text-lg font-bold text-[#0b0f19] mb-4">Upload Photos</h2>
+          <div
+            id="dropzone"
+            class="border-2 border-dashed border-gray-200 rounded-2xl p-10 text-center cursor-pointer hover:border-[#ffca44] hover:bg-yellow-50 transition"
+          >
+            <div class="text-4xl mb-3">📸</div>
+            <p class="font-semibold text-gray-600">Drag & drop photos here</p>
+            <p class="text-sm text-gray-400 mt-1">or click to browse · JPG, PNG, WebP · max 5 MB each</p>
+            <input id="fileInput" type="file" accept="image/*" multiple class="hidden" />
+          </div>
+
+          <!-- Upload queue -->
+          <ul id="uploadQueue" class="mt-4 space-y-2"></ul>
+        </section>
+
+        <!-- Gallery grid -->
+        <section class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-[#0b0f19]">Current Photos</h2>
+            <button id="refreshBtn" class="text-sm text-gray-500 hover:text-[#0b0f19] transition">⟳ Refresh</button>
+          </div>
+          <div id="galleryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <div id="galleryLoading" class="col-span-full flex justify-center py-10 text-gray-400 text-sm gap-2 items-center">
+              <span class="spinner"></span> Loading photos…
+            </div>
+          </div>
+          <p id="galleryEmpty" class="hidden text-center text-gray-400 text-sm py-10">No photos yet. Upload some above!</p>
+        </section>
+
+      </main>
+    </div>
+
+    <script>
+      (() => {
+        const SESSION_KEY = "cb_admin_pw";
+        let adminPassword = "";
+
+        const loginScreen = document.getElementById("loginScreen");
+        const dashboard   = document.getElementById("dashboard");
+        const passwordInput = document.getElementById("passwordInput");
+        const loginBtn    = document.getElementById("loginBtn");
+        const loginError  = document.getElementById("loginError");
+        const logoutBtn   = document.getElementById("logoutBtn");
+        const dropzone    = document.getElementById("dropzone");
+        const fileInput   = document.getElementById("fileInput");
+        const uploadQueue = document.getElementById("uploadQueue");
+        const galleryGrid = document.getElementById("galleryGrid");
+        const galleryLoading = document.getElementById("galleryLoading");
+        const galleryEmpty   = document.getElementById("galleryEmpty");
+        const refreshBtn  = document.getElementById("refreshBtn");
+
+        // === AUTH ===
+        function showDashboard(pw) {
+          adminPassword = pw;
+          sessionStorage.setItem(SESSION_KEY, pw);
+          loginScreen.classList.add("hidden");
+          dashboard.classList.remove("hidden");
+          loadGallery();
+        }
+
+        function showLogin() {
+          adminPassword = "";
+          sessionStorage.removeItem(SESSION_KEY);
+          dashboard.classList.add("hidden");
+          loginScreen.classList.remove("hidden");
+          passwordInput.value = "";
+        }
+
+        async function tryLogin() {
+          const pw = passwordInput.value.trim();
+          if (!pw) return;
+          loginBtn.disabled = true;
+          loginBtn.textContent = "Signing in…";
+          loginError.classList.add("hidden");
+
+          // Verify by hitting the gallery endpoint with the password
+          try {
+            const res = await fetch("/api/gallery", {
+              headers: { "x-admin-password": pw },
+            });
+            if (res.ok) {
+              showDashboard(pw);
+            } else {
+              loginError.classList.remove("hidden");
+            }
+          } catch {
+            loginError.textContent = "Connection error. Are you online?";
+            loginError.classList.remove("hidden");
+          } finally {
+            loginBtn.disabled = false;
+            loginBtn.textContent = "Sign In";
+          }
+        }
+
+        loginBtn.addEventListener("click", tryLogin);
+        passwordInput.addEventListener("keydown", (e) => { if (e.key === "Enter") tryLogin(); });
+        logoutBtn.addEventListener("click", showLogin);
+
+        // Auto-login if session stored
+        const stored = sessionStorage.getItem(SESSION_KEY);
+        if (stored) showDashboard(stored);
+
+        // === GALLERY ===
+        async function loadGallery() {
+          galleryLoading.classList.remove("hidden");
+          galleryEmpty.classList.add("hidden");
+          // Clear existing cards (keep loading indicator)
+          [...galleryGrid.querySelectorAll(".photo-card")].forEach((c) => c.remove());
+
+          try {
+            const res = await fetch("/api/gallery");
+            const { images } = await res.json();
+            galleryLoading.classList.add("hidden");
+
+            if (!images || images.length === 0) {
+              galleryEmpty.classList.remove("hidden");
+              return;
+            }
+
+            images.forEach((img) => addPhotoCard(img.url, img.pathname));
+          } catch {
+            galleryLoading.textContent = "Failed to load photos.";
+          }
+        }
+
+        function addPhotoCard(url, pathname) {
+          const card = document.createElement("div");
+          card.className = "photo-card relative group rounded-2xl overflow-hidden bg-gray-100";
+          card.dataset.url = url;
+          card.innerHTML = `
+            <img src="${url}" alt="Gallery photo" class="w-full" loading="lazy" />
+            <button
+              class="delete-btn absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition"
+              data-url="${url}"
+            >✕ Delete</button>
+          `;
+          card.querySelector(".delete-btn").addEventListener("click", () => deletePhoto(url, card));
+          galleryGrid.prepend(card);
+        }
+
+        async function deletePhoto(url, cardEl) {
+          if (!confirm("Delete this photo? This cannot be undone.")) return;
+          cardEl.style.opacity = "0.4";
+          cardEl.style.pointerEvents = "none";
+
+          try {
+            const res = await fetch("/api/delete", {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                "x-admin-password": adminPassword,
+              },
+              body: JSON.stringify({ url }),
+            });
+            if (res.ok) {
+              cardEl.remove();
+              if (!galleryGrid.querySelector(".photo-card")) {
+                galleryEmpty.classList.remove("hidden");
+              }
+            } else {
+              alert("Delete failed. Please try again.");
+              cardEl.style.opacity = "";
+              cardEl.style.pointerEvents = "";
+            }
+          } catch {
+            alert("Connection error.");
+            cardEl.style.opacity = "";
+            cardEl.style.pointerEvents = "";
+          }
+        }
+
+        refreshBtn.addEventListener("click", loadGallery);
+
+        // === DRAG & DROP / UPLOAD ===
+        dropzone.addEventListener("click", () => fileInput.click());
+        dropzone.addEventListener("dragover", (e) => { e.preventDefault(); dropzone.classList.add("drag-over"); });
+        dropzone.addEventListener("dragleave", () => dropzone.classList.remove("drag-over"));
+        dropzone.addEventListener("drop", (e) => {
+          e.preventDefault();
+          dropzone.classList.remove("drag-over");
+          handleFiles([...e.dataTransfer.files]);
+        });
+        fileInput.addEventListener("change", () => {
+          handleFiles([...fileInput.files]);
+          fileInput.value = "";
+        });
+
+        function handleFiles(files) {
+          files
+            .filter((f) => f.type.startsWith("image/"))
+            .forEach(uploadFile);
+        }
+
+        function uploadFile(file) {
+          if (file.size > 5 * 1024 * 1024) {
+            alert(`${file.name} is too large (max 5 MB).`);
+            return;
+          }
+
+          const li = document.createElement("li");
+          li.className = "flex items-center gap-3 text-sm bg-gray-50 rounded-xl px-4 py-3";
+          li.innerHTML = `
+            <span class="spinner"></span>
+            <span class="flex-1 truncate font-medium text-[#0b0f19]">${file.name}</span>
+            <span class="status text-gray-400">Uploading…</span>
+          `;
+          uploadQueue.prepend(li);
+
+          const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+
+          fetch("/api/upload", {
+            method: "POST",
+            headers: {
+              "Content-Type": file.type,
+              "x-admin-password": adminPassword,
+              "x-filename": filename,
+            },
+            body: file,
+          })
+            .then(async (res) => {
+              const data = await res.json();
+              if (res.ok) {
+                li.querySelector(".spinner").outerHTML = `<span class="text-green-500">✓</span>`;
+                li.querySelector(".status").textContent = "Done";
+                li.querySelector(".status").className = "status text-green-500 font-semibold";
+                addPhotoCard(data.url, data.pathname);
+                galleryEmpty.classList.add("hidden");
+                setTimeout(() => li.remove(), 3000);
+              } else {
+                throw new Error(data.error || "Upload failed");
+              }
+            })
+            .catch((err) => {
+              li.querySelector(".status").textContent = err.message;
+              li.querySelector(".status").className = "status text-red-500 font-semibold";
+            });
+        }
+      })();
+    </script>
+  </body>
+</html>
