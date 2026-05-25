@@ -298,6 +298,16 @@
     sections.forEach((s) => nio.observe(s));
   }
 
+  // === GLASS NAVBAR ===
+  const navPill = document.getElementById("navPill");
+  if (navPill) {
+    const updateGlass = () => {
+      navPill.classList.toggle("scrolled", window.scrollY > 60);
+    };
+    window.addEventListener("scroll", updateGlass, { passive: true });
+    updateGlass();
+  }
+
   // === PARALLAX ===
   const circles = document.querySelector(".global-circles");
   if (!prefersReduced && circles) {

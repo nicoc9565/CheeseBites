@@ -48,76 +48,45 @@
       <header id="mainHeader" class="fixed top-4 inset-x-0 z-50 px-4">
         <div class="mx-auto max-w-6xl">
           <div
-            class="rounded-[2rem] bg-[#ffca44]/90 backdrop-blur-md border border-white/20 shadow-[0_10px_30px_rgba(0,0,0,0.1)] px-6 py-3 flex items-center justify-between gap-3"
+            id="navPill"
+            class="nav-pill rounded-[2rem] bg-white/55 backdrop-blur-2xl border border-white/50 shadow-[0_4px_20px_rgba(0,0,0,0.07)] px-5 py-3 flex items-center justify-between gap-3"
           >
-            <a href="#top" class="flex items-center gap-3 group">
-              <div
-                class="h-10 w-10 rounded-xl bg-white/20 p-1.5 transition-transform group-hover:scale-110"
-              >
-                <img
-                  src="./img/Logo-CheeseBites.png"
-                  alt="CHEESE BITES"
-                  class="h-full w-full object-contain"
-                />
+            <!-- Logo -->
+            <a href="#top" class="flex items-center gap-3 group shrink-0">
+              <div class="h-9 w-9 rounded-xl bg-[#ffca44]/30 p-1.5 transition-transform group-hover:scale-110">
+                <img src="./img/Logo-CheeseBites.png" alt="CHEESE BITES" class="h-full w-full object-contain" />
               </div>
               <div class="leading-tight">
-                <div
-                  class="font-extrabold tracking-tight flex items-center gap-2 text-[#0b0f19]"
-                >
+                <div class="font-extrabold tracking-tight flex items-center gap-1.5 text-[#0b0f19] text-sm">
                   CHEESE BITES
-                  <img
-                    src="./img/Bandera-Argentina.webp"
-                    alt="Argentina flag"
-                    class="h-4 w-auto rounded-sm shadow-sm"
-                    style="filter: drop-shadow(0px 1px 2px rgba(0, 0, 0, 0.3))"
-                  />
+                  <img src="./img/Bandera-Argentina.webp" alt="Argentina flag" class="h-3.5 w-auto rounded-sm" style="filter: drop-shadow(0px 1px 2px rgba(0,0,0,0.25))" />
                 </div>
-                <div
-                  class="text-[10px] font-bold text-black/60 uppercase tracking-tighter"
-                >
-                  Born in ARG <br />
-                  Baked in USA
-                </div>
+                <div class="text-[9px] font-bold text-black/50 uppercase tracking-tighter">Born in ARG · Baked in USA</div>
               </div>
             </a>
 
-            <nav
-              class="hidden md:flex items-center gap-2 text-sm font-extrabold text-black/80"
-            >
-              <a
-                class="px-4 py-2 rounded-xl hover:bg-black/5 hover:text-black transition-colors"
-                href="#top"
-                >Home</a
-              >
-              <a
-                class="px-4 py-2 rounded-xl hover:bg-black/5 hover:text-black transition-colors"
-                href="#instructions"
-                >Instructions</a
-              >
-              <a
-                class="px-4 py-2 rounded-xl hover:bg-black/5 hover:text-black transition-colors"
-                href="#order"
-                >Order</a
-              >
+            <!-- Desktop nav -->
+            <nav class="hidden md:flex items-center gap-1 text-sm font-extrabold text-[#0b0f19]/75">
+              <a class="nav-link px-3.5 py-2 rounded-xl hover:bg-black/6 hover:text-[#0b0f19] transition-colors" href="#top">Home</a>
+              <a class="nav-link px-3.5 py-2 rounded-xl hover:bg-black/6 hover:text-[#0b0f19] transition-colors" href="#instructions">Instructions</a>
+              <a class="nav-link px-3.5 py-2 rounded-xl hover:bg-black/6 hover:text-[#0b0f19] transition-colors" href="#order">Order</a>
+              <a class="nav-link px-3.5 py-2 rounded-xl hover:bg-black/6 hover:text-[#0b0f19] transition-colors" href="#gallery">Gallery</a>
             </nav>
 
-            <div class="flex items-center gap-2">
-              <a
-                href="#order"
-                class="hidden sm:inline-flex items-center justify-center rounded-full bg-black px-6 py-2.5 text-xs font-black uppercase tracking-widest text-white hover:opacity-90 btn-lift shadow-lg shadow-black/20"
-              >
+            <!-- CTA + Hamburger -->
+            <div class="flex items-center gap-2 shrink-0">
+              <a href="#order" class="hidden sm:inline-flex items-center justify-center rounded-full bg-[#0b0f19] px-5 py-2.5 text-xs font-black uppercase tracking-widest text-white hover:opacity-90 btn-lift shadow-md shadow-black/15">
                 Order now
               </a>
-              <!-- Hamburger button (mobile only) -->
               <button
                 id="menuBtn"
                 aria-expanded="false"
                 aria-label="Open navigation menu"
-                class="md:hidden flex flex-col justify-center gap-[5px] p-2.5 rounded-xl hover:bg-black/5 transition-colors"
+                class="md:hidden flex flex-col justify-center gap-[5px] p-2.5 rounded-xl hover:bg-black/6 transition-colors"
               >
-                <span class="block w-5 h-0.5 bg-black/70 rounded-full"></span>
-                <span class="block w-5 h-0.5 bg-black/70 rounded-full"></span>
-                <span class="block w-5 h-0.5 bg-black/70 rounded-full"></span>
+                <span class="block w-5 h-0.5 bg-[#0b0f19]/70 rounded-full transition-all"></span>
+                <span class="block w-5 h-0.5 bg-[#0b0f19]/70 rounded-full transition-all"></span>
+                <span class="block w-4 h-0.5 bg-[#0b0f19]/70 rounded-full transition-all"></span>
               </button>
             </div>
           </div>
@@ -127,13 +96,17 @@
       <!-- Mobile Navigation Menu -->
       <div
         id="mobileMenu"
-        class="hidden fixed inset-x-4 top-[5.5rem] z-40 rounded-2xl bg-[#ffca44]/98 backdrop-blur-md border border-white/20 shadow-xl p-4 md:hidden"
+        class="hidden fixed inset-x-4 top-[5.5rem] z-40 rounded-2xl bg-white/92 backdrop-blur-2xl border border-black/8 shadow-2xl shadow-black/10 p-3 md:hidden"
       >
-        <nav class="flex flex-col gap-1">
-          <a href="#top" class="px-4 py-3 rounded-xl hover:bg-black/5 font-extrabold text-black/80 transition-colors">Home</a>
-          <a href="#instructions" class="px-4 py-3 rounded-xl hover:bg-black/5 font-extrabold text-black/80 transition-colors">Instructions</a>
-          <a href="#order" class="px-4 py-3 rounded-xl hover:bg-black/5 font-extrabold text-black/80 transition-colors">Order</a>
-          <a href="#order" class="mt-1 inline-flex items-center justify-center rounded-full bg-black px-6 py-3 text-xs font-black uppercase tracking-widest text-white hover:opacity-90 transition-opacity">Order now</a>
+        <nav class="flex flex-col gap-0.5">
+          <a href="#top" class="px-4 py-3 rounded-xl hover:bg-black/5 font-extrabold text-[#0b0f19]/80 hover:text-[#0b0f19] transition-colors text-sm">Home</a>
+          <a href="#instructions" class="px-4 py-3 rounded-xl hover:bg-black/5 font-extrabold text-[#0b0f19]/80 hover:text-[#0b0f19] transition-colors text-sm">Instructions</a>
+          <a href="#order" class="px-4 py-3 rounded-xl hover:bg-black/5 font-extrabold text-[#0b0f19]/80 hover:text-[#0b0f19] transition-colors text-sm">Order</a>
+          <a href="#gallery" class="px-4 py-3 rounded-xl hover:bg-black/5 font-extrabold text-[#0b0f19]/80 hover:text-[#0b0f19] transition-colors text-sm">Gallery</a>
+          <div class="h-px bg-black/8 my-1 mx-1"></div>
+          <a href="#order" class="inline-flex items-center justify-center rounded-full bg-[#ffca44] px-6 py-3 text-xs font-black uppercase tracking-widest text-[#0b0f19] hover:brightness-95 transition-all shadow-md shadow-black/10">
+            🧀 Order Now — $15 / box
+          </a>
         </nav>
       </div>
 
@@ -1123,8 +1096,8 @@
         ></div>
 
         <div class="mx-auto max-w-6xl px-4 sm:px-6 relative z-10">
-          <div class="grid lg:grid-cols-12 gap-12 lg:gap-8 items-start mb-16">
-            <div class="lg:col-span-5">
+          <div class="grid sm:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8 items-start mb-16">
+            <div class="sm:col-span-2 lg:col-span-5">
               <a href="#top" class="inline-flex items-center gap-4 group">
                 <div
                   class="h-14 w-14 rounded-2xl bg-white/15 border border-white/20 flex items-center justify-center p-2 group-hover:scale-105 transition-transform"
@@ -1181,19 +1154,7 @@
               </div>
             </div>
 
-            <div class="lg:col-span-2 lg:pl-4">
-              <h4 class="text-xs font-extrabold tracking-widest text-white/50 uppercase mb-6">Navigate</h4>
-              <nav class="flex flex-col gap-2">
-                <a href="#top" class="text-sm font-semibold text-white/80 hover:text-white transition-colors">Home</a>
-                <a href="#instructions" class="text-sm font-semibold text-white/80 hover:text-white transition-colors">Instructions</a>
-                <a href="#order" class="text-sm font-semibold text-white/80 hover:text-white transition-colors">Order</a>
-                <a href="#reviews" class="text-sm font-semibold text-white/80 hover:text-white transition-colors">Reviews</a>
-                <a href="#faq" class="text-sm font-semibold text-white/80 hover:text-white transition-colors">FAQ</a>
-                <a href="#gallery" class="text-sm font-semibold text-white/80 hover:text-white transition-colors">Gallery</a>
-              </nav>
-            </div>
-
-            <div class="lg:col-span-2 lg:pl-4">
+            <div class="lg:col-span-4">
               <h4
                 class="text-xs font-extrabold tracking-widest text-white/50 uppercase mb-6"
               >
@@ -1245,7 +1206,7 @@
               </div>
             </div>
 
-            <div class="lg:col-span-3">
+            <div class="lg:col-span-3 sm:col-span-1">
               <h4
                 class="text-xs font-extrabold tracking-widest text-white/50 uppercase mb-6"
               >
