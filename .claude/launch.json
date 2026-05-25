@@ -3,8 +3,8 @@
   "configurations": [
     {
       "name": "cheesebites",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": ["serve", "-p", "3000", "."],
+      "runtimeExecutable": "vercel",
+      "runtimeArgs": ["dev", "--listen", "3000", "--yes"],
       "port": 3000
     }
   ]
