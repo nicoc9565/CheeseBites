@@ -184,8 +184,9 @@
                   class="relative rounded-[2.5rem] bg-white border border-white/80 shadow-[0_20px_40px_rgba(11,15,25,0.15)] overflow-hidden rotate-[-2deg] hover:rotate-0 transition-transform duration-500 group"
                 >
                   <picture>
-                    <source srcset="./img/IMG_6309.webp" type="image/webp" />
+                    <source id="heroImgWebp" srcset="./img/IMG_6309.webp" type="image/webp" />
                     <img
+                      id="heroImg"
                       src="./img/IMG_6309.jpg"
                       alt="CHEESE BITES"
                       class="w-full h-[360px] sm:h-[420px] object-cover scale-105 group-hover:scale-100 transition-transform duration-500"
@@ -310,34 +311,6 @@
         </div>
       </section>
 
-      <!-- SOCIAL PROOF BAR -->
-      <div class="relative z-10 bg-[#0b0f19] overflow-hidden">
-        <div class="mx-auto max-w-6xl px-4 sm:px-6">
-          <ul class="flex flex-wrap items-center justify-center gap-x-0 text-[11px] font-extrabold tracking-widest uppercase text-white/80">
-            <li class="flex items-center gap-2 px-5 sm:px-7 py-4 border-r border-white/10">
-              <span class="text-[#ffca44]">★★★★★</span>
-              50+ Happy Orders
-            </li>
-            <li class="flex items-center gap-2 px-5 sm:px-7 py-4 border-r border-white/10">
-              <span class="text-[#ffca44]">✓</span>
-              Gluten Free
-            </li>
-            <li class="flex items-center gap-2 px-5 sm:px-7 py-4 border-r border-white/10">
-              <span class="text-[#75aadb]">🚚</span>
-              Free Delivery
-            </li>
-            <li class="flex items-center gap-2 px-5 sm:px-7 py-4 border-r border-white/10">
-              <span class="text-[#ffca44]">🧀</span>
-              Handcrafted in NJ
-            </li>
-            <li class="flex items-center gap-2 px-5 sm:px-7 py-4">
-              <span class="text-[#75aadb]">💳</span>
-              Tax Free
-            </li>
-          </ul>
-        </div>
-      </div>
-
       <!-- INSTRUCTIONS -->
       <section id="instructions" class="section grain relative overflow-hidden">
         <div
@@ -385,8 +358,9 @@
                   class="relative rounded-[2.5rem] border border-black/5 bg-white shadow-2xl overflow-hidden group"
                 >
                   <picture>
-                    <source srcset="./img/IMG_6312.webp" type="image/webp" />
+                    <source id="instructionsImgWebp" srcset="./img/IMG_6312.webp" type="image/webp" />
                     <img
+                      id="instructionsImg"
                       src="./img/IMG_6312.jpg"
                       alt="Cheese Bites ready to bake"
                       loading="lazy"
@@ -574,90 +548,62 @@
           <div
             class="reveal relative rounded-[2.5rem] bg-white border border-black/5 shadow-[0_30px_60px_rgba(11,15,25,0.15)] overflow-hidden flex flex-col lg:flex-row"
           >
-            <div
-              class="lg:w-2/5 bg-gradient-to-br from-[#75aadb] to-[#5a90c4] p-10 lg:p-14 text-white flex flex-col justify-between relative overflow-hidden"
-            >
-              <div
-                class="absolute top-0 right-0 -mt-16 -mr-16 w-64 h-64 bg-white opacity-10 rounded-full blur-3xl pointer-events-none"
-              ></div>
+            <!-- LEFT PANEL — product showcase -->
+            <div class="lg:w-2/5 bg-gradient-to-br from-[#75aadb] to-[#5a90c4] text-white flex flex-col relative overflow-hidden">
 
-              <div class="relative z-10">
-                <div
-                  class="inline-flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 text-xs font-extrabold tracking-wide mb-6"
-                >
-                  CHEESE BITES
+              <!-- Product photo -->
+              <div class="relative overflow-hidden shrink-0">
+                <img
+                  id="orderImg"
+                  src="./img/IMG_6309.webp"
+                  alt="Cheese Bites"
+                  class="w-full h-56 lg:h-64 object-cover"
+                />
+                <!-- Price badge -->
+                <div class="absolute bottom-4 right-4 bg-[#ffca44] text-[#0b0f19] rounded-2xl px-4 py-3 shadow-xl shadow-black/20 text-right">
+                  <div class="text-[9px] font-extrabold uppercase tracking-widest opacity-70">per box</div>
+                  <div class="text-3xl font-black leading-none">$<span id="displayPrice">15</span></div>
+                  <div class="text-[9px] font-bold opacity-60 mt-0.5">6 units</div>
                 </div>
-                <h2
-                  class="text-3xl sm:text-4xl font-extrabold tracking-tight font-display mb-4 leading-tight"
-                >
-                  Order Request
-                </h2>
-                <p
-                  class="text-white/80 font-medium text-sm sm:text-base mb-10 leading-relaxed"
-                >
-                  Tell us your delivery details and quantity. We’ll reach out to
-                  confirm your order and coordinate delivery.
-                </p>
+              </div>
 
-                <ul class="space-y-5">
+              <!-- Info panel -->
+              <div class="p-8 lg:p-10 flex flex-col gap-5 flex-1">
+
+                <!-- Promo banner — hidden by default, shown when active -->
+                <div id="promoBanner" class="hidden rounded-2xl bg-[#ffca44] text-[#0b0f19] px-4 py-3.5 shadow-lg">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-base">🎉</span>
+                    <span id="promoLabel" class="font-extrabold text-sm uppercase tracking-wide"></span>
+                  </div>
+                  <p id="promoDesc" class="text-xs font-semibold opacity-75 leading-snug"></p>
+                </div>
+
+                <!-- Benefits -->
+                <ul class="space-y-3">
                   <li class="flex items-center gap-3 font-extrabold text-sm">
-                    <div
-                      class="flex items-center justify-center w-8 h-8 rounded-full bg-white/20 text-lg"
-                    >
-                      📦
-                    </div>
-                    6 units per box
-                  </li>
-                  <li class="flex items-center gap-3 font-extrabold text-sm">
-                    <div
-                      class="flex items-center justify-center w-8 h-8 rounded-full bg-[#ffca44] text-black"
-                    >
-                      <svg
-                        class="h-4 w-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="3"
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                    </div>
+                    <span class="flex items-center justify-center w-7 h-7 rounded-full bg-[#ffca44] text-[#0b0f19] text-xs font-black">✓</span>
                     Tax free
                   </li>
                   <li class="flex items-center gap-3 font-extrabold text-sm">
-                    <div
-                      class="flex items-center justify-center w-8 h-8 rounded-full bg-[#ffca44] text-black"
-                    >
-                      <svg
-                        class="h-4 w-4"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                      >
-                        <path
-                          stroke-linecap="round"
-                          stroke-linejoin="round"
-                          stroke-width="3"
-                          d="M5 13l4 4L19 7"
-                        />
-                      </svg>
-                    </div>
+                    <span class="flex items-center justify-center w-7 h-7 rounded-full bg-[#ffca44] text-[#0b0f19] text-xs font-black">✓</span>
                     Free shipping
                   </li>
+                  <li class="flex items-center gap-3 font-extrabold text-sm">
+                    <span class="flex items-center justify-center w-7 h-7 rounded-full bg-[#ffca44] text-[#0b0f19] text-xs font-black">✓</span>
+                    Gluten Free
+                  </li>
+                  <li class="flex items-center gap-3 font-extrabold text-sm">
+                    <span class="flex items-center justify-center w-7 h-7 rounded-full bg-white/20 text-base">📦</span>
+                    6 units per box
+                  </li>
                 </ul>
-              </div>
 
-              <div class="relative z-10 mt-12 pt-8 border-t border-white/20">
-                <p
-                  class="text-xs font-bold text-white/60 mb-1 tracking-widest uppercase"
-                >
-                  Questions?
-                </p>
-                <p class="text-sm font-extrabold">cheesebitesllc@gmail.com</p>
+                <!-- Contact -->
+                <div class="mt-auto pt-5 border-t border-white/20">
+                  <p class="text-[10px] font-extrabold text-white/50 tracking-widest uppercase mb-1">Questions?</p>
+                  <a href="mailto:cheesebitesllc@gmail.com" class="text-sm font-extrabold hover:text-[#ffca44] transition-colors">cheesebitesllc@gmail.com</a>
+                </div>
               </div>
             </div>
 

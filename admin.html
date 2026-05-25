@@ -108,6 +108,84 @@
           <p id="galleryEmpty" class="hidden text-center text-gray-400 text-sm py-10">No photos yet. Upload some above!</p>
         </section>
 
+        <!-- Site Images -->
+        <section class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+          <h2 class="text-lg font-bold text-[#0b0f19] mb-1">Site Images</h2>
+          <p class="text-sm text-gray-400 mb-6">Change the main photos shown on the website.</p>
+          <div class="grid sm:grid-cols-2 gap-6">
+            <!-- Hero image -->
+            <div>
+              <p class="text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-3">Home Card Photo</p>
+              <div class="relative rounded-2xl overflow-hidden bg-gray-100 aspect-video mb-3">
+                <img id="previewHero" src="" alt="Hero" class="w-full h-full object-cover hidden" />
+                <div id="previewHeroEmpty" class="absolute inset-0 flex items-center justify-center text-gray-300 text-4xl">🏠</div>
+              </div>
+              <label class="flex items-center justify-center gap-2 cursor-pointer bg-gray-50 hover:bg-yellow-50 border-2 border-dashed border-gray-200 hover:border-[#ffca44] rounded-2xl px-4 py-3 text-sm font-semibold text-gray-500 transition">
+                <span>📷 Choose photo</span>
+                <input id="heroFileInput" type="file" accept="image/*" class="hidden" />
+              </label>
+              <div id="heroUploadStatus" class="text-xs text-gray-400 mt-2 min-h-[1rem]"></div>
+            </div>
+            <!-- Instructions image -->
+            <div>
+              <p class="text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-3">Instructions Card Photo</p>
+              <div class="relative rounded-2xl overflow-hidden bg-gray-100 aspect-video mb-3">
+                <img id="previewInstructions" src="" alt="Instructions" class="w-full h-full object-cover hidden" />
+                <div id="previewInstructionsEmpty" class="absolute inset-0 flex items-center justify-center text-gray-300 text-4xl">🍽️</div>
+              </div>
+              <label class="flex items-center justify-center gap-2 cursor-pointer bg-gray-50 hover:bg-yellow-50 border-2 border-dashed border-gray-200 hover:border-[#ffca44] rounded-2xl px-4 py-3 text-sm font-semibold text-gray-500 transition">
+                <span>📷 Choose photo</span>
+                <input id="instructionsFileInput" type="file" accept="image/*" class="hidden" />
+              </label>
+              <div id="instructionsUploadStatus" class="text-xs text-gray-400 mt-2 min-h-[1rem]"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Price & Promo -->
+        <section class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+          <h2 class="text-lg font-bold text-[#0b0f19] mb-1">Price & Promotions</h2>
+          <p class="text-sm text-gray-400 mb-6">Set the box price and activate special offers that appear in the Order section.</p>
+
+          <!-- Price -->
+          <div class="mb-6">
+            <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-2">Box Price (USD)</label>
+            <div class="flex items-center gap-3">
+              <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 font-extrabold text-gray-400">$</span>
+                <input id="priceInput" type="number" min="1" step="0.01" value="15" class="pl-8 pr-4 py-3 border-2 border-gray-100 rounded-2xl font-extrabold text-[#0b0f19] w-32 outline-none focus:border-[#ffca44] transition" />
+              </div>
+              <button id="savePriceBtn" class="bg-[#0b0f19] hover:opacity-80 text-white font-bold text-sm px-5 py-3 rounded-2xl transition">Save Price</button>
+              <span id="priceSaveStatus" class="text-xs text-gray-400"></span>
+            </div>
+          </div>
+
+          <!-- Promo toggle -->
+          <div class="border-t border-gray-100 pt-6">
+            <div class="flex items-center justify-between mb-5">
+              <div>
+                <p class="font-bold text-[#0b0f19]">Active Promotion</p>
+                <p class="text-xs text-gray-400 mt-0.5">Shows a banner on the Order section when enabled</p>
+              </div>
+              <button id="promoToggleBtn" class="relative inline-flex h-7 w-12 items-center rounded-full bg-gray-200 transition-colors focus:outline-none">
+                <span id="promoToggleKnob" class="inline-block h-5 w-5 translate-x-1 rounded-full bg-white shadow-md transition-transform"></span>
+              </button>
+            </div>
+            <div id="promoFields" class="space-y-4 opacity-50 pointer-events-none">
+              <div>
+                <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-2">Promo Label</label>
+                <input id="promoLabelInput" type="text" placeholder="e.g. Weekend Special 🎉" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 font-semibold text-[#0b0f19] outline-none focus:border-[#ffca44] transition" />
+              </div>
+              <div>
+                <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-2">Description</label>
+                <input id="promoDescInput" type="text" placeholder="e.g. Get 2 boxes for $25 this weekend only!" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 font-semibold text-[#0b0f19] outline-none focus:border-[#ffca44] transition" />
+              </div>
+              <button id="savePromoBtn" class="bg-[#ffca44] hover:brightness-95 text-[#0b0f19] font-extrabold text-sm px-6 py-3 rounded-2xl transition">Save Promotion</button>
+              <span id="promoSaveStatus" class="text-xs text-gray-400 ml-2"></span>
+            </div>
+          </div>
+        </section>
+
       </main>
     </div>
 
@@ -137,6 +215,7 @@
           loginScreen.classList.add("hidden");
           dashboard.classList.remove("hidden");
           loadGallery();
+          loadSettings();
         }
 
         function showLogin() {
@@ -316,6 +395,139 @@
               li.querySelector(".status").className = "status text-red-500 font-semibold";
             });
         }
+
+        // === SITE IMAGES ===
+        let currentSettings = null;
+
+        async function loadSettings() {
+          try {
+            const res = await fetch("/api/settings");
+            currentSettings = await res.json();
+            // Show current images
+            if (currentSettings.heroImage) {
+              document.getElementById("previewHero").src = currentSettings.heroImage;
+              document.getElementById("previewHero").classList.remove("hidden");
+              document.getElementById("previewHeroEmpty").classList.add("hidden");
+            }
+            if (currentSettings.instructionsImage) {
+              document.getElementById("previewInstructions").src = currentSettings.instructionsImage;
+              document.getElementById("previewInstructions").classList.remove("hidden");
+              document.getElementById("previewInstructionsEmpty").classList.add("hidden");
+            }
+            // Load price
+            if (currentSettings.price) {
+              document.getElementById("priceInput").value = currentSettings.price;
+            }
+            // Load promo
+            const promo = currentSettings.promo || {};
+            if (promo.active) setPromoToggle(true);
+            document.getElementById("promoLabelInput").value = promo.label || "";
+            document.getElementById("promoDescInput").value = promo.description || "";
+          } catch {}
+        }
+
+        async function uploadSectionImage(file, section) {
+          const statusEl = document.getElementById(`${section}UploadStatus`);
+          statusEl.textContent = "Uploading…";
+          const filename = `${section}-${Date.now()}.${file.name.split(".").pop()}`;
+          try {
+            const res = await fetch("/api/upload", {
+              method: "POST",
+              headers: {
+                "Content-Type": file.type,
+                "x-admin-password": adminPassword,
+                "x-filename": filename,
+                "x-prefix": section,
+              },
+              body: file,
+            });
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || "Upload failed");
+            // Update settings with new image URL
+            const field = section === "hero" ? "heroImage" : "instructionsImage";
+            await fetch("/api/settings", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "x-admin-password": adminPassword },
+              body: JSON.stringify({ [field]: data.url }),
+            });
+            // Update preview
+            const preview = document.getElementById(`preview${section.charAt(0).toUpperCase() + section.slice(1)}`);
+            const empty = document.getElementById(`preview${section.charAt(0).toUpperCase() + section.slice(1)}Empty`);
+            preview.src = data.url;
+            preview.classList.remove("hidden");
+            empty?.classList.add("hidden");
+            statusEl.textContent = "✓ Updated!";
+            statusEl.className = "text-xs text-green-500 mt-2 min-h-[1rem]";
+            setTimeout(() => { statusEl.textContent = ""; statusEl.className = "text-xs text-gray-400 mt-2 min-h-[1rem]"; }, 3000);
+          } catch (err) {
+            statusEl.textContent = "✗ " + err.message;
+            statusEl.className = "text-xs text-red-500 mt-2 min-h-[1rem]";
+          }
+        }
+
+        document.getElementById("heroFileInput").addEventListener("change", (e) => {
+          if (e.target.files[0]) uploadSectionImage(e.target.files[0], "hero");
+        });
+        document.getElementById("instructionsFileInput").addEventListener("change", (e) => {
+          if (e.target.files[0]) uploadSectionImage(e.target.files[0], "instructions");
+        });
+
+        // === PRICE ===
+        document.getElementById("savePriceBtn").addEventListener("click", async () => {
+          const price = parseFloat(document.getElementById("priceInput").value);
+          const statusEl = document.getElementById("priceSaveStatus");
+          if (!price || price < 1) { statusEl.textContent = "Enter a valid price"; return; }
+          statusEl.textContent = "Saving…";
+          try {
+            await fetch("/api/settings", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "x-admin-password": adminPassword },
+              body: JSON.stringify({ price }),
+            });
+            statusEl.textContent = "✓ Saved!";
+            statusEl.className = "text-xs text-green-500";
+            setTimeout(() => { statusEl.textContent = ""; statusEl.className = "text-xs text-gray-400"; }, 3000);
+          } catch { statusEl.textContent = "Error saving"; }
+        });
+
+        // === PROMO TOGGLE ===
+        let promoActive = false;
+        function setPromoToggle(active) {
+          promoActive = active;
+          const btn = document.getElementById("promoToggleBtn");
+          const knob = document.getElementById("promoToggleKnob");
+          const fields = document.getElementById("promoFields");
+          btn.classList.toggle("bg-[#ffca44]", active);
+          btn.classList.toggle("bg-gray-200", !active);
+          knob.classList.toggle("translate-x-6", active);
+          knob.classList.toggle("translate-x-1", !active);
+          fields.classList.toggle("opacity-50", !active);
+          fields.classList.toggle("pointer-events-none", !active);
+        }
+        document.getElementById("promoToggleBtn").addEventListener("click", () => setPromoToggle(!promoActive));
+
+        document.getElementById("savePromoBtn").addEventListener("click", async () => {
+          const statusEl = document.getElementById("promoSaveStatus");
+          statusEl.textContent = "Saving…";
+          try {
+            await fetch("/api/settings", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "x-admin-password": adminPassword },
+              body: JSON.stringify({
+                promo: {
+                  active: promoActive,
+                  label: document.getElementById("promoLabelInput").value,
+                  description: document.getElementById("promoDescInput").value,
+                },
+              }),
+            });
+            statusEl.textContent = "✓ Saved!";
+            statusEl.className = "text-xs text-green-500 ml-2";
+            setTimeout(() => { statusEl.textContent = ""; statusEl.className = "text-xs text-gray-400 ml-2"; }, 3000);
+          } catch { statusEl.textContent = "Error saving"; }
+        });
+
+
       })();
     </script>
   </body>

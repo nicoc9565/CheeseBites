@@ -27,11 +27,13 @@ export default async function handler(req, res) {
   try {
     const contentType = req.headers["content-type"] || "application/octet-stream";
     const filename = req.headers["x-filename"] || `photo-${Date.now()}.jpg`;
+    const prefix = req.headers["x-prefix"] || "gallery";
     const body = await readStream(req);
 
-    const blob = await put(`gallery/${filename}`, body, {
+    const blob = await put(`${prefix}/${filename}`, body, {
       access: "public",
       contentType,
+      allowOverwrite: true,
     });
 
     return res.status(200).json({ url: blob.url, pathname: blob.pathname });

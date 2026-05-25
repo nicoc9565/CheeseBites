@@ -1,5 +1,5 @@
 (() => {
-  const UNIT_PRICE = 15;
+  let UNIT_PRICE = 15;
   const WA_NUMBER = "19083464064";
   const SMS_NUMBER = "19083464064";
   const prefersReduced = window.matchMedia(
@@ -324,4 +324,48 @@
       { passive: true },
     );
   }
+
+  // === DYNAMIC SETTINGS (price, promo, images) ===
+  fetch("/api/settings")
+    .then((r) => (r.ok ? r.json() : null))
+    .then((s) => {
+      if (!s) return;
+
+      // Price
+      if (s.price && s.price !== UNIT_PRICE) {
+        UNIT_PRICE = s.price;
+        refreshTotal();
+      }
+      const displayPrice = document.getElementById("displayPrice");
+      if (displayPrice) displayPrice.textContent = String(s.price || 15);
+
+      // Hero image
+      if (s.heroImage) {
+        const heroImg = document.getElementById("heroImg");
+        const heroWebp = document.getElementById("heroImgWebp");
+        if (heroImg) heroImg.src = s.heroImage;
+        if (heroWebp) heroWebp.srcset = s.heroImage;
+        const orderImg = document.getElementById("orderImg");
+        if (orderImg) orderImg.src = s.heroImage;
+      }
+
+      // Instructions image
+      if (s.instructionsImage) {
+        const instImg = document.getElementById("instructionsImg");
+        const instWebp = document.getElementById("instructionsImgWebp");
+        if (instImg) instImg.src = s.instructionsImage;
+        if (instWebp) instWebp.srcset = s.instructionsImage;
+      }
+
+      // Promo banner
+      if (s.promo?.active) {
+        const banner = document.getElementById("promoBanner");
+        const label = document.getElementById("promoLabel");
+        const desc = document.getElementById("promoDesc");
+        if (banner) banner.classList.remove("hidden");
+        if (label) label.textContent = s.promo.label || "";
+        if (desc) desc.textContent = s.promo.description || "";
+      }
+    })
+    .catch(() => {});
 })();
