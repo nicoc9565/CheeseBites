@@ -345,8 +345,6 @@
         const heroWebp = document.getElementById("heroImgWebp");
         if (heroImg) heroImg.src = s.heroImage;
         if (heroWebp) heroWebp.srcset = s.heroImage;
-        const orderImg = document.getElementById("orderImg");
-        if (orderImg) orderImg.src = s.heroImage;
       }
 
       // Instructions image

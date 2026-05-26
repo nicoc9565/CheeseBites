@@ -2,10 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "cheesebites",
+      "name": "cheesebites-dev",
       "runtimeExecutable": "vercel",
-      "runtimeArgs": ["dev", "--listen", "3000", "--yes"],
-      "port": 3000
+      "runtimeArgs": ["dev", "--listen", "3001", "--yes"],
+      "port": 3001
     }
   ]
 }
