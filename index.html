@@ -13,18 +13,23 @@
     <meta property="og:image" content="./img/IMG_6309.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Inter (body) -->
+    <!-- Fonts: preconnect + non-blocking load -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap"
       rel="stylesheet"
+      media="print"
+      onload="this.media='all'"
     />
+    <noscript>
+      <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet" />
+    </noscript>
 
-    <!-- Tailwind CDN (SIN config, a prueba de balas) -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Compiled Tailwind (only used classes, ~32KB vs 3MB CDN) -->
+    <link rel="stylesheet" href="./css/tailwind.min.css" />
 
-    <!-- Your custom CSS -->
+    <!-- Custom CSS -->
     <link rel="stylesheet" href="./css/styles.css" />
   </head>
 
@@ -187,8 +192,10 @@
                     <source id="heroImgWebp" srcset="./img/IMG_6309.webp" type="image/webp" />
                     <img
                       id="heroImg"
-                      src="./img/IMG_6309.jpg"
+                      src="./img/IMG_6309.webp"
                       alt="CHEESE BITES"
+                      fetchpriority="high"
+                      decoding="async"
                       class="w-full h-[360px] sm:h-[420px] object-cover scale-105 group-hover:scale-100 transition-transform duration-500"
                     />
                   </picture>
@@ -361,9 +368,10 @@
                     <source id="instructionsImgWebp" srcset="./img/IMG_6312.webp" type="image/webp" />
                     <img
                       id="instructionsImg"
-                      src="./img/IMG_6312.jpg"
+                      src="./img/IMG_6312.webp"
                       alt="Cheese Bites ready to bake"
                       loading="lazy"
+                      decoding="async"
                       class="w-full h-[400px] lg:h-[550px] object-cover transition-transform duration-700 group-hover:scale-105"
                     />
                   </picture>
@@ -966,7 +974,7 @@
               <img src="./img/chipa.webp" alt="Chipa artesanal" loading="lazy" />
             </div>
             <div class="gallery-item gallery-static">
-              <img src="./img/IMG_6312.jpg" alt="Cheese Bites platter" loading="lazy" />
+              <img src="./img/IMG_6312.webp" alt="Cheese Bites platter" loading="lazy" decoding="async" />
             </div>
             <div class="gallery-item gallery-static">
               <img src="./img/chipa.webp" alt="Golden cheese bites" loading="lazy" />
