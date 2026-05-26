@@ -105,7 +105,7 @@
           <a href="#gallery" class="px-4 py-3 rounded-xl hover:bg-black/5 font-extrabold text-[#0b0f19]/80 hover:text-[#0b0f19] transition-colors text-sm">Gallery</a>
           <div class="h-px bg-black/8 my-1 mx-1"></div>
           <a href="#order" class="inline-flex items-center justify-center rounded-full bg-[#0b0f19] px-6 py-3 text-xs font-black uppercase tracking-widest text-white hover:opacity-90 transition-all shadow-md shadow-black/20">
-            🧀 Order Now — $15 / box
+            🧀 Order Now — $<span class="js-price">15</span> / box
           </a>
         </nav>
       </div>
@@ -199,7 +199,7 @@
                     <div
                       class="bg-[#ffca44] text-black rounded-full h-12 w-12 flex items-center justify-center font-extrabold text-lg"
                     >
-                      $15
+                      $<span class="js-price">15</span>
                     </div>
                     <div class="text-sm font-bold leading-tight">
                       <span class="block text-black">6 units</span>
@@ -342,7 +342,7 @@
                 href="#order"
                 class="inline-flex items-center justify-center rounded-full bg-[#ffca44] px-6 py-3 text-sm font-extrabold text-black hover:brightness-95 transition-all shadow-md shadow-[#ffca44]/20 btn-lift shrink-0"
               >
-                Order 6 for $15
+                Order 6 for $<span class="js-price">15</span>
               </a>
             </div>
 
@@ -563,7 +563,7 @@
                   <p class="text-xs font-extrabold uppercase tracking-widest text-white/60 mb-4">Place your order</p>
                   <div class="bg-[#ffca44] text-[#0b0f19] rounded-2xl px-6 py-5 inline-flex flex-col shadow-xl shadow-black/20">
                     <span class="text-[10px] font-extrabold uppercase tracking-widest opacity-60">per box</span>
-                    <span class="text-5xl font-black leading-tight">$<span id="displayPrice">15</span></span>
+                    <span class="text-5xl font-black leading-tight">$<span id="displayPrice" class="js-price">15</span></span>
                     <span class="text-xs font-bold opacity-60 mt-1">6 handcrafted units</span>
                   </div>
                 </div>
@@ -895,7 +895,7 @@
                 <svg class="faq-icon h-5 w-5 shrink-0 text-[#75aadb] transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7"/></svg>
               </button>
               <div class="faq-answer px-6 text-black/60 font-medium text-sm leading-relaxed">
-                <p class="pb-5">Each box comes with 6 cheese bites for $15, tax free with free delivery. You can order multiple boxes — the more, the merrier!</p>
+                <p class="pb-5">Each box comes with 6 cheese bites for $<span class="js-price">15</span>, tax free with free delivery. You can order multiple boxes — the more, the merrier!</p>
               </div>
             </div>
 
@@ -1021,7 +1021,7 @@
           href="#order"
           class="btn-lift flex items-center justify-center gap-2 w-full rounded-full bg-[#ffca44] px-6 py-4 text-sm font-extrabold uppercase tracking-widest text-black shadow-2xl shadow-black/25"
         >
-          🧀 Order Now — $15 / box
+          🧀 Order Now — $<span class="js-price">15</span> / box
         </a>
       </div>
 

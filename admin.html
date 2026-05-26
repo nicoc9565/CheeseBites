@@ -428,10 +428,12 @@
 
         async function uploadSectionImage(file, section) {
           const statusEl = document.getElementById(`${section}UploadStatus`);
-          statusEl.textContent = "Uploading…";
+          statusEl.className = "text-xs text-gray-400 mt-2 min-h-[1rem]";
+          statusEl.textContent = "Uploading photo…";
           const filename = `${section}-${Date.now()}.${file.name.split(".").pop()}`;
           try {
-            const res = await fetch("/api/upload", {
+            // 1. Upload file to Blob storage
+            const uploadRes = await fetch("/api/upload", {
               method: "POST",
               headers: {
                 "Content-Type": file.type,
@@ -441,22 +443,32 @@
               },
               body: file,
             });
-            const data = await res.json();
-            if (!res.ok) throw new Error(data.error || "Upload failed");
-            // Update settings with new image URL
+            const uploadData = await uploadRes.json();
+            if (!uploadRes.ok) throw new Error(uploadData.error || "Upload failed");
+
+            statusEl.textContent = "Saving settings…";
+
+            // 2. Save URL to settings
             const field = section === "hero" ? "heroImage" : "instructionsImage";
-            await fetch("/api/settings", {
+            const settingsRes = await fetch("/api/settings", {
               method: "POST",
               headers: { "Content-Type": "application/json", "x-admin-password": adminPassword },
-              body: JSON.stringify({ [field]: data.url }),
+              body: JSON.stringify({ [field]: uploadData.url }),
             });
-            // Update preview
-            const preview = document.getElementById(`preview${section.charAt(0).toUpperCase() + section.slice(1)}`);
-            const empty = document.getElementById(`preview${section.charAt(0).toUpperCase() + section.slice(1)}Empty`);
-            preview.src = data.url;
+            if (!settingsRes.ok) {
+              const err = await settingsRes.json().catch(() => ({}));
+              throw new Error(err.error || `Settings save failed (${settingsRes.status})`);
+            }
+
+            // 3. Update preview
+            const cap = section.charAt(0).toUpperCase() + section.slice(1);
+            const preview = document.getElementById(`preview${cap}`);
+            const empty   = document.getElementById(`preview${cap}Empty`);
+            preview.src = uploadData.url;
             preview.classList.remove("hidden");
             empty?.classList.add("hidden");
-            statusEl.textContent = "✓ Updated!";
+
+            statusEl.textContent = "✓ Photo updated!";
             statusEl.className = "text-xs text-green-500 mt-2 min-h-[1rem]";
             setTimeout(() => { statusEl.textContent = ""; statusEl.className = "text-xs text-gray-400 mt-2 min-h-[1rem]"; }, 3000);
           } catch (err) {
@@ -478,16 +490,24 @@
           const statusEl = document.getElementById("priceSaveStatus");
           if (!price || price < 1) { statusEl.textContent = "Enter a valid price"; return; }
           statusEl.textContent = "Saving…";
+          statusEl.className = "text-xs text-gray-400";
           try {
-            await fetch("/api/settings", {
+            const res = await fetch("/api/settings", {
               method: "POST",
               headers: { "Content-Type": "application/json", "x-admin-password": adminPassword },
               body: JSON.stringify({ price }),
             });
+            if (!res.ok) {
+              const e = await res.json().catch(() => ({}));
+              throw new Error(e.error || `Error ${res.status}`);
+            }
             statusEl.textContent = "✓ Saved!";
             statusEl.className = "text-xs text-green-500";
             setTimeout(() => { statusEl.textContent = ""; statusEl.className = "text-xs text-gray-400"; }, 3000);
-          } catch { statusEl.textContent = "Error saving"; }
+          } catch (err) {
+            statusEl.textContent = "✗ " + err.message;
+            statusEl.className = "text-xs text-red-500";
+          }
         });
 
         // === PROMO TOGGLE ===
@@ -509,8 +529,9 @@
         document.getElementById("savePromoBtn").addEventListener("click", async () => {
           const statusEl = document.getElementById("promoSaveStatus");
           statusEl.textContent = "Saving…";
+          statusEl.className = "text-xs text-gray-400 ml-2";
           try {
-            await fetch("/api/settings", {
+            const res = await fetch("/api/settings", {
               method: "POST",
               headers: { "Content-Type": "application/json", "x-admin-password": adminPassword },
               body: JSON.stringify({
@@ -521,10 +542,17 @@
                 },
               }),
             });
+            if (!res.ok) {
+              const e = await res.json().catch(() => ({}));
+              throw new Error(e.error || `Error ${res.status}`);
+            }
             statusEl.textContent = "✓ Saved!";
             statusEl.className = "text-xs text-green-500 ml-2";
             setTimeout(() => { statusEl.textContent = ""; statusEl.className = "text-xs text-gray-400 ml-2"; }, 3000);
-          } catch { statusEl.textContent = "Error saving"; }
+          } catch (err) {
+            statusEl.textContent = "✗ " + err.message;
+            statusEl.className = "text-xs text-red-500 ml-2";
+          }
         });
 
 

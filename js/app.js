@@ -331,13 +331,14 @@
     .then((s) => {
       if (!s) return;
 
-      // Price
-      if (s.price && s.price !== UNIT_PRICE) {
+      // Price — update every .js-price span on the page at once
+      if (s.price) {
         UNIT_PRICE = s.price;
         refreshTotal();
+        document.querySelectorAll(".js-price").forEach((el) => {
+          el.textContent = String(s.price);
+        });
       }
-      const displayPrice = document.getElementById("displayPrice");
-      if (displayPrice) displayPrice.textContent = String(s.price || 15);
 
       // Hero image
       if (s.heroImage) {

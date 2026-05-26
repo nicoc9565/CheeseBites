@@ -1,6 +1,6 @@
-import { put, list } from "@vercel/blob";
+import { put, list, del } from "@vercel/blob";
 
-const SETTINGS_PATH = "config/settings.json";
+const SETTINGS_PREFIX = "config/settings-";
 
 const DEFAULTS = {
   price: 15,
@@ -16,9 +16,11 @@ const DEFAULTS = {
 
 async function getSettings() {
   try {
-    const { blobs } = await list({ prefix: "config/settings" });
+    const { blobs } = await list({ prefix: SETTINGS_PREFIX });
     if (blobs.length === 0) return { ...DEFAULTS, promo: { ...DEFAULTS.promo } };
-    const res = await fetch(blobs[0].url + `?t=${Date.now()}`);
+    // Sort descending by uploadedAt → always read the freshest file
+    blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+    const res = await fetch(blobs[0].url);
     const data = await res.json();
     return {
       ...DEFAULTS,
@@ -36,7 +38,8 @@ function checkAuth(req) {
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
-    res.setHeader("Cache-Control", "s-maxage=30, stale-while-revalidate=60");
+    // Short cache — settings change infrequently but need to be fresh after admin edits
+    res.setHeader("Cache-Control", "s-maxage=5, stale-while-revalidate=10");
     const settings = await getSettings();
     return res.status(200).json(settings);
   }
@@ -51,11 +54,21 @@ export default async function handler(req, res) {
         ...updates,
         promo: { ...current.promo, ...(updates.promo || {}) },
       };
-      await put(SETTINGS_PATH, JSON.stringify(newSettings), {
+
+      // Save under a new timestamped path → fresh CDN URL, no stale cache
+      const newPath = `${SETTINGS_PREFIX}${Date.now()}.json`;
+      await put(newPath, JSON.stringify(newSettings), {
         access: "public",
         contentType: "application/json",
-        allowOverwrite: true,
       });
+
+      // Clean up old settings files — keep only the newest one
+      const { blobs } = await list({ prefix: SETTINGS_PREFIX });
+      blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
+      if (blobs.length > 1) {
+        await Promise.all(blobs.slice(1).map((b) => del(b.url)));
+      }
+
       return res.status(200).json(newSettings);
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
