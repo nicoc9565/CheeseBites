@@ -160,3 +160,128 @@ h3,
     transition: none !important;
   }
 }
+
+/* =====================
+   FORM VALIDATION
+   ===================== */
+.field-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 800;
+  color: rgba(0, 0, 0, 0.5);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.5rem;
+}
+
+.field-input {
+  width: 100%;
+  border-radius: 1rem;
+  border: 2px solid rgba(0, 0, 0, 0.06);
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  padding: 0.9rem 1.25rem;
+  font-weight: 600;
+  color: #0b0f19;
+  outline: none;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+  font-family: "Inter", sans-serif;
+}
+
+.field-input:focus {
+  box-shadow: 0 0 0 3px rgba(255, 202, 68, 0.3);
+  border-color: #ffca44;
+}
+
+.field-group.is-valid .field-input {
+  border-color: #22c55e;
+  background: #f0fdf4;
+}
+
+.field-group.is-valid .field-input:focus {
+  box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
+}
+
+.field-group.is-error .field-input {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.field-group.is-error .field-input:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.2);
+}
+
+.field-error {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #ef4444;
+  margin-top: 0.35rem;
+  min-height: 1rem;
+}
+
+/* =====================
+   ORDER CONFIRMATION OVERLAY
+   ===================== */
+#orderConfirmation {
+  transition: opacity 0.3s ease;
+}
+
+#orderConfirmation.hidden {
+  display: none;
+}
+
+/* =====================
+   FAQ ACCORDION
+   ===================== */
+.faq-answer {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.35s ease;
+}
+
+.faq-answer.is-open {
+  max-height: 300px;
+}
+
+/* =====================
+   GALLERY
+   ===================== */
+.gallery-item {
+  overflow: hidden;
+  border-radius: 1.25rem;
+  background: #f1f5f9;
+}
+
+.gallery-item img {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.gallery-item:hover img {
+  transform: scale(1.05);
+}
+
+/* =====================
+   GLASS NAVBAR
+   ===================== */
+.nav-pill {
+  transition:
+    background-color 0.35s ease,
+    border-color 0.35s ease,
+    box-shadow 0.35s ease,
+    backdrop-filter 0.35s ease;
+}
+.nav-pill.scrolled {
+  background-color: rgba(255, 202, 68, 0.70);
+  border-color: rgba(255, 202, 68, 0.25);
+  box-shadow: 0 8px 32px rgba(11, 15, 25, 0.10);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}

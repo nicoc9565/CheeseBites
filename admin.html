@@ -1,0 +1,562 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cheese Bites — Admin</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@700;800&display=swap" rel="stylesheet" />
+    <style>
+      body { font-family: "Inter", sans-serif; }
+      h1, h2 { font-family: "Poppins", sans-serif; }
+      #dropzone.drag-over { border-color: #ffca44; background: #fffbeb; }
+      .photo-card img { aspect-ratio: 1/1; object-fit: cover; }
+      .spinner {
+        width: 20px; height: 20px;
+        border: 3px solid rgba(0,0,0,0.15);
+        border-top-color: #0b0f19;
+        border-radius: 50%;
+        animation: spin 0.7s linear infinite;
+        display: inline-block;
+      }
+      @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+  </head>
+  <body class="bg-gray-50 min-h-screen">
+
+    <!-- LOGIN SCREEN -->
+    <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4">
+      <div class="bg-white rounded-3xl shadow-xl p-8 w-full max-w-sm">
+        <div class="text-center mb-8">
+          <div class="text-4xl mb-3">🧀</div>
+          <h1 class="text-2xl font-bold text-[#0b0f19]">Admin Panel</h1>
+          <p class="text-sm text-gray-500 mt-1">Cheese Bites Gallery Manager</p>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold uppercase tracking-widest text-gray-400 mb-2">Password</label>
+            <input
+              id="passwordInput"
+              type="password"
+              placeholder="Enter admin password"
+              class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 font-semibold text-[#0b0f19] outline-none focus:border-[#ffca44] focus:ring-4 focus:ring-yellow-100 transition"
+            />
+            <p id="loginError" class="text-red-500 text-xs font-semibold mt-2 hidden">Incorrect password. Try again.</p>
+          </div>
+          <button
+            id="loginBtn"
+            class="w-full bg-[#ffca44] hover:brightness-95 active:brightness-90 text-[#0b0f19] font-bold py-3 rounded-2xl transition"
+          >
+            Sign In
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN DASHBOARD -->
+    <div id="dashboard" class="hidden">
+      <!-- Header -->
+      <header class="bg-white border-b border-gray-100 sticky top-0 z-10">
+        <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <span class="text-2xl">🧀</span>
+            <div>
+              <h1 class="text-lg font-bold text-[#0b0f19] leading-none">Cheese Bites</h1>
+              <p class="text-xs text-gray-400">Gallery Manager</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-3">
+            <a href="/" target="_blank" class="text-sm text-gray-500 hover:text-[#0b0f19] transition">View Site ↗</a>
+            <button id="logoutBtn" class="text-sm text-gray-500 hover:text-red-500 transition">Sign Out</button>
+          </div>
+        </div>
+      </header>
+
+      <main class="max-w-5xl mx-auto px-4 py-8 space-y-8">
+
+        <!-- Upload zone -->
+        <section class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+          <h2 class="text-lg font-bold text-[#0b0f19] mb-4">Upload Photos</h2>
+          <div
+            id="dropzone"
+            class="border-2 border-dashed border-gray-200 rounded-2xl p-10 text-center cursor-pointer hover:border-[#ffca44] hover:bg-yellow-50 transition"
+          >
+            <div class="text-4xl mb-3">📸</div>
+            <p class="font-semibold text-gray-600">Drag & drop photos here</p>
+            <p class="text-sm text-gray-400 mt-1">or click to browse · JPG, PNG, WebP · max 5 MB each</p>
+            <input id="fileInput" type="file" accept="image/*" multiple class="hidden" />
+          </div>
+
+          <!-- Upload queue -->
+          <ul id="uploadQueue" class="mt-4 space-y-2"></ul>
+        </section>
+
+        <!-- Gallery grid -->
+        <section class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="text-lg font-bold text-[#0b0f19]">Current Photos</h2>
+            <button id="refreshBtn" class="text-sm text-gray-500 hover:text-[#0b0f19] transition">⟳ Refresh</button>
+          </div>
+          <div id="galleryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+            <div id="galleryLoading" class="col-span-full flex justify-center py-10 text-gray-400 text-sm gap-2 items-center">
+              <span class="spinner"></span> Loading photos…
+            </div>
+          </div>
+          <p id="galleryEmpty" class="hidden text-center text-gray-400 text-sm py-10">No photos yet. Upload some above!</p>
+        </section>
+
+        <!-- Site Images -->
+        <section class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+          <h2 class="text-lg font-bold text-[#0b0f19] mb-1">Site Images</h2>
+          <p class="text-sm text-gray-400 mb-6">Change the main photos shown on the website.</p>
+          <div class="grid sm:grid-cols-2 gap-6">
+            <!-- Hero image -->
+            <div>
+              <p class="text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-3">Home Card Photo</p>
+              <div class="relative rounded-2xl overflow-hidden bg-gray-100 aspect-video mb-3">
+                <img id="previewHero" src="" alt="Hero" class="w-full h-full object-cover hidden" />
+                <div id="previewHeroEmpty" class="absolute inset-0 flex items-center justify-center text-gray-300 text-4xl">🏠</div>
+              </div>
+              <label class="flex items-center justify-center gap-2 cursor-pointer bg-gray-50 hover:bg-yellow-50 border-2 border-dashed border-gray-200 hover:border-[#ffca44] rounded-2xl px-4 py-3 text-sm font-semibold text-gray-500 transition">
+                <span>📷 Choose photo</span>
+                <input id="heroFileInput" type="file" accept="image/*" class="hidden" />
+              </label>
+              <div id="heroUploadStatus" class="text-xs text-gray-400 mt-2 min-h-[1rem]"></div>
+            </div>
+            <!-- Instructions image -->
+            <div>
+              <p class="text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-3">Instructions Card Photo</p>
+              <div class="relative rounded-2xl overflow-hidden bg-gray-100 aspect-video mb-3">
+                <img id="previewInstructions" src="" alt="Instructions" class="w-full h-full object-cover hidden" />
+                <div id="previewInstructionsEmpty" class="absolute inset-0 flex items-center justify-center text-gray-300 text-4xl">🍽️</div>
+              </div>
+              <label class="flex items-center justify-center gap-2 cursor-pointer bg-gray-50 hover:bg-yellow-50 border-2 border-dashed border-gray-200 hover:border-[#ffca44] rounded-2xl px-4 py-3 text-sm font-semibold text-gray-500 transition">
+                <span>📷 Choose photo</span>
+                <input id="instructionsFileInput" type="file" accept="image/*" class="hidden" />
+              </label>
+              <div id="instructionsUploadStatus" class="text-xs text-gray-400 mt-2 min-h-[1rem]"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Price & Promo -->
+        <section class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+          <h2 class="text-lg font-bold text-[#0b0f19] mb-1">Price & Promotions</h2>
+          <p class="text-sm text-gray-400 mb-6">Set the box price and activate special offers that appear in the Order section.</p>
+
+          <!-- Price -->
+          <div class="mb-6">
+            <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-2">Box Price (USD)</label>
+            <div class="flex items-center gap-3">
+              <div class="relative">
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 font-extrabold text-gray-400">$</span>
+                <input id="priceInput" type="number" min="1" step="0.01" value="15" class="pl-8 pr-4 py-3 border-2 border-gray-100 rounded-2xl font-extrabold text-[#0b0f19] w-32 outline-none focus:border-[#ffca44] transition" />
+              </div>
+              <button id="savePriceBtn" class="bg-[#0b0f19] hover:opacity-80 text-white font-bold text-sm px-5 py-3 rounded-2xl transition">Save Price</button>
+              <span id="priceSaveStatus" class="text-xs text-gray-400"></span>
+            </div>
+          </div>
+
+          <!-- Promo toggle -->
+          <div class="border-t border-gray-100 pt-6">
+            <div class="flex items-center justify-between mb-5">
+              <div>
+                <p class="font-bold text-[#0b0f19]">Active Promotion</p>
+                <p class="text-xs text-gray-400 mt-0.5">Shows a banner on the Order section when enabled</p>
+              </div>
+              <button id="promoToggleBtn" class="relative inline-flex h-7 w-12 items-center rounded-full bg-gray-200 transition-colors focus:outline-none">
+                <span id="promoToggleKnob" class="inline-block h-5 w-5 translate-x-1 rounded-full bg-white shadow-md transition-transform"></span>
+              </button>
+            </div>
+            <div id="promoFields" class="space-y-4 opacity-50 pointer-events-none">
+              <div>
+                <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-2">Promo Label</label>
+                <input id="promoLabelInput" type="text" placeholder="e.g. Weekend Special 🎉" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 font-semibold text-[#0b0f19] outline-none focus:border-[#ffca44] transition" />
+              </div>
+              <div>
+                <label class="block text-xs font-extrabold uppercase tracking-widest text-gray-400 mb-2">Description</label>
+                <input id="promoDescInput" type="text" placeholder="e.g. Get 2 boxes for $25 this weekend only!" class="w-full border-2 border-gray-100 rounded-2xl px-4 py-3 font-semibold text-[#0b0f19] outline-none focus:border-[#ffca44] transition" />
+              </div>
+              <button id="savePromoBtn" class="bg-[#ffca44] hover:brightness-95 text-[#0b0f19] font-extrabold text-sm px-6 py-3 rounded-2xl transition">Save Promotion</button>
+              <span id="promoSaveStatus" class="text-xs text-gray-400 ml-2"></span>
+            </div>
+          </div>
+        </section>
+
+      </main>
+    </div>
+
+    <script>
+      (() => {
+        const SESSION_KEY = "cb_admin_pw";
+        let adminPassword = "";
+
+        const loginScreen = document.getElementById("loginScreen");
+        const dashboard   = document.getElementById("dashboard");
+        const passwordInput = document.getElementById("passwordInput");
+        const loginBtn    = document.getElementById("loginBtn");
+        const loginError  = document.getElementById("loginError");
+        const logoutBtn   = document.getElementById("logoutBtn");
+        const dropzone    = document.getElementById("dropzone");
+        const fileInput   = document.getElementById("fileInput");
+        const uploadQueue = document.getElementById("uploadQueue");
+        const galleryGrid = document.getElementById("galleryGrid");
+        const galleryLoading = document.getElementById("galleryLoading");
+        const galleryEmpty   = document.getElementById("galleryEmpty");
+        const refreshBtn  = document.getElementById("refreshBtn");
+
+        // === AUTH ===
+        function showDashboard(pw) {
+          adminPassword = pw;
+          sessionStorage.setItem(SESSION_KEY, pw);
+          loginScreen.classList.add("hidden");
+          dashboard.classList.remove("hidden");
+          loadGallery();
+          loadSettings();
+        }
+
+        function showLogin() {
+          adminPassword = "";
+          sessionStorage.removeItem(SESSION_KEY);
+          dashboard.classList.add("hidden");
+          loginScreen.classList.remove("hidden");
+          passwordInput.value = "";
+        }
+
+        async function tryLogin() {
+          const pw = passwordInput.value.trim();
+          if (!pw) return;
+          loginBtn.disabled = true;
+          loginBtn.textContent = "Signing in…";
+          loginError.classList.add("hidden");
+
+          // Verify by hitting the gallery endpoint with the password
+          try {
+            const res = await fetch("/api/gallery", {
+              headers: { "x-admin-password": pw },
+            });
+            if (res.ok) {
+              showDashboard(pw);
+            } else {
+              loginError.classList.remove("hidden");
+            }
+          } catch {
+            loginError.textContent = "Connection error. Are you online?";
+            loginError.classList.remove("hidden");
+          } finally {
+            loginBtn.disabled = false;
+            loginBtn.textContent = "Sign In";
+          }
+        }
+
+        loginBtn.addEventListener("click", tryLogin);
+        passwordInput.addEventListener("keydown", (e) => { if (e.key === "Enter") tryLogin(); });
+        logoutBtn.addEventListener("click", showLogin);
+
+        // Auto-login if session stored
+        const stored = sessionStorage.getItem(SESSION_KEY);
+        if (stored) showDashboard(stored);
+
+        // === GALLERY ===
+        async function loadGallery() {
+          galleryLoading.classList.remove("hidden");
+          galleryEmpty.classList.add("hidden");
+          // Clear existing cards (keep loading indicator)
+          [...galleryGrid.querySelectorAll(".photo-card")].forEach((c) => c.remove());
+
+          try {
+            const res = await fetch("/api/gallery");
+            const { images } = await res.json();
+            galleryLoading.classList.add("hidden");
+
+            if (!images || images.length === 0) {
+              galleryEmpty.classList.remove("hidden");
+              return;
+            }
+
+            images.forEach((img) => addPhotoCard(img.url, img.pathname));
+          } catch {
+            galleryLoading.textContent = "Failed to load photos.";
+          }
+        }
+
+        function addPhotoCard(url, pathname) {
+          const card = document.createElement("div");
+          card.className = "photo-card relative group rounded-2xl overflow-hidden bg-gray-100";
+          card.dataset.url = url;
+          card.innerHTML = `
+            <img src="${url}" alt="Gallery photo" class="w-full" loading="lazy" />
+            <button
+              class="delete-btn absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-lg opacity-0 group-hover:opacity-100 transition"
+              data-url="${url}"
+            >✕ Delete</button>
+          `;
+          card.querySelector(".delete-btn").addEventListener("click", () => deletePhoto(url, card));
+          galleryGrid.prepend(card);
+        }
+
+        async function deletePhoto(url, cardEl) {
+          if (!confirm("Delete this photo? This cannot be undone.")) return;
+          cardEl.style.opacity = "0.4";
+          cardEl.style.pointerEvents = "none";
+
+          try {
+            const res = await fetch("/api/delete", {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+                "x-admin-password": adminPassword,
+              },
+              body: JSON.stringify({ url }),
+            });
+            if (res.ok) {
+              cardEl.remove();
+              if (!galleryGrid.querySelector(".photo-card")) {
+                galleryEmpty.classList.remove("hidden");
+              }
+            } else {
+              alert("Delete failed. Please try again.");
+              cardEl.style.opacity = "";
+              cardEl.style.pointerEvents = "";
+            }
+          } catch {
+            alert("Connection error.");
+            cardEl.style.opacity = "";
+            cardEl.style.pointerEvents = "";
+          }
+        }
+
+        refreshBtn.addEventListener("click", loadGallery);
+
+        // === DRAG & DROP / UPLOAD ===
+        dropzone.addEventListener("click", () => fileInput.click());
+        dropzone.addEventListener("dragover", (e) => { e.preventDefault(); dropzone.classList.add("drag-over"); });
+        dropzone.addEventListener("dragleave", () => dropzone.classList.remove("drag-over"));
+        dropzone.addEventListener("drop", (e) => {
+          e.preventDefault();
+          dropzone.classList.remove("drag-over");
+          handleFiles([...e.dataTransfer.files]);
+        });
+        fileInput.addEventListener("change", () => {
+          handleFiles([...fileInput.files]);
+          fileInput.value = "";
+        });
+
+        function handleFiles(files) {
+          files
+            .filter((f) => f.type.startsWith("image/"))
+            .forEach(uploadFile);
+        }
+
+        function uploadFile(file) {
+          if (file.size > 5 * 1024 * 1024) {
+            alert(`${file.name} is too large (max 5 MB).`);
+            return;
+          }
+
+          const li = document.createElement("li");
+          li.className = "flex items-center gap-3 text-sm bg-gray-50 rounded-xl px-4 py-3";
+          li.innerHTML = `
+            <span class="spinner"></span>
+            <span class="flex-1 truncate font-medium text-[#0b0f19]">${file.name}</span>
+            <span class="status text-gray-400">Uploading…</span>
+          `;
+          uploadQueue.prepend(li);
+
+          const filename = `${Date.now()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, "_")}`;
+
+          fetch("/api/upload", {
+            method: "POST",
+            headers: {
+              "Content-Type": file.type,
+              "x-admin-password": adminPassword,
+              "x-filename": filename,
+            },
+            body: file,
+          })
+            .then(async (res) => {
+              const data = await res.json();
+              if (res.ok) {
+                li.querySelector(".spinner").outerHTML = `<span class="text-green-500">✓</span>`;
+                li.querySelector(".status").textContent = "Done";
+                li.querySelector(".status").className = "status text-green-500 font-semibold";
+                addPhotoCard(data.url, data.pathname);
+                galleryEmpty.classList.add("hidden");
+                setTimeout(() => li.remove(), 3000);
+              } else {
+                throw new Error(data.error || "Upload failed");
+              }
+            })
+            .catch((err) => {
+              li.querySelector(".status").textContent = err.message;
+              li.querySelector(".status").className = "status text-red-500 font-semibold";
+            });
+        }
+
+        // === SITE IMAGES ===
+        let currentSettings = null;
+
+        async function loadSettings() {
+          try {
+            const res = await fetch("/api/settings");
+            currentSettings = await res.json();
+            // Show current images
+            if (currentSettings.heroImage) {
+              document.getElementById("previewHero").src = currentSettings.heroImage;
+              document.getElementById("previewHero").classList.remove("hidden");
+              document.getElementById("previewHeroEmpty").classList.add("hidden");
+            }
+            if (currentSettings.instructionsImage) {
+              document.getElementById("previewInstructions").src = currentSettings.instructionsImage;
+              document.getElementById("previewInstructions").classList.remove("hidden");
+              document.getElementById("previewInstructionsEmpty").classList.add("hidden");
+            }
+            // Load price
+            if (currentSettings.price) {
+              document.getElementById("priceInput").value = currentSettings.price;
+            }
+            // Load promo
+            const promo = currentSettings.promo || {};
+            if (promo.active) setPromoToggle(true);
+            document.getElementById("promoLabelInput").value = promo.label || "";
+            document.getElementById("promoDescInput").value = promo.description || "";
+          } catch {}
+        }
+
+        async function uploadSectionImage(file, section) {
+          const statusEl = document.getElementById(`${section}UploadStatus`);
+          statusEl.className = "text-xs text-gray-400 mt-2 min-h-[1rem]";
+          statusEl.textContent = "Uploading photo…";
+          const filename = `${section}-${Date.now()}.${file.name.split(".").pop()}`;
+          try {
+            // 1. Upload file to Blob storage
+            const uploadRes = await fetch("/api/upload", {
+              method: "POST",
+              headers: {
+                "Content-Type": file.type,
+                "x-admin-password": adminPassword,
+                "x-filename": filename,
+                "x-prefix": section,
+              },
+              body: file,
+            });
+            const uploadData = await uploadRes.json();
+            if (!uploadRes.ok) throw new Error(uploadData.error || "Upload failed");
+
+            statusEl.textContent = "Saving settings…";
+
+            // 2. Save URL to settings
+            const field = section === "hero" ? "heroImage" : "instructionsImage";
+            const settingsRes = await fetch("/api/settings", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "x-admin-password": adminPassword },
+              body: JSON.stringify({ [field]: uploadData.url }),
+            });
+            if (!settingsRes.ok) {
+              const err = await settingsRes.json().catch(() => ({}));
+              throw new Error(err.error || `Settings save failed (${settingsRes.status})`);
+            }
+
+            // 3. Update preview
+            const cap = section.charAt(0).toUpperCase() + section.slice(1);
+            const preview = document.getElementById(`preview${cap}`);
+            const empty   = document.getElementById(`preview${cap}Empty`);
+            preview.src = uploadData.url;
+            preview.classList.remove("hidden");
+            empty?.classList.add("hidden");
+
+            statusEl.textContent = "✓ Photo updated!";
+            statusEl.className = "text-xs text-green-500 mt-2 min-h-[1rem]";
+            setTimeout(() => { statusEl.textContent = ""; statusEl.className = "text-xs text-gray-400 mt-2 min-h-[1rem]"; }, 3000);
+          } catch (err) {
+            statusEl.textContent = "✗ " + err.message;
+            statusEl.className = "text-xs text-red-500 mt-2 min-h-[1rem]";
+          }
+        }
+
+        document.getElementById("heroFileInput").addEventListener("change", (e) => {
+          if (e.target.files[0]) uploadSectionImage(e.target.files[0], "hero");
+        });
+        document.getElementById("instructionsFileInput").addEventListener("change", (e) => {
+          if (e.target.files[0]) uploadSectionImage(e.target.files[0], "instructions");
+        });
+
+        // === PRICE ===
+        document.getElementById("savePriceBtn").addEventListener("click", async () => {
+          const price = parseFloat(document.getElementById("priceInput").value);
+          const statusEl = document.getElementById("priceSaveStatus");
+          if (!price || price < 1) { statusEl.textContent = "Enter a valid price"; return; }
+          statusEl.textContent = "Saving…";
+          statusEl.className = "text-xs text-gray-400";
+          try {
+            const res = await fetch("/api/settings", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "x-admin-password": adminPassword },
+              body: JSON.stringify({ price }),
+            });
+            if (!res.ok) {
+              const e = await res.json().catch(() => ({}));
+              throw new Error(e.error || `Error ${res.status}`);
+            }
+            statusEl.textContent = "✓ Saved!";
+            statusEl.className = "text-xs text-green-500";
+            setTimeout(() => { statusEl.textContent = ""; statusEl.className = "text-xs text-gray-400"; }, 3000);
+          } catch (err) {
+            statusEl.textContent = "✗ " + err.message;
+            statusEl.className = "text-xs text-red-500";
+          }
+        });
+
+        // === PROMO TOGGLE ===
+        let promoActive = false;
+        function setPromoToggle(active) {
+          promoActive = active;
+          const btn = document.getElementById("promoToggleBtn");
+          const knob = document.getElementById("promoToggleKnob");
+          const fields = document.getElementById("promoFields");
+          btn.classList.toggle("bg-[#ffca44]", active);
+          btn.classList.toggle("bg-gray-200", !active);
+          knob.classList.toggle("translate-x-6", active);
+          knob.classList.toggle("translate-x-1", !active);
+          fields.classList.toggle("opacity-50", !active);
+          fields.classList.toggle("pointer-events-none", !active);
+        }
+        document.getElementById("promoToggleBtn").addEventListener("click", () => setPromoToggle(!promoActive));
+
+        document.getElementById("savePromoBtn").addEventListener("click", async () => {
+          const statusEl = document.getElementById("promoSaveStatus");
+          statusEl.textContent = "Saving…";
+          statusEl.className = "text-xs text-gray-400 ml-2";
+          try {
+            const res = await fetch("/api/settings", {
+              method: "POST",
+              headers: { "Content-Type": "application/json", "x-admin-password": adminPassword },
+              body: JSON.stringify({
+                promo: {
+                  active: promoActive,
+                  label: document.getElementById("promoLabelInput").value,
+                  description: document.getElementById("promoDescInput").value,
+                },
+              }),
+            });
+            if (!res.ok) {
+              const e = await res.json().catch(() => ({}));
+              throw new Error(e.error || `Error ${res.status}`);
+            }
+            statusEl.textContent = "✓ Saved!";
+            statusEl.className = "text-xs text-green-500 ml-2";
+            setTimeout(() => { statusEl.textContent = ""; statusEl.className = "text-xs text-gray-400 ml-2"; }, 3000);
+          } catch (err) {
+            statusEl.textContent = "✗ " + err.message;
+            statusEl.className = "text-xs text-red-500 ml-2";
+          }
+        });
+
+
+      })();
+    </script>
+  </body>
+</html>
