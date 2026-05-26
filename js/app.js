@@ -12,6 +12,7 @@
   const orderForm = document.getElementById("orderForm");
   const submitBtn = document.getElementById("btnWhatsApp");
   const smsBtn = document.getElementById("btnSMS");
+  const emailBtn = document.getElementById("btnEmail");
   const igBanner = document.getElementById("igBanner");
   const mainHeader = document.getElementById("mainHeader");
   const menuBtn = document.getElementById("menuBtn");
@@ -27,14 +28,14 @@
     igBanner.classList.remove("hidden");
     if (mainHeader) mainHeader.style.top = igBanner.offsetHeight + 16 + "px";
 
-    // SMS/iMessage doesn't work in Instagram's browser — hide that button
-    // and promote WhatsApp as the primary (and only) option
+    // SMS/iMessage doesn't work in Instagram's browser — hide it,
+    // promote WhatsApp as primary, and show Email as a second option
     if (smsBtn) smsBtn.classList.add("hidden");
     if (submitBtn) {
-      // Replace the subtle secondary style with a prominent green WhatsApp style
       submitBtn.className =
         "w-full btn-lift rounded-2xl bg-[#25D366] px-5 py-5 text-base font-black uppercase tracking-widest text-white hover:brightness-95 shadow-xl shadow-[#25D366]/30 flex items-center justify-center gap-3";
     }
+    if (emailBtn) emailBtn.classList.remove("hidden");
   }
   document.getElementById("igBannerClose")?.addEventListener("click", () => {
     igBanner?.classList.add("hidden");
@@ -129,6 +130,7 @@
   const CONFIRM_MSGS = {
     sms: "Your Messages app should have opened — just hit <strong>Send</strong> to complete your order. We'll confirm your delivery shortly!",
     whatsapp: "WhatsApp should have opened with your order — just hit <strong>Send</strong> and we'll confirm your delivery shortly!",
+    email: "Your mail app should have opened with your order — just hit <strong>Send</strong> and we'll confirm your delivery shortly!",
   };
   const showConfirmation = (channel = "sms") => {
     if (!orderConfirmation) return;
@@ -220,6 +222,30 @@
           `</svg> Send via WhatsApp`;
       }
       showConfirmation("whatsapp");
+    }, 1200);
+  });
+
+  // === EMAIL (Instagram IAB fallback) ===
+  const ORDER_EMAIL = "cheesebitesllc@gmail.com";
+  emailBtn?.addEventListener("click", () => {
+    if (!validateAll()) {
+      document.querySelector(".field-group.is-error .field-input")?.focus();
+      return;
+    }
+    refreshTotal();
+    emailBtn.disabled = true;
+    emailBtn.textContent = "Opening Mail…";
+    const message = buildMessage(new FormData(orderForm));
+    const subject = encodeURIComponent("🧀 New Cheese Bites Order");
+    const body = encodeURIComponent(message);
+    window.open(`mailto:${ORDER_EMAIL}?subject=${subject}&body=${body}`, "_self");
+    setTimeout(() => {
+      emailBtn.disabled = false;
+      emailBtn.innerHTML =
+        `<svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">` +
+        `<path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>` +
+        `</svg> Send Order via Email`;
+      showConfirmation("email");
     }, 1200);
   });
 
