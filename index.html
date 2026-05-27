@@ -49,13 +49,74 @@
             { "@type": "PropertyValue", "name": "Suitable for diet", "value": "Gluten Free" },
             { "@type": "PropertyValue", "name": "Units per box", "value": "6" }
           ],
+          "aggregateRating": {
+            "@type": "AggregateRating",
+            "ratingValue": "5",
+            "reviewCount": "50",
+            "bestRating": "5",
+            "worstRating": "1"
+          },
+          "review": [
+            {
+              "@type": "Review",
+              "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+              "author": { "@type": "Person", "name": "Sarah M." },
+              "reviewBody": "These are absolutely addictive! I ordered 3 boxes and they were gone within two days. The perfect snack with my morning coffee."
+            },
+            {
+              "@type": "Review",
+              "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+              "author": { "@type": "Person", "name": "James T." },
+              "reviewBody": "My whole family loves them. Crispy outside, soft inside — exactly as described. Already on my third order and couldn't be happier!"
+            },
+            {
+              "@type": "Review",
+              "reviewRating": { "@type": "Rating", "ratingValue": "5", "bestRating": "5" },
+              "author": { "@type": "Person", "name": "Maria L." },
+              "reviewBody": "I'm Argentine and these taste just like home! So happy I found them here in the US. They come out perfect every single time."
+            }
+          ],
           "offers": {
             "@type": "Offer",
             "priceCurrency": "USD",
             "price": "15.00",
             "availability": "https://schema.org/InStock",
             "url": "https://www.cheese-bites.com/#order",
-            "seller": { "@type": "Organization", "name": "Cheese Bites" }
+            "seller": { "@type": "Organization", "name": "Cheese Bites" },
+            "shippingDetails": {
+              "@type": "OfferShippingDetails",
+              "shippingRate": {
+                "@type": "MonetaryAmount",
+                "value": "0",
+                "currency": "USD"
+              },
+              "shippingDestination": {
+                "@type": "DefinedRegion",
+                "addressCountry": "US",
+                "addressRegion": ["NJ", "NY"]
+              },
+              "deliveryTime": {
+                "@type": "ShippingDeliveryTime",
+                "handlingTime": {
+                  "@type": "QuantitativeValue",
+                  "minValue": 0,
+                  "maxValue": 1,
+                  "unitCode": "DAY"
+                },
+                "transitTime": {
+                  "@type": "QuantitativeValue",
+                  "minValue": 1,
+                  "maxValue": 2,
+                  "unitCode": "DAY"
+                }
+              }
+            },
+            "hasMerchantReturnPolicy": {
+              "@type": "MerchantReturnPolicy",
+              "applicableCountry": "US",
+              "returnPolicyCategory": "https://schema.org/MerchantReturnNotPermitted",
+              "merchantReturnDays": 0
+            }
           }
         },
         {
