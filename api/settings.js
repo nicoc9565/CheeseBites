@@ -20,7 +20,9 @@ async function getSettings() {
     if (blobs.length === 0) return { ...DEFAULTS, promo: { ...DEFAULTS.promo } };
     // Sort descending by uploadedAt → always read the freshest file
     blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
-    const res = await fetch(blobs[0].url);
+    // Use downloadUrl (not url) — bypasses Vercel Blob CDN cache entirely
+    const freshUrl = blobs[0].downloadUrl || blobs[0].url;
+    const res = await fetch(freshUrl, { cache: "no-store" });
     const data = await res.json();
     return {
       ...DEFAULTS,
