@@ -38,8 +38,8 @@ function checkAuth(req) {
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
-    // Short cache — settings change infrequently but need to be fresh after admin edits
-    res.setHeader("Cache-Control", "s-maxage=5, stale-while-revalidate=10");
+    // No cache — settings must always be fresh so admin changes apply immediately
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
     const settings = await getSettings();
     return res.status(200).json(settings);
   }
