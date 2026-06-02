@@ -320,7 +320,7 @@
 
   // === ACTIVE NAV ===
   const navLinks = document.querySelectorAll('nav a[href^="#"]');
-  const sections = ["top", "instructions", "order", "reviews", "faq", "gallery"]
+  const sections = ["top", "instructions", "order", "faq", "gallery"]
     .map((id) => document.getElementById(id))
     .filter(Boolean);
   const setActive = (id) => {
