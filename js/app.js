@@ -1,4 +1,6 @@
 (() => {
+  document.body.classList.remove("no-js");
+
   let UNIT_PRICE = 15;
   let PROMO = null;
   const { calc, fmt, isUsable, autoLabel, autoDescription } = window.CBPromo;
@@ -6,6 +8,22 @@
   let SMS_NUMBER = "+19083464064";
   let WA_NUMBER = "19083464064";
   let ORDER_EMAIL = "cheesebitesllc@gmail.com";
+
+  const $ = (id) => document.getElementById(id);
+  const show = (el, on) => { if (el) el.hidden = !on; };
+  const isAndroid = /Android/i.test(navigator.userAgent);
+  const prefersReduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const qtyEl = $("qtyInput");
+  const orderForm = $("orderForm");
+  const submitBtn = $("btnWhatsApp");
+  const smsBtn = $("btnSMS");
+  const emailBtn = $("btnEmail");
+  const igBanner = $("igBanner");
+  const header = $("mainHeader");
+  const orderConfirmation = $("orderConfirmation");
+
+  if ($("year")) $("year").textContent = new Date().getFullYear();
 
   // Anota que alguien tocó "enviar pedido" (para las estadísticas del panel)
   const trackOrder = (channel, data) => {
@@ -18,180 +36,132 @@
       }
     } catch {}
   };
-  const isAndroid = /Android/i.test(navigator.userAgent);
-  const prefersReduced = window.matchMedia(
-    "(prefers-reduced-motion: reduce)",
-  ).matches;
 
-  const qtyEl = document.getElementById("qtyInput");
-  const totalEl = document.getElementById("priceTotal");
-  const yearEl = document.getElementById("year");
-  const orderForm = document.getElementById("orderForm");
-  const submitBtn = document.getElementById("btnWhatsApp");
-  const smsBtn = document.getElementById("btnSMS");
-  const emailBtn = document.getElementById("btnEmail");
-  const igBanner = document.getElementById("igBanner");
-  const mainHeader = document.getElementById("mainHeader");
-  const menuBtn = document.getElementById("menuBtn");
-  const mobileMenu = document.getElementById("mobileMenu");
-  const orderConfirmation = document.getElementById("orderConfirmation");
-  const btnNewOrder = document.getElementById("btnNewOrder");
+  // === BARRA DE ARRIBA: se vuelve translúcida al bajar ===
+  const onScroll = () => header?.classList.toggle("solid", window.scrollY > 20);
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
 
-  if (yearEl) yearEl.textContent = new Date().getFullYear();
-
-  // === INSTAGRAM IAB ===
-  const isInstagramIAB = /Instagram/.test(navigator.userAgent);
-  if (isInstagramIAB && igBanner) {
-    igBanner.classList.remove("hidden");
-    if (mainHeader) mainHeader.style.top = igBanner.offsetHeight + 16 + "px";
-
-    // SMS/iMessage doesn't work in Instagram's browser — hide it,
-    // promote WhatsApp as primary, and show Email as a second option
-    if (smsBtn) smsBtn.classList.add("hidden");
-    if (submitBtn) {
-      submitBtn.className =
-        "w-full btn-lift rounded-2xl bg-[#25D366] px-5 py-5 text-base font-black uppercase tracking-widest text-white hover:brightness-95 shadow-xl shadow-[#25D366]/30 flex items-center justify-center gap-3";
-    }
-    if (emailBtn) emailBtn.classList.remove("hidden");
+  // === NAVEGADOR DE INSTAGRAM ===
+  // Ahí no anda iMessage: se esconde ese botón, WhatsApp pasa a ser el principal y aparece el mail
+  const placeHeader = () => {
+    if (header) header.style.top = igBanner && !igBanner.hidden ? igBanner.offsetHeight + "px" : "0";
+  };
+  if (/Instagram/.test(navigator.userAgent) && igBanner) {
+    igBanner.hidden = false;
+    show(smsBtn, false);
+    submitBtn?.classList.replace("btn-white", "btn-wa");
+    show(emailBtn, true);
+    placeHeader();
   }
-  document.getElementById("igBannerClose")?.addEventListener("click", () => {
-    igBanner?.classList.add("hidden");
-    if (mainHeader) mainHeader.style.top = "1rem";
+  $("igBannerClose")?.addEventListener("click", () => {
+    igBanner.hidden = true;
+    placeHeader();
   });
 
-  // === MOBILE MENU ===
-  menuBtn?.addEventListener("click", () => {
-    const isOpen = !mobileMenu?.classList.contains("hidden");
-    mobileMenu?.classList.toggle("hidden", isOpen);
-    menuBtn.setAttribute("aria-expanded", String(!isOpen));
-  });
-  mobileMenu?.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      mobileMenu.classList.add("hidden");
-      menuBtn?.setAttribute("aria-expanded", "false");
-    });
-  });
-
-  // === QUANTITY ===
+  // === CANTIDAD DE CAJAS ===
   const clampQty = (v) => {
     const n = Number(v);
     if (!Number.isFinite(n)) return 1;
     return Math.max(1, Math.floor(n));
   };
-  const priceOriginal = document.getElementById("priceOriginal");
-  const priceOriginalValue = document.getElementById("priceOriginalValue");
-  const promoSavings = document.getElementById("promoSavings");
-  const promoHint = document.getElementById("promoHint");
+
+  // Una bolita por chipa, con un espacio entre caja y caja (hasta 10 cajas dibujadas)
+  const drawBalls = (q) => {
+    const box = $("balls");
+    if (!box) return;
+    const boxes = Math.min(q, 10);
+    const balls = [];
+    for (let b = 0; b < boxes; b++) {
+      if (b) { const gap = document.createElement("i"); gap.className = "gap"; balls.push(gap); }
+      for (let k = 0; k < 6; k++) {
+        const i = document.createElement("i");
+        i.style.animationDelay = k * 30 + "ms";
+        balls.push(i);
+      }
+    }
+    box.replaceChildren(...balls);
+  };
 
   const refreshTotal = () => {
-    if (!qtyEl || !totalEl) return;
+    if (!qtyEl) return;
     const q = clampQty(qtyEl.value || 1);
     qtyEl.value = String(q);
+    if ($("qtyShow")) $("qtyShow").textContent = q;
+    if ($("units")) $("units").textContent = `${q * 6} cheese bites`;
+    drawBalls(q);
     const r = calc(q, UNIT_PRICE, PROMO);
-    totalEl.textContent = fmt(r.total);
+    if ($("priceTotal")) $("priceTotal").textContent = fmt(r.total);
     // Con promo aplicada: precio tachado + "You save $X"
-    priceOriginal?.classList.toggle("hidden", !r.applied);
-    if (priceOriginalValue) priceOriginalValue.textContent = fmt(r.subtotal);
-    promoSavings?.classList.toggle("hidden", !r.applied);
-    if (promoSavings) promoSavings.textContent = `🎉 You save $${fmt(r.savings)}`;
+    show($("priceOriginal"), r.applied);
+    if ($("priceOriginalValue")) $("priceOriginalValue").textContent = fmt(r.subtotal);
+    show($("promoSavings"), r.applied);
+    if ($("promoSavings")) $("promoSavings").textContent = `You save $${fmt(r.savings)}`;
     // Sin promo aplicada todavía: "Add 1 more box to get the 2x1 Deal!"
-    promoHint?.classList.toggle("hidden", !r.hint);
-    if (promoHint) promoHint.textContent = r.hint;
+    show($("promoHint"), !!r.hint);
+    if ($("promoHint")) $("promoHint").textContent = r.hint;
   };
-  window.stepQty = (delta) => {
-    if (!qtyEl) return;
-    const q = clampQty(qtyEl.value || 1) + Number(delta || 0);
-    qtyEl.value = String(clampQty(q));
-    refreshTotal();
-  };
-  qtyEl?.addEventListener("input", refreshTotal);
+  document.querySelectorAll("[data-step]").forEach((b) =>
+    b.addEventListener("click", () => {
+      qtyEl.value = String(clampQty(clampQty(qtyEl.value) + Number(b.dataset.step)));
+      refreshTotal();
+    }),
+  );
   refreshTotal();
 
-  // === FORM VALIDATION ===
+  // === VALIDACIÓN DEL FORMULARIO ===
   const VALIDATORS = {
-    fieldName: {
-      check: (v) => v.trim().length >= 2,
-      msg: "Please enter your full name",
-    },
-    fieldPhone: {
-      check: (v) => /^\+?[\d\s\-().]{7,}$/.test(v.trim()),
-      msg: "Please enter a valid phone number",
-    },
-    fieldEmail: {
-      check: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()),
-      msg: "Please enter a valid email address",
-    },
-    fieldAddress: {
-      check: (v) => v.trim().length >= 5,
-      msg: "Please enter your delivery address",
-    },
+    fieldName: { check: (v) => v.trim().length >= 2, msg: "Please enter your full name" },
+    fieldPhone: { check: (v) => /^\+?[\d\s\-().]{7,}$/.test(v.trim()), msg: "Please enter a valid phone number" },
+    fieldEmail: { check: (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()), msg: "Please enter a valid email address" },
+    fieldAddress: { check: (v) => v.trim().length >= 5, msg: "Please enter your delivery address" },
   };
-
   const getGroup = (el) => el.closest(".field-group");
-
   const validateField = (el) => {
     const rule = VALIDATORS[el.id];
     if (!rule) return true;
     const valid = rule.check(el.value);
-    const group = getGroup(el);
-    const errEl = document.getElementById(el.id + "Error");
-    group?.classList.toggle("is-valid", valid);
-    group?.classList.toggle("is-error", !valid);
+    getGroup(el)?.classList.toggle("is-error", !valid);
+    const errEl = $(el.id + "Error");
     if (errEl) errEl.textContent = valid ? "" : rule.msg;
     return valid;
   };
-
   const validateAll = () =>
-    Object.keys(VALIDATORS)
-      .map((id) => {
-        const el = document.getElementById(id);
-        return el ? validateField(el) : true;
-      })
-      .every(Boolean);
-
+    Object.keys(VALIDATORS).map((id) => ($(id) ? validateField($(id)) : true)).every(Boolean);
   Object.keys(VALIDATORS).forEach((id) => {
-    const el = document.getElementById(id);
+    const el = $(id);
     el?.addEventListener("blur", () => validateField(el));
     el?.addEventListener("input", () => {
       if (getGroup(el)?.classList.contains("is-error")) validateField(el);
     });
   });
+  const focusFirstError = () => document.querySelector(".field-group.is-error input")?.focus();
 
-  // === CONFIRMATION OVERLAY ===
+  // === CONFIRMACIÓN ===
   const CONFIRM_MSGS = {
     sms: "Your Messages app should have opened — just hit <strong>Send</strong> to complete your order. We'll confirm your delivery shortly!",
     whatsapp: "WhatsApp should have opened with your order — just hit <strong>Send</strong> and we'll confirm your delivery shortly!",
     email: "Your mail app should have opened with your order — just hit <strong>Send</strong> and we'll confirm your delivery shortly!",
   };
-  const showConfirmation = (channel = "sms") => {
+  const showConfirmation = (channel) => {
     if (!orderConfirmation) return;
-    const msgEl = document.getElementById("orderConfirmMsg");
-    if (msgEl) msgEl.innerHTML = CONFIRM_MSGS[channel] || CONFIRM_MSGS.sms;
-    orderConfirmation.classList.remove("hidden");
-    orderConfirmation
-      .closest("section")
-      ?.scrollIntoView({ behavior: "smooth", block: "start" });
+    $("orderConfirmMsg").innerHTML = CONFIRM_MSGS[channel] || CONFIRM_MSGS.sms;
+    orderConfirmation.hidden = false;
+    $("order")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
-
-  const resetValidation = () => {
-    Object.keys(VALIDATORS).forEach((id) => {
-      const el = document.getElementById(id);
-      const group = el ? getGroup(el) : null;
-      group?.classList.remove("is-valid", "is-error");
-      const errEl = document.getElementById(id + "Error");
-      if (errEl) errEl.textContent = "";
-    });
-  };
-
-  btnNewOrder?.addEventListener("click", () => {
-    orderConfirmation?.classList.add("hidden");
+  $("btnNewOrder")?.addEventListener("click", () => {
+    orderConfirmation.hidden = true;
     orderForm?.reset();
+    qtyEl.value = "1";
     refreshTotal();
-    resetValidation();
-    document.getElementById("order")?.scrollIntoView({ behavior: "smooth" });
+    Object.keys(VALIDATORS).forEach((id) => {
+      $(id) && getGroup($(id))?.classList.remove("is-error");
+      if ($(id + "Error")) $(id + "Error").textContent = "";
+    });
+    $("order")?.scrollIntoView({ behavior: "smooth" });
   });
 
-  // === ORDER MESSAGE ===
+  // === MENSAJE DEL PEDIDO ===
   const buildMessage = (data) => {
     const qty = clampQty(data.get("quantity"));
     const r = calc(qty, UNIT_PRICE, PROMO);
@@ -211,215 +181,153 @@
     );
   };
 
-  // === iMESSAGE / SMS (primary) ===
-  smsBtn?.addEventListener("click", () => {
-    if (!validateAll()) {
-      document.querySelector(".field-group.is-error .field-input")?.focus();
-      return;
-    }
+  // Valida, cambia el texto del botón mientras abre la app y después muestra la confirmación
+  const send = (btn, channel, busyText, open) => {
+    if (!validateAll()) return focusFirstError();
     refreshTotal();
-    smsBtn.disabled = true;
-    smsBtn.textContent = "Opening Messages...";
-    const formData = new FormData(orderForm);
-    trackOrder("sms", formData);
-    const message = buildMessage(formData);
-    // iPhone usa "&body=" y Android "?body="
-    const sep = isAndroid ? "?" : "&";
-    window.location.href = `sms:${SMS_NUMBER}${sep}body=${encodeURIComponent(message)}`;
+    const label = btn.querySelector("span");
+    const original = label.textContent;
+    btn.disabled = true;
+    label.textContent = busyText;
+    const data = new FormData(orderForm);
+    trackOrder(channel, data);
+    open(buildMessage(data));
     setTimeout(() => {
-      smsBtn.disabled = false;
-      smsBtn.innerHTML =
-        `<svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" aria-hidden="true">` +
-        `<path stroke-linecap="round" stroke-linejoin="round" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>` +
-        ` Send Order via iMessage / SMS`;
-      showConfirmation("sms");
+      btn.disabled = false;
+      label.textContent = original;
+      showConfirmation(channel);
     }, 1200);
-  });
+  };
 
-  // === WHATSAPP (secondary) ===
+  // iMessage / SMS (principal). iPhone usa "&body=" y Android "?body="
+  smsBtn?.addEventListener("click", () =>
+    send(smsBtn, "sms", "Opening Messages...", (msg) => {
+      window.location.href = `sms:${SMS_NUMBER}${isAndroid ? "?" : "&"}body=${encodeURIComponent(msg)}`;
+    }),
+  );
+
+  // WhatsApp (es el "submit" del formulario, así Enter también lo usa)
   orderForm?.addEventListener("submit", (e) => {
     e.preventDefault();
-    if (!validateAll()) {
-      document.querySelector(".field-group.is-error .field-input")?.focus();
-      return;
-    }
-    refreshTotal();
-    if (submitBtn) {
-      submitBtn.disabled = true;
-      submitBtn.textContent = "Opening WhatsApp...";
-    }
-    const formData = new FormData(orderForm);
-    trackOrder("whatsapp", formData);
-    const message = buildMessage(formData);
-    window.open(
-      `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`,
-      "_blank",
-    );
-    setTimeout(() => {
-      if (submitBtn) {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML =
-          `<svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">` +
-          `<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>` +
-          `</svg> Send via WhatsApp`;
-      }
-      showConfirmation("whatsapp");
-    }, 1200);
+    send(submitBtn, "whatsapp", "Opening WhatsApp...", (msg) => {
+      window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, "_blank");
+    });
   });
 
-  // === EMAIL (Instagram IAB fallback) ===
-  emailBtn?.addEventListener("click", () => {
-    if (!validateAll()) {
-      document.querySelector(".field-group.is-error .field-input")?.focus();
-      return;
-    }
-    refreshTotal();
-    emailBtn.disabled = true;
-    emailBtn.textContent = "Opening Mail…";
-    const formData = new FormData(orderForm);
-    trackOrder("email", formData);
-    const message = buildMessage(formData);
-    const subject = encodeURIComponent("🧀 New Cheese Bites Order");
-    const body = encodeURIComponent(message);
-    window.open(`mailto:${ORDER_EMAIL}?subject=${subject}&body=${body}`, "_self");
-    setTimeout(() => {
-      emailBtn.disabled = false;
-      emailBtn.innerHTML =
-        `<svg class="h-4 w-4 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">` +
-        `<path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>` +
-        `</svg> Send Order via Email`;
-      showConfirmation("email");
-    }, 1200);
-  });
+  // Mail (solo en el navegador de Instagram)
+  emailBtn?.addEventListener("click", () =>
+    send(emailBtn, "email", "Opening Mail…", (msg) => {
+      const subject = encodeURIComponent("🧀 New Cheese Bites Order");
+      window.open(`mailto:${ORDER_EMAIL}?subject=${subject}&body=${encodeURIComponent(msg)}`, "_self");
+    }),
+  );
 
-  // === FLOATING ORDER BUTTON (mobile) ===
-  const floatingOrder = document.getElementById("floatingOrder");
-  if (floatingOrder) {
-    const heroSection = document.getElementById("top");
-    const orderSection = document.getElementById("order");
-    const showFloat = () => {
-      floatingOrder.classList.remove("translate-y-24", "opacity-0", "pointer-events-none");
-      floatingOrder.classList.add("translate-y-0", "opacity-100");
-      floatingOrder.removeAttribute("aria-hidden");
-    };
-    const hideFloat = () => {
-      floatingOrder.classList.add("translate-y-24", "opacity-0", "pointer-events-none");
-      floatingOrder.classList.remove("translate-y-0", "opacity-100");
-      floatingOrder.setAttribute("aria-hidden", "true");
-    };
-    const floatObserver = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((en) => {
-          if (en.target === heroSection && !en.isIntersecting) showFloat();
-          if (en.target === heroSection && en.isIntersecting) hideFloat();
-          if (en.target === orderSection && en.isIntersecting) hideFloat();
-          if (en.target === orderSection && !en.isIntersecting && window.scrollY > orderSection.offsetTop) showFloat();
-        });
-      },
-      { threshold: 0.2 },
-    );
-    if (heroSection) floatObserver.observe(heroSection);
-    if (orderSection) floatObserver.observe(orderSection);
-  }
+  // === HORNO / AIR FRYER ===
+  document.querySelectorAll(".mode").forEach((b) =>
+    b.addEventListener("click", () => {
+      document.querySelectorAll(".mode").forEach((x) => x.setAttribute("aria-pressed", String(x === b)));
+      $("fT").textContent = b.dataset.t;
+      $("fM").textContent = b.dataset.m;
+      $("fN").textContent = b.dataset.n;
+    }),
+  );
 
-  // === FAQ ACCORDION ===
-  document.getElementById("faqList")?.addEventListener("click", (e) => {
-    const btn = e.target.closest(".faq-question");
-    if (!btn) return;
-    {
-      const item = btn.closest(".faq-item");
-      const isOpen = btn.getAttribute("aria-expanded") === "true";
+  // === PREGUNTAS: una abierta a la vez ===
+  const faqList = $("faqList");
+  faqList?.addEventListener(
+    "toggle",
+    (e) => {
+      if (!e.target.open) return;
+      faqList.querySelectorAll("details[open]").forEach((d) => { if (d !== e.target) d.open = false; });
+    },
+    true,
+  );
 
-      document.querySelectorAll(".faq-item").forEach((other) => {
-        other.querySelector(".faq-question")?.setAttribute("aria-expanded", "false");
-        other.querySelector(".faq-answer")?.classList.remove("is-open");
-        other.querySelector(".faq-icon")?.classList.remove("rotate-180");
-      });
-
-      if (!isOpen) {
-        btn.setAttribute("aria-expanded", "true");
-        item?.querySelector(".faq-answer")?.classList.add("is-open");
-        item?.querySelector(".faq-icon")?.classList.add("rotate-180");
-      }
-    }
-  });
-
-  // === REVEAL ANIMATIONS ===
-  const reveals = document.querySelectorAll(".reveal");
-  if (!prefersReduced && reveals.length) {
+  // === ENTRADAS AL HACER SCROLL ===
+  const reveals = document.querySelectorAll(".rv");
+  if (!prefersReduced && "IntersectionObserver" in window) {
     const io = new IntersectionObserver(
-      (entries) => {
+      (entries) =>
         entries.forEach((en) => {
-          if (en.isIntersecting) {
-            en.target.classList.add("is-in");
-            io.unobserve(en.target);
-          }
-        });
-      },
-      { threshold: 0.1 },
+          if (!en.isIntersecting) return;
+          const sib = [...en.target.parentElement.children].filter((x) => x.classList.contains("rv"));
+          en.target.style.transitionDelay = Math.max(0, sib.indexOf(en.target)) * 80 + "ms";
+          en.target.classList.add("in");
+          io.unobserve(en.target);
+        }),
+      { threshold: 0.12 },
     );
-    reveals.forEach((r) => io.observe(r));
+    reveals.forEach((el) => io.observe(el));
   } else {
-    reveals.forEach((r) => r.classList.add("is-in"));
+    reveals.forEach((el) => el.classList.add("in"));
   }
 
-  // === ACTIVE NAV ===
-  const navLinks = document.querySelectorAll('nav a[href^="#"]');
-  const sections = ["top", "instructions", "order", "faq", "gallery"]
-    .map((id) => document.getElementById(id))
-    .filter(Boolean);
-  const setActive = (id) => {
-    navLinks.forEach((a) =>
-      a.classList.toggle("is-active", a.getAttribute("href") === `#${id}`),
-    );
+  // === GALERÍA: las fotos se pasan solas; tocar la foto o un circulito cambia ===
+  const frame = $("frame");
+  const thumbs = $("thumbs");
+  let photos = [];
+  let cur = 0;
+  let timer;
+  const showPhoto = (i, user) => {
+    const ims = frame.querySelectorAll("img");
+    if (!ims.length) return;
+    ims[cur]?.classList.remove("on");
+    thumbs.children[cur]?.removeAttribute("aria-current");
+    cur = i;
+    ims[cur].classList.add("on");
+    thumbs.children[cur]?.setAttribute("aria-current", "true");
+    if (user) restart();
   };
-  if (!prefersReduced && sections.length) {
-    const nio = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((en) => {
-          if (en.isIntersecting) setActive(en.target.id);
-        });
-      },
-      { threshold: 0.4 },
-    );
-    sections.forEach((s) => nio.observe(s));
-  }
+  const restart = () => {
+    clearInterval(timer);
+    if (!prefersReduced && photos.length > 1) timer = setInterval(() => showPhoto((cur + 1) % photos.length), 4200);
+  };
+  const renderGallery = (list) => {
+    if (!frame || !thumbs || !list.length) return;
+    clearInterval(timer);
+    photos = list;
+    cur = 0;
+    frame.replaceChildren();
+    thumbs.replaceChildren();
+    photos.forEach((src, i) => {
+      const im = new Image();
+      im.src = src;
+      im.alt = "Cheese Bites";
+      im.decoding = "async";
+      if (i) im.loading = "lazy";
+      frame.append(im);
+      const t = document.createElement("button");
+      t.type = "button";
+      t.setAttribute("aria-label", `Show photo ${i + 1}`);
+      const ti = new Image();
+      ti.src = src;
+      ti.alt = "";
+      ti.loading = "lazy";
+      t.append(ti);
+      t.addEventListener("click", () => showPhoto(i, true));
+      thumbs.append(t);
+    });
+    showPhoto(0);
+    restart();
+  };
+  frame?.parentElement.addEventListener("click", () => photos.length && showPhoto((cur + 1) % photos.length, true));
+  document.addEventListener("visibilitychange", () => (document.hidden ? clearInterval(timer) : restart()));
+  renderGallery(["./img/IMG_6309.webp", "./img/IMG_6312.webp"]);
+  fetch("/api/gallery")
+    .then((r) => (r.ok ? r.json() : null))
+    .then((data) => {
+      const urls = (data?.images || []).map((img) => img.url).filter(Boolean);
+      if (urls.length) renderGallery(urls);
+    })
+    .catch(() => {});
 
-  // === GLASS NAVBAR ===
-  const navPill = document.getElementById("navPill");
-  if (navPill) {
-    const updateGlass = () => {
-      navPill.classList.toggle("scrolled", window.scrollY > 60);
-    };
-    window.addEventListener("scroll", updateGlass, { passive: true });
-    updateGlass();
-  }
-
-  // === PARALLAX ===
-  const circles = document.querySelector(".global-circles");
-  if (!prefersReduced && circles) {
-    let rafId = null;
-    window.addEventListener(
-      "scroll",
-      () => {
-        if (rafId) return;
-        rafId = requestAnimationFrame(() => {
-          circles.style.transform = `translate3d(0, ${-window.scrollY * 0.1}px, 0)`;
-          rafId = null;
-        });
-      },
-      { passive: true },
-    );
-  }
-
-  // === DYNAMIC SETTINGS (price, promo, images) ===
-  const revealPrices = () => {
+  // === CONFIGURACIÓN DEL PANEL (precio, promo, fotos, preguntas, contacto) ===
+  const revealPrices = () =>
     document.querySelectorAll(".js-price-loading").forEach((el) => el.classList.remove("js-price-loading"));
-  };
 
   // Foto del panel si hay; si no (o si falla), la que viene con la web
   const setImage = (id, url) => {
-    const img = document.getElementById(id);
+    const img = $(id);
     if (!img) return;
     const fallback = img.dataset.fallback;
     if (fallback) img.onerror = () => { img.onerror = null; img.src = fallback; };
@@ -437,12 +345,10 @@
   const faqAnswerText = (a) => String(a).replace(/\{price\}/g, fmt(UNIT_PRICE));
   const fillAnswer = (p, text) => {
     p.replaceChildren();
-    const parts = text.split(/([^\s@<>"]+@[^\s@<>"]+\.[a-z]{2,})/i);
-    parts.forEach((part, i) => {
+    text.split(/([^\s@<>"]+@[^\s@<>"]+\.[a-z]{2,})/i).forEach((part, i) => {
       if (i % 2 === 1) {
         const link = document.createElement("a");
         link.href = `mailto:${part}`;
-        link.className = "text-[#75aadb] font-semibold underline";
         link.textContent = part;
         p.append(link);
       } else if (part) {
@@ -452,19 +358,16 @@
   };
 
   const renderFaq = (faq) => {
-    const list = document.getElementById("faqList");
-    const template = list?.querySelector(".faq-item");
-    if (!list || !template || !Array.isArray(faq) || faq.length === 0) return;
-    const items = faq.map(({ q, a }) => {
+    const template = faqList?.querySelector("details");
+    if (!faqList || !template || !Array.isArray(faq) || faq.length === 0) return;
+    const items = faq.map(({ q, a }, i) => {
       const item = template.cloneNode(true);
-      item.querySelector(".faq-question")?.setAttribute("aria-expanded", "false");
-      item.querySelector(".faq-answer")?.classList.remove("is-open");
-      item.querySelector(".faq-icon")?.classList.remove("rotate-180");
-      item.querySelector(".faq-question span").textContent = q;
-      fillAnswer(item.querySelector(".faq-answer p"), faqAnswerText(a));
+      item.open = i === 0;
+      item.querySelector("summary span").textContent = q;
+      fillAnswer(item.querySelector("p"), faqAnswerText(a));
       return item;
     });
-    list.replaceChildren(...items);
+    faqList.replaceChildren(...items);
   };
 
   // Mantiene lo que lee Google (precio y preguntas) igual a lo que se ve en la web
@@ -502,59 +405,54 @@
     if (c.orderPhone) {
       SMS_NUMBER = c.orderPhone;
       WA_NUMBER = c.orderPhone.replace(/\D/g, "");
+      const faqPhone = $("faqPhone");
+      if (faqPhone) {
+        faqPhone.href = `tel:${c.orderPhone}`;
+        faqPhone.textContent = prettyPhone(c.orderPhone);
+      }
     }
     if (c.email) {
       ORDER_EMAIL = c.email;
-      for (const id of ["orderEmailLink", "footerEmailLink"]) {
-        const el = document.getElementById(id);
-        if (el) el.href = `mailto:${c.email}`;
-      }
-      const orderEmail = document.getElementById("orderEmailLink");
-      if (orderEmail) orderEmail.textContent = c.email;
-      const footerEmail = document.getElementById("footerEmailText");
-      if (footerEmail) footerEmail.textContent = c.email;
+      for (const id of ["orderEmailLink", "footerEmailLink"]) if ($(id)) $(id).href = `mailto:${c.email}`;
+      if ($("orderEmailLink")) $("orderEmailLink").textContent = c.email;
+      if ($("footerEmailText")) $("footerEmailText").textContent = c.email;
     }
-    const box = document.getElementById("footerPhones");
+    const box = $("footerPhones");
     const tpl = box?.querySelector("a");
     if (box && tpl && Array.isArray(c.phones) && c.phones.length) {
-      box.replaceChildren(
-        ...c.phones.map((ph, i) => {
-          const a = tpl.cloneNode(true);
-          a.href = `tel:${ph}`;
-          a.textContent = prettyPhone(ph);
-          a.classList.toggle("mt-0.5", i > 0);
-          return a;
-        }),
-      );
+      const nodes = [];
+      c.phones.forEach((ph, i) => {
+        if (i) nodes.push(document.createElement("br"));
+        const a = tpl.cloneNode(true);
+        a.href = `tel:${ph}`;
+        a.textContent = prettyPhone(ph);
+        nodes.push(a);
+      });
+      box.replaceChildren(...nodes);
     }
   };
 
   // Pedidos pausados: se oculta el formulario y se muestra el mensaje del dueño
   const applyOrdersPaused = (orders) => {
     const paused = !!orders?.paused;
-    document.getElementById("ordersPaused")?.classList.toggle("hidden", !paused);
-    orderForm?.classList.toggle("hidden", paused);
-    const msg = document.getElementById("ordersPausedMsg");
-    if (msg) {
-      msg.textContent =
+    show($("ordersPaused"), paused);
+    show($("orderCoupon"), !paused);
+    if ($("ordersPausedMsg")) {
+      $("ordersPausedMsg").textContent =
         orders?.message || "We're not taking orders right now. Follow us on Instagram to know when we're back!";
     }
   };
 
   const applyAnnouncement = (ann) => {
-    const bar = document.getElementById("announceBar");
-    if (!bar) return;
-    const show = !!(ann?.active && ann.text);
-    bar.classList.toggle("hidden", !show);
-    if (show) document.getElementById("announceText").textContent = ann.text;
+    const on = !!(ann?.active && ann.text);
+    show($("announceBar"), on);
+    if (on) $("announceText").textContent = ann.text;
   };
 
   const applySettings = (s) => {
     if (s && s.price > 0) {
       UNIT_PRICE = Number(s.price);
-      document.querySelectorAll(".js-price").forEach((el) => {
-        el.textContent = fmt(UNIT_PRICE);
-      });
+      document.querySelectorAll(".js-price").forEach((el) => { el.textContent = fmt(UNIT_PRICE); });
     }
     if (s) {
       renderFaq(s.faq);
@@ -569,13 +467,10 @@
 
     // Promo: solo se muestra si está activa, dentro de sus fechas y se puede calcular
     PROMO = s && isUsable(s.promo, UNIT_PRICE) ? s.promo : null;
-    const banner = document.getElementById("promoBanner");
-    if (banner) {
-      banner.classList.toggle("hidden", !PROMO);
-      if (PROMO) {
-        document.getElementById("promoLabel").textContent = PROMO.label || autoLabel(PROMO);
-        document.getElementById("promoDesc").textContent = PROMO.description || autoDescription(PROMO);
-      }
+    show($("promoBanner"), !!PROMO);
+    if (PROMO) {
+      $("promoLabel").textContent = PROMO.label || autoLabel(PROMO);
+      $("promoDesc").textContent = PROMO.description || autoDescription(PROMO);
     }
 
     refreshTotal();
