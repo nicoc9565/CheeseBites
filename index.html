@@ -233,6 +233,10 @@
               </button>
             </div>
           </div>
+          <!-- Anuncio que el dueño escribe desde el panel -->
+          <div id="announceBar" class="hidden mt-2 mx-auto w-fit max-w-full rounded-full bg-[#0b0f19] text-white text-xs sm:text-sm font-bold px-4 py-2 text-center shadow-lg">
+            📣 <span id="announceText"></span>
+          </div>
         </div>
       </header>
 
@@ -749,12 +753,19 @@
                 <!-- Contact -->
                 <div class="mt-auto pt-5 border-t border-white/20">
                   <p class="text-[10px] font-extrabold text-white/50 tracking-widest uppercase mb-1">Questions?</p>
-                  <a href="mailto:cheesebitesllc@gmail.com" class="text-sm font-extrabold hover:text-[#ffca44] transition-colors">cheesebitesllc@gmail.com</a>
+                  <a id="orderEmailLink" href="mailto:cheesebitesllc@gmail.com" class="text-sm font-extrabold hover:text-[#ffca44] transition-colors">cheesebitesllc@gmail.com</a>
                 </div>
               </div>
             </div>
 
             <div class="lg:w-3/5 p-8 sm:p-10 lg:p-12 bg-[#f8fafc]">
+              <!-- Se muestra cuando el dueño pausa los pedidos desde el panel -->
+              <div id="ordersPaused" class="hidden text-center py-10">
+                <div class="text-5xl mb-4">⏸️</div>
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-[#0b0f19] font-display mb-3">We're taking a short break</h3>
+                <p id="ordersPausedMsg" class="text-black/60 font-medium max-w-sm mx-auto leading-relaxed"></p>
+                <a href="https://www.instagram.com/cheesebites.chipa/" target="_blank" rel="noopener noreferrer" class="btn-lift inline-block mt-6 rounded-full bg-[#0b0f19] text-white px-6 py-3 font-extrabold text-sm">Follow @cheesebites.chipa</a>
+              </div>
               <form id="orderForm" novalidate>
 
                 <!-- Name -->
@@ -1043,7 +1054,7 @@
             </p>
           </div>
 
-          <div class="reveal space-y-3">
+          <div id="faqList" class="reveal space-y-3">
 
             <div class="faq-item rounded-2xl bg-white border border-black/5 shadow-sm overflow-hidden">
               <button class="faq-question w-full text-left px-6 py-5 flex items-center justify-between gap-4 font-extrabold text-[#0b0f19] text-sm sm:text-base" aria-expanded="false">
@@ -1215,12 +1226,15 @@
                     >
                       Call or Text
                     </div>
-                    <a href="tel:+19083464064" class="block font-semibold text-sm hover:text-[#ffca44] transition-colors">(908) 346-4064</a>
-                    <a href="tel:+19734595443" class="block font-semibold text-sm mt-0.5 hover:text-[#ffca44] transition-colors">(973) 459-5443</a>
+                    <div id="footerPhones">
+                      <a href="tel:+19083464064" class="block font-semibold text-sm hover:text-[#ffca44] transition-colors">(908) 346-4064</a>
+                      <a href="tel:+19734595443" class="block font-semibold text-sm mt-0.5 hover:text-[#ffca44] transition-colors">(973) 459-5443</a>
+                    </div>
                   </div>
                 </div>
 
                 <a
+                  id="footerEmailLink"
                   href="mailto:cheesebitesllc@gmail.com"
                   class="group flex items-start gap-4 text-white hover:text-white transition-colors"
                 >
@@ -1235,7 +1249,7 @@
                     >
                       Email
                     </div>
-                    <div class="font-semibold text-sm">
+                    <div id="footerEmailText" class="font-semibold text-sm">
                       cheesebitesllc@gmail.com
                     </div>
                   </div>
@@ -1322,6 +1336,9 @@
       </footer>
     </div>
 
+    <!-- Vercel Web Analytics: cuenta visitas (se activa en el panel de Vercel) -->
+    <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+    <script defer src="/_vercel/insights/script.js"></script>
     <script src="./js/promo.js" defer></script>
     <script src="./js/app.js" defer></script>
   </body>

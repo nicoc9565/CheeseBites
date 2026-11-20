@@ -2,8 +2,22 @@
   let UNIT_PRICE = 15;
   let PROMO = null;
   const { calc, fmt, isUsable, autoLabel, autoDescription } = window.CBPromo;
-  const WA_NUMBER = "19083464064";
-  const SMS_NUMBER = "+19083464064";
+  // Contacto: vienen de la web y se reemplazan por lo que el dueño guarde en el panel
+  let SMS_NUMBER = "+19083464064";
+  let WA_NUMBER = "19083464064";
+  let ORDER_EMAIL = "cheesebitesllc@gmail.com";
+
+  // Anota que alguien tocó "enviar pedido" (para las estadísticas del panel)
+  const trackOrder = (channel, data) => {
+    try {
+      const qty = clampQty(data.get("quantity"));
+      const r = calc(qty, UNIT_PRICE, PROMO);
+      const payload = JSON.stringify({ channel, qty, total: r.total, promo: r.applied });
+      if (!navigator.sendBeacon?.("/api/track", payload)) {
+        fetch("/api/track", { method: "POST", body: payload, keepalive: true, headers: { "Content-Type": "application/json" } }).catch(() => {});
+      }
+    } catch {}
+  };
   const isAndroid = /Android/i.test(navigator.userAgent);
   const prefersReduced = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
@@ -206,7 +220,9 @@
     refreshTotal();
     smsBtn.disabled = true;
     smsBtn.textContent = "Opening Messages...";
-    const message = buildMessage(new FormData(orderForm));
+    const formData = new FormData(orderForm);
+    trackOrder("sms", formData);
+    const message = buildMessage(formData);
     // iPhone usa "&body=" y Android "?body="
     const sep = isAndroid ? "?" : "&";
     window.location.href = `sms:${SMS_NUMBER}${sep}body=${encodeURIComponent(message)}`;
@@ -232,7 +248,9 @@
       submitBtn.disabled = true;
       submitBtn.textContent = "Opening WhatsApp...";
     }
-    const message = buildMessage(new FormData(orderForm));
+    const formData = new FormData(orderForm);
+    trackOrder("whatsapp", formData);
+    const message = buildMessage(formData);
     window.open(
       `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(message)}`,
       "_blank",
@@ -250,7 +268,6 @@
   });
 
   // === EMAIL (Instagram IAB fallback) ===
-  const ORDER_EMAIL = "cheesebitesllc@gmail.com";
   emailBtn?.addEventListener("click", () => {
     if (!validateAll()) {
       document.querySelector(".field-group.is-error .field-input")?.focus();
@@ -259,7 +276,9 @@
     refreshTotal();
     emailBtn.disabled = true;
     emailBtn.textContent = "Opening Mail…";
-    const message = buildMessage(new FormData(orderForm));
+    const formData = new FormData(orderForm);
+    trackOrder("email", formData);
+    const message = buildMessage(formData);
     const subject = encodeURIComponent("🧀 New Cheese Bites Order");
     const body = encodeURIComponent(message);
     window.open(`mailto:${ORDER_EMAIL}?subject=${subject}&body=${body}`, "_self");
@@ -304,8 +323,10 @@
   }
 
   // === FAQ ACCORDION ===
-  document.querySelectorAll(".faq-question").forEach((btn) => {
-    btn.addEventListener("click", () => {
+  document.getElementById("faqList")?.addEventListener("click", (e) => {
+    const btn = e.target.closest(".faq-question");
+    if (!btn) return;
+    {
       const item = btn.closest(".faq-item");
       const isOpen = btn.getAttribute("aria-expanded") === "true";
 
@@ -320,7 +341,7 @@
         item?.querySelector(".faq-answer")?.classList.add("is-open");
         item?.querySelector(".faq-icon")?.classList.add("rotate-180");
       }
-    });
+    }
   });
 
   // === REVEAL ANIMATIONS ===
@@ -405,8 +426,49 @@
     img.src = url || fallback;
   };
 
-  // Mantiene el precio que lee Google igual al de la web
-  const updateSeoPrice = (price) => {
+  // "(908) 346-4064" a partir de "+19083464064"
+  const prettyPhone = (p) => {
+    const d = String(p).replace(/\D/g, "");
+    if (d.length === 11 && d.startsWith("1")) return `(${d.slice(1, 4)}) ${d.slice(4, 7)}-${d.slice(7)}`;
+    return String(p);
+  };
+
+  // Texto de las respuestas: "{price}" → precio actual y los mails como link
+  const faqAnswerText = (a) => String(a).replace(/\{price\}/g, fmt(UNIT_PRICE));
+  const fillAnswer = (p, text) => {
+    p.replaceChildren();
+    const parts = text.split(/([^\s@<>"]+@[^\s@<>"]+\.[a-z]{2,})/i);
+    parts.forEach((part, i) => {
+      if (i % 2 === 1) {
+        const link = document.createElement("a");
+        link.href = `mailto:${part}`;
+        link.className = "text-[#75aadb] font-semibold underline";
+        link.textContent = part;
+        p.append(link);
+      } else if (part) {
+        p.append(document.createTextNode(part));
+      }
+    });
+  };
+
+  const renderFaq = (faq) => {
+    const list = document.getElementById("faqList");
+    const template = list?.querySelector(".faq-item");
+    if (!list || !template || !Array.isArray(faq) || faq.length === 0) return;
+    const items = faq.map(({ q, a }) => {
+      const item = template.cloneNode(true);
+      item.querySelector(".faq-question")?.setAttribute("aria-expanded", "false");
+      item.querySelector(".faq-answer")?.classList.remove("is-open");
+      item.querySelector(".faq-icon")?.classList.remove("rotate-180");
+      item.querySelector(".faq-question span").textContent = q;
+      fillAnswer(item.querySelector(".faq-answer p"), faqAnswerText(a));
+      return item;
+    });
+    list.replaceChildren(...items);
+  };
+
+  // Mantiene lo que lee Google (precio y preguntas) igual a lo que se ve en la web
+  const updateSeo = (price, faq) => {
     const p = fmt(price);
     const ld = document.querySelector('script[type="application/ld+json"]');
     if (ld) {
@@ -415,8 +477,16 @@
         for (const node of data["@graph"] || []) {
           if (node["@type"] === "Product" && node.offers) node.offers.price = Number(price).toFixed(2);
           if (node["@type"] === "FAQPage") {
-            for (const q of node.mainEntity || []) {
-              q.acceptedAnswer.text = q.acceptedAnswer.text.replace(/\$\d+(\.\d+)?/, `$${p}`);
+            if (Array.isArray(faq) && faq.length) {
+              node.mainEntity = faq.map(({ q, a }) => ({
+                "@type": "Question",
+                name: q,
+                acceptedAnswer: { "@type": "Answer", text: faqAnswerText(a) },
+              }));
+            } else {
+              for (const q of node.mainEntity || []) {
+                q.acceptedAnswer.text = q.acceptedAnswer.text.replace(/\$\d+(\.\d+)?/, `$${p}`);
+              }
             }
           }
         }
@@ -427,19 +497,77 @@
     if (desc) desc.content = desc.content.replace(/\$\d+(\.\d+)?/, `$${p}`);
   };
 
+  const applyContact = (c) => {
+    if (!c) return;
+    if (c.orderPhone) {
+      SMS_NUMBER = c.orderPhone;
+      WA_NUMBER = c.orderPhone.replace(/\D/g, "");
+    }
+    if (c.email) {
+      ORDER_EMAIL = c.email;
+      for (const id of ["orderEmailLink", "footerEmailLink"]) {
+        const el = document.getElementById(id);
+        if (el) el.href = `mailto:${c.email}`;
+      }
+      const orderEmail = document.getElementById("orderEmailLink");
+      if (orderEmail) orderEmail.textContent = c.email;
+      const footerEmail = document.getElementById("footerEmailText");
+      if (footerEmail) footerEmail.textContent = c.email;
+    }
+    const box = document.getElementById("footerPhones");
+    const tpl = box?.querySelector("a");
+    if (box && tpl && Array.isArray(c.phones) && c.phones.length) {
+      box.replaceChildren(
+        ...c.phones.map((ph, i) => {
+          const a = tpl.cloneNode(true);
+          a.href = `tel:${ph}`;
+          a.textContent = prettyPhone(ph);
+          a.classList.toggle("mt-0.5", i > 0);
+          return a;
+        }),
+      );
+    }
+  };
+
+  // Pedidos pausados: se oculta el formulario y se muestra el mensaje del dueño
+  const applyOrdersPaused = (orders) => {
+    const paused = !!orders?.paused;
+    document.getElementById("ordersPaused")?.classList.toggle("hidden", !paused);
+    orderForm?.classList.toggle("hidden", paused);
+    const msg = document.getElementById("ordersPausedMsg");
+    if (msg) {
+      msg.textContent =
+        orders?.message || "We're not taking orders right now. Follow us on Instagram to know when we're back!";
+    }
+  };
+
+  const applyAnnouncement = (ann) => {
+    const bar = document.getElementById("announceBar");
+    if (!bar) return;
+    const show = !!(ann?.active && ann.text);
+    bar.classList.toggle("hidden", !show);
+    if (show) document.getElementById("announceText").textContent = ann.text;
+  };
+
   const applySettings = (s) => {
     if (s && s.price > 0) {
       UNIT_PRICE = Number(s.price);
       document.querySelectorAll(".js-price").forEach((el) => {
         el.textContent = fmt(UNIT_PRICE);
       });
-      updateSeoPrice(UNIT_PRICE);
+    }
+    if (s) {
+      renderFaq(s.faq);
+      applyContact(s.contact);
+      applyOrdersPaused(s.orders);
+      applyAnnouncement(s.announcement);
+      updateSeo(UNIT_PRICE, s.faq);
     }
 
     setImage("heroImg", s?.heroImage);
     setImage("instructionsImg", s?.instructionsImage);
 
-    // Promo: solo se muestra si está activa y se puede calcular
+    // Promo: solo se muestra si está activa, dentro de sus fechas y se puede calcular
     PROMO = s && isUsable(s.promo, UNIT_PRICE) ? s.promo : null;
     const banner = document.getElementById("promoBanner");
     if (banner) {

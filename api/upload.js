@@ -1,5 +1,6 @@
 import { put } from "@vercel/blob";
 import { isAuthorized, rejectUnauthorized } from "./_lib/auth.js";
+import { blobPath } from "./_lib/env.js";
 
 export const config = { api: { bodyParser: false } };
 
@@ -28,7 +29,7 @@ function readBody(req, limit) {
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
-  if (!isAuthorized(req)) return rejectUnauthorized(res);
+  if (!(await isAuthorized(req))) return rejectUnauthorized(res);
 
   const contentType = String(req.headers["content-type"] || "").split(";")[0].trim();
   const ext = TYPES[contentType];
@@ -44,7 +45,7 @@ export default async function handler(req, res) {
     const body = await readBody(req, MAX_BYTES);
     if (body.length === 0) return res.status(400).json({ error: "Empty file" });
 
-    const blob = await put(`${prefix}/${Date.now()}-${base}.${ext}`, body, {
+    const blob = await put(blobPath(`${prefix}/${Date.now()}-${base}.${ext}`), body, {
       access: "public",
       contentType,
     });

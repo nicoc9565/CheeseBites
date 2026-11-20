@@ -9,8 +9,20 @@
     return Number.isInteger(r) ? String(r) : r.toFixed(2);
   };
 
-  const isUsable = (promo, price) => {
-    if (!promo || !promo.active) return false;
+  // Fecha de hoy en New Jersey, "AAAA-MM-DD" (las fechas de la promo se cuentan en esa hora)
+  const todayNJ = (now = new Date()) =>
+    new Intl.DateTimeFormat("en-CA", { timeZone: "America/New_York", year: "numeric", month: "2-digit", day: "2-digit" }).format(now);
+
+  // "off" (apagada) · "scheduled" (empieza más adelante) · "live" (andando) · "ended" (ya terminó)
+  const promoState = (promo, today = todayNJ()) => {
+    if (!promo || !promo.active) return "off";
+    if (promo.startDate && today < promo.startDate) return "scheduled";
+    if (promo.endDate && today > promo.endDate) return "ended";
+    return "live";
+  };
+
+  const isUsable = (promo, price, today) => {
+    if (promoState(promo, today) !== "live") return false;
     if (promo.type === "buyXpayY") return promo.buy >= 2 && promo.pay >= 1 && promo.pay < promo.buy;
     if (promo.type === "bundle") return promo.bundleQty >= 2 && promo.bundlePrice > 0 && promo.bundlePrice < promo.bundleQty * price;
     if (promo.type === "percent") return promo.percent >= 1 && promo.percent <= 90;
@@ -65,5 +77,5 @@
     return { subtotal, total, savings, applied: savings > 0, hint };
   };
 
-  root.CBPromo = { calc, fmt, isUsable, autoLabel, autoDescription };
+  root.CBPromo = { calc, fmt, isUsable, autoLabel, autoDescription, promoState, todayNJ };
 })(window);

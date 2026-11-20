@@ -36,6 +36,14 @@
       .type-btn { border: 2px solid #f3f4f6; border-radius: 1rem; padding: 0.75rem; text-align: left; transition: all .15s; background: #fff; }
       .type-btn:hover { border-color: #fde68a; }
       .type-btn.is-selected { border-color: #ffca44; background: #fffbeb; box-shadow: 0 0 0 1px #ffca44; }
+      .chip { border-radius: 9999px; background: #fff; border: 1px solid #f3f4f6; padding: 0.4rem 0.8rem; color: #4b5563; }
+      .chip:hover { border-color: #ffca44; color: #0b0f19; }
+      .switch { position: relative; display: inline-flex; height: 1.75rem; width: 3rem; flex-shrink: 0; align-items: center; border-radius: 9999px; background: #e5e7eb; transition: background .15s; }
+      .switch span { display: inline-block; height: 1.25rem; width: 1.25rem; border-radius: 9999px; background: #fff; box-shadow: 0 1px 3px rgba(0,0,0,.2); transform: translateX(0.25rem); transition: transform .15s; }
+      .switch.is-on { background: #22c55e; }
+      .switch.is-on span { transform: translateX(1.5rem); }
+      .btn-dark { background: #0b0f19; color: #fff; font-weight: 700; font-size: 0.875rem; padding: 0.75rem 1.25rem; border-radius: 1rem; transition: opacity .15s; }
+      .btn-dark:hover { opacity: .8; }
       .step-title { display: flex; align-items: center; gap: 0.5rem; font-weight: 800; color: #0b0f19; margin-bottom: 0.75rem; }
       .step-num { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; border-radius: 9999px; background: #0b0f19; color: #fff; font-size: 0.75rem; }
     </style>
@@ -83,8 +91,64 @@
 
       <main class="max-w-5xl mx-auto px-4 py-8 space-y-8">
 
+        <!-- Accesos rápidos -->
+        <nav class="flex flex-wrap gap-2 text-xs font-bold" aria-label="Sections">
+          <a href="#secOrders" class="chip">Orders &amp; announcement</a>
+          <a href="#secPromo" class="chip">Price &amp; promo</a>
+          <a href="#secGallery" class="chip">Photos</a>
+          <a href="#secFaq" class="chip">FAQ</a>
+          <a href="#secContact" class="chip">Contact</a>
+          <a href="#secStats" class="chip">Stats</a>
+          <a href="#secHistory" class="chip">Undo</a>
+          <a href="#secPassword" class="chip">Password</a>
+        </nav>
+
+        <!-- Orders & announcement -->
+        <section id="secOrders" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 scroll-mt-24">
+          <h2 class="text-lg font-bold text-[#0b0f19] mb-1">Orders &amp; Announcement</h2>
+          <p class="text-sm text-gray-400 mb-6">Stop taking orders for a while, or show a short message at the top of the website.</p>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <!-- Pausar pedidos -->
+            <div class="rounded-2xl border-2 border-gray-100 p-5">
+              <div class="flex items-center justify-between gap-3 mb-4">
+                <div>
+                  <p class="font-extrabold text-[#0b0f19]">Taking orders</p>
+                  <p id="ordersStateText" class="text-xs text-gray-500 mt-0.5"></p>
+                </div>
+                <button id="ordersToggle" type="button" role="switch" aria-checked="true" aria-label="Taking orders" class="switch is-on"><span></span></button>
+              </div>
+              <label for="ordersMsg" class="lbl">Message when orders are paused</label>
+              <input id="ordersMsg" type="text" maxlength="200" class="input" placeholder="We're not taking orders right now. Follow us on Instagram to know when we're back!" />
+              <p class="text-xs text-gray-400 mt-2">Example: "Sold out this week, back on Monday!"</p>
+              <div class="mt-4 flex flex-wrap items-center gap-3">
+                <button id="saveOrdersBtn" class="btn-dark">Save</button>
+                <span id="ordersStatus" class="text-sm text-gray-400"></span>
+              </div>
+            </div>
+
+            <!-- Anuncio -->
+            <div class="rounded-2xl border-2 border-gray-100 p-5">
+              <div class="flex items-center justify-between gap-3 mb-4">
+                <div>
+                  <p class="font-extrabold text-[#0b0f19]">Announcement</p>
+                  <p id="announceStateText" class="text-xs text-gray-500 mt-0.5"></p>
+                </div>
+                <button id="announceToggle" type="button" role="switch" aria-checked="false" aria-label="Show announcement" class="switch"><span></span></button>
+              </div>
+              <label for="announceInput" class="lbl">Text</label>
+              <input id="announceInput" type="text" maxlength="120" class="input" placeholder="Delivery this Saturday only!" />
+              <p class="text-xs text-gray-400 mt-2"><span id="announceCount">0</span>/120 · Shown under the menu on every page.</p>
+              <div class="mt-4 flex flex-wrap items-center gap-3">
+                <button id="saveAnnounceBtn" class="btn-dark">Save</button>
+                <span id="announceStatus" class="text-sm text-gray-400"></span>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <!-- Price & Promo -->
-        <section class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+        <section id="secPromo" class="scroll-mt-24 bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
           <h2 class="text-lg font-bold text-[#0b0f19] mb-1">Price & Promotions</h2>
           <p class="text-sm text-gray-400 mb-6">Set the box price and activate special offers. The website calculates the discount automatically.</p>
 
@@ -159,8 +223,28 @@
               </div>
             </div>
 
-            <!-- Paso 2 -->
-            <p class="step-title mt-8"><span class="step-num">2</span> Check how it looks</p>
+            <!-- Paso 2: cuándo -->
+            <p class="step-title mt-8"><span class="step-num">2</span> When?</p>
+            <div class="space-y-3">
+              <label class="flex items-center gap-3 font-semibold text-[#0b0f19] cursor-pointer">
+                <input type="radio" name="promoWhen" value="now" class="h-4 w-4 accent-[#0b0f19]" checked />
+                Starting now, until I stop it
+              </label>
+              <label class="flex items-center gap-3 font-semibold text-[#0b0f19] cursor-pointer">
+                <input type="radio" name="promoWhen" value="dates" class="h-4 w-4 accent-[#0b0f19]" />
+                Only between these dates
+              </label>
+              <div id="promoDates" class="hidden rounded-2xl border-2 border-[#ffca44] bg-[#fffbeb] p-4">
+                <div class="flex flex-wrap items-center gap-2 font-semibold text-[#0b0f19]">
+                  From <input id="promoStart" type="date" class="input !w-auto" aria-label="Start date" />
+                  to <input id="promoEnd" type="date" class="input !w-auto" aria-label="End date" />
+                </div>
+                <p class="text-xs text-gray-500 mt-2">Both days included. It turns on and off by itself (New Jersey time).</p>
+              </div>
+            </div>
+
+            <!-- Paso 3 -->
+            <p class="step-title mt-8"><span class="step-num">3</span> Check how it looks</p>
             <div class="rounded-2xl bg-gray-50 border border-gray-100 p-4 space-y-4">
               <div>
                 <p class="text-xs text-gray-500 mb-2">Customers will see this on the website:</p>
@@ -193,8 +277,8 @@
               </details>
             </div>
 
-            <!-- Paso 3 -->
-            <p class="step-title mt-8"><span class="step-num">3</span> Publish it</p>
+            <!-- Paso 4 -->
+            <p class="step-title mt-8"><span class="step-num">4</span> Publish it</p>
             <div class="flex flex-wrap items-center gap-3">
               <button id="savePromoBtn" class="bg-[#ffca44] hover:brightness-95 text-[#0b0f19] font-extrabold text-sm px-6 py-3 rounded-2xl transition">Start promotion</button>
               <span id="promoSaveStatus" class="text-sm text-gray-400"></span>
@@ -203,7 +287,7 @@
         </section>
 
         <!-- Upload zone -->
-        <section class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
+        <section id="secGallery" class="scroll-mt-24 bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
           <h2 class="text-lg font-bold text-[#0b0f19] mb-4">Upload Gallery Photos</h2>
           <div id="dropzone" role="button" tabindex="0" class="border-2 border-dashed border-gray-200 rounded-2xl p-10 text-center cursor-pointer hover:border-[#ffca44] hover:bg-yellow-50 transition">
             <div class="text-4xl mb-3">📸</div>
@@ -217,7 +301,10 @@
         <!-- Gallery grid -->
         <section class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
           <div class="flex items-center justify-between mb-4">
-            <h2 class="text-lg font-bold text-[#0b0f19]">Current Gallery Photos</h2>
+            <div>
+              <h2 class="text-lg font-bold text-[#0b0f19]">Current Gallery Photos</h2>
+              <p class="text-xs text-gray-400 mt-0.5">Use ◀ ▶ to change the order. The first one shows first on the website.</p>
+            </div>
             <button id="refreshBtn" class="text-sm text-gray-500 hover:text-[#0b0f19] transition">⟳ Refresh</button>
           </div>
           <div id="galleryGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
@@ -226,6 +313,11 @@
             </div>
           </div>
           <p id="galleryEmpty" class="hidden text-center text-gray-400 text-sm py-10">No photos yet. Upload some above!</p>
+          <div id="galleryOrderBar" class="hidden sticky bottom-4 mt-4 flex flex-wrap items-center gap-3 rounded-2xl bg-[#fffbeb] border-2 border-[#ffca44] p-3 shadow-lg">
+            <span class="text-sm font-semibold text-[#0b0f19] flex-1">You changed the order of the photos.</span>
+            <button id="saveGalleryOrderBtn" class="btn-dark">Save order</button>
+            <span id="galleryOrderStatus" class="text-sm text-gray-400"></span>
+          </div>
         </section>
 
         <!-- Site Images -->
@@ -260,6 +352,86 @@
           </div>
         </section>
 
+        <!-- FAQ -->
+        <section id="secFaq" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 scroll-mt-24">
+          <h2 class="text-lg font-bold text-[#0b0f19] mb-1">FAQ</h2>
+          <p class="text-sm text-gray-400 mb-6">The questions at the bottom of the website. Write <strong class="text-gray-600">{price}</strong> where you want the box price to appear. Emails become links automatically.</p>
+          <div id="faqEditor" class="space-y-4"></div>
+          <button id="addFaqBtn" type="button" class="mt-4 text-sm font-bold text-[#0b0f19] underline">+ Add a question</button>
+          <div class="mt-6 flex flex-wrap items-center gap-3">
+            <button id="saveFaqBtn" class="btn-dark">Save questions</button>
+            <span id="faqStatus" class="text-sm text-gray-400"></span>
+          </div>
+        </section>
+
+        <!-- Contact -->
+        <section id="secContact" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 scroll-mt-24">
+          <h2 class="text-lg font-bold text-[#0b0f19] mb-1">Contact Info</h2>
+          <p class="text-sm text-gray-400 mb-6">Where orders arrive and what customers see at the bottom of the website.</p>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <label for="orderPhoneInput" class="lbl">Phone that receives orders</label>
+              <input id="orderPhoneInput" type="tel" class="input" placeholder="(908) 346-4064" />
+              <p class="text-xs text-gray-400 mt-2">iMessage, SMS and WhatsApp orders go to this number. Double-check it!</p>
+            </div>
+            <div>
+              <label for="emailInput" class="lbl">Email</label>
+              <input id="emailInput" type="email" class="input" placeholder="cheesebitesllc@gmail.com" />
+              <p class="text-xs text-gray-400 mt-2">Email orders and questions go here.</p>
+            </div>
+            <div class="md:col-span-2">
+              <span class="lbl">Phones shown on the website</span>
+              <div id="phonesEditor" class="space-y-2"></div>
+              <button id="addPhoneBtn" type="button" class="mt-3 text-sm font-bold text-[#0b0f19] underline">+ Add a phone</button>
+            </div>
+          </div>
+          <div class="mt-6 flex flex-wrap items-center gap-3">
+            <button id="saveContactBtn" class="btn-dark">Save contact info</button>
+            <span id="contactStatus" class="text-sm text-gray-400"></span>
+          </div>
+        </section>
+
+        <!-- Stats -->
+        <section id="secStats" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 scroll-mt-24">
+          <div class="flex items-center justify-between gap-3 mb-1">
+            <h2 class="text-lg font-bold text-[#0b0f19]">Order Stats</h2>
+            <button id="refreshStatsBtn" class="text-sm text-gray-500 hover:text-[#0b0f19] transition">⟳ Refresh</button>
+          </div>
+          <p class="text-sm text-gray-400 mb-6">How many times customers tapped a "Send order" button. Some may not finish sending the message, so it's a close estimate.</p>
+          <div id="statsCards" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+          <p class="lbl mt-6">Last 14 days</p>
+          <div id="statsDays" class="space-y-1.5"></div>
+          <p id="statsStatus" class="text-sm text-gray-400 mt-3"></p>
+        </section>
+
+        <!-- History / undo -->
+        <section id="secHistory" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 scroll-mt-24">
+          <h2 class="text-lg font-bold text-[#0b0f19] mb-1">Undo Changes</h2>
+          <p class="text-sm text-gray-400 mb-6">The last saved changes. Going back restores price, promotion, orders, announcement, FAQ and contact info (not photos).</p>
+          <ul id="historyList" class="divide-y divide-gray-100"></ul>
+          <p id="historyStatus" class="text-sm text-gray-400 mt-3"></p>
+        </section>
+
+        <!-- Password -->
+        <section id="secPassword" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 scroll-mt-24">
+          <h2 class="text-lg font-bold text-[#0b0f19] mb-1">Change Password</h2>
+          <p class="text-sm text-gray-400 mb-6">At least 8 characters. You'll use the new one next time you sign in.</p>
+          <form id="passwordForm" class="grid md:grid-cols-2 gap-4 max-w-2xl">
+            <div>
+              <label for="newPw" class="lbl">New password</label>
+              <input id="newPw" type="password" autocomplete="new-password" class="input" />
+            </div>
+            <div>
+              <label for="newPw2" class="lbl">Repeat it</label>
+              <input id="newPw2" type="password" autocomplete="new-password" class="input" />
+            </div>
+            <div class="md:col-span-2 flex flex-wrap items-center gap-3">
+              <button id="savePwBtn" type="submit" class="btn-dark">Change password</button>
+              <span id="pwStatus" class="text-sm text-gray-400"></span>
+            </div>
+          </form>
+        </section>
+
       </main>
     </div>
 
@@ -267,7 +439,7 @@
     <script>
       (() => {
         const SESSION_KEY = "cb_admin_pw";
-        const { calc, fmt, autoLabel, autoDescription } = window.CBPromo;
+        const { calc, fmt, autoLabel, autoDescription, promoState, todayNJ } = window.CBPromo;
         let adminPassword = "";
         let currentSettings = null;
         const $ = (id) => document.getElementById(id);
@@ -399,7 +571,7 @@
           galleryEmpty.classList.add("hidden");
           galleryGrid.querySelectorAll(".photo-card").forEach((c) => c.remove());
           try {
-            const res = await fetch("/api/gallery", { cache: "no-store" });
+            const res = await fetch("/api/gallery?fresh=1", { cache: "no-store" });
             const { images } = await readJson(res);
             if (!res.ok) throw new Error();
             galleryLoading.classList.add("hidden");
@@ -415,11 +587,24 @@
           card.className = "photo-card relative rounded-2xl overflow-hidden bg-gray-100";
           const img = document.createElement("img");
           img.src = url; img.alt = "Gallery photo"; img.className = "w-full"; img.loading = "lazy";
+          card.dataset.url = url;
           const btn = document.createElement("button");
           btn.className = "delete-btn absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white text-xs font-bold px-2 py-1 rounded-lg transition";
           btn.textContent = "✕ Delete";
           btn.addEventListener("click", () => deletePhoto(url, card));
-          card.append(img, btn);
+          // Flechas para cambiar el orden (funcionan igual en el celular)
+          const moves = document.createElement("div");
+          moves.className = "absolute bottom-2 inset-x-2 flex justify-between";
+          for (const [cls, label, dir] of [["move-left", "◀", -1], ["move-right", "▶", 1]]) {
+            const m = document.createElement("button");
+            m.type = "button";
+            m.className = `${cls} h-9 w-9 rounded-full bg-white/90 shadow text-[#0b0f19] font-bold hover:bg-white`;
+            m.textContent = label;
+            m.setAttribute("aria-label", dir < 0 ? "Move photo earlier" : "Move photo later");
+            m.addEventListener("click", () => moveCard(card, dir));
+            moves.append(m);
+          }
+          card.append(img, btn, moves);
           if (atStart) galleryLoading.after(card); else galleryGrid.append(card);
         }
 
@@ -483,13 +668,14 @@
 
         async function loadSettings() {
           try {
-            const res = await fetch("/api/settings", { cache: "no-store" });
+            const res = await fetch("/api/settings?fresh=1", { cache: "no-store" });
             if (!res.ok) throw new Error();
             currentSettings = await res.json();
             showPreview("hero", currentSettings.heroImage);
             showPreview("instructions", currentSettings.instructionsImage);
-            $("priceInput").value = currentSettings.price;
-            fillPromoForm(currentSettings.promo);
+            fillAll();
+            loadHistory();
+            loadStats();
           } catch {
             setStatus($("promoSaveStatus"), "Could not load current settings. Refresh the page before saving.", "error");
           }
@@ -530,7 +716,7 @@
             await saveSettings({ price });
             $("priceInput").value = currentSettings.price;
             renderPromoPreview();
-            renderPromoStatus();
+            afterSave();
             setStatus(statusEl, "✓ Saved!", "ok");
           } catch (err) {
             setStatus(statusEl, "✗ " + err.message, "error");
@@ -562,6 +748,17 @@
           renderPromoPreview();
         }
 
+        const promoWhen = () => document.querySelector('input[name="promoWhen"]:checked')?.value || "now";
+        function setPromoWhen(v) {
+          document.querySelectorAll('input[name="promoWhen"]').forEach((r) => (r.checked = r.value === v));
+          $("promoDates").classList.toggle("hidden", v !== "dates");
+          if (v === "dates" && !$("promoStart").value) $("promoStart").value = todayNJ();
+          renderPromoPreview();
+        }
+        document.querySelectorAll('input[name="promoWhen"]').forEach((r) => r.addEventListener("change", () => setPromoWhen(r.value)));
+        ["promoStart", "promoEnd"].forEach((id) => $(id).addEventListener("input", renderPromoPreview));
+        const niceDate = (d) => new Date(d + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+
         function readPromoForm(active) {
           const type = promoChoice === "bundle" || promoChoice === "percent" ? promoChoice : "buyXpayY";
           return {
@@ -574,6 +771,8 @@
             percent: parseInt($("promoPercent").value, 10),
             label: $("promoLabelInput").value.trim(),
             description: $("promoDescInput").value.trim(),
+            startDate: promoWhen() === "dates" ? $("promoStart").value : "",
+            endDate: promoWhen() === "dates" ? $("promoEnd").value : "",
           };
         }
 
@@ -585,29 +784,36 @@
           $("promoPercent").value = p.percent ?? 10;
           $("promoLabelInput").value = p.label || "";
           $("promoDescInput").value = p.description || "";
+          $("promoStart").value = p.startDate || "";
+          $("promoEnd").value = p.endDate || "";
           setChoice(choiceFromPromo(p));
+          setPromoWhen(p.startDate || p.endDate ? "dates" : "now");
           renderPromoStatus();
         }
 
         // Cartel de arriba: dice claramente si hay una promo andando en la web
         function renderPromoStatus() {
           const p = currentSettings?.promo;
-          const live = !!p?.active;
-          const card = $("promoStatusCard");
-          card.classList.toggle("border-green-300", live);
-          card.classList.toggle("bg-green-50", live);
-          card.classList.toggle("border-gray-100", !live);
-          card.classList.toggle("bg-gray-50", !live);
-          $("promoStatusDot").classList.toggle("bg-green-500", live);
-          $("promoStatusDot").classList.toggle("bg-gray-300", !live);
-          $("promoStatusTitle").textContent = live
-            ? `Live now: ${p.label || autoLabel(p)}`
-            : "No promotion running";
-          $("promoStatusText").textContent = live
-            ? "Customers see this offer on the website and the total drops automatically."
-            : `Customers pay the regular price ($${fmt(currentSettings?.price ?? 15)} per box).`;
-          $("stopPromoBtn").classList.toggle("hidden", !live);
-          $("savePromoBtn").textContent = live ? "Update promotion" : "Start promotion";
+          const state = promoState(p);
+          const name = p ? p.label || autoLabel(p) : "";
+          const regular = `Customers pay the regular price ($${fmt(currentSettings?.price ?? 15)} per box).`;
+          const look = {
+            live: ["border-green-300 bg-green-50", "bg-green-500", `Live now: ${name}`,
+              p?.endDate ? `Customers see this offer. It ends by itself after ${niceDate(p.endDate)}.` : "Customers see this offer on the website and the total drops automatically."],
+            scheduled: ["border-amber-300 bg-amber-50", "bg-amber-400", `Scheduled: ${name}`,
+              `Starts ${niceDate(p?.startDate)}${p?.endDate ? ` and ends after ${niceDate(p.endDate)}` : ""}. ${regular}`],
+            ended: ["border-gray-200 bg-gray-50", "bg-gray-400", `Ended: ${name}`, `It ended after ${niceDate(p?.endDate)}. ${regular}`],
+            off: ["border-gray-100 bg-gray-50", "bg-gray-300", "No promotion running", regular],
+          }[state];
+          $("promoStatusCard").className = `rounded-2xl border-2 p-4 mb-6 flex flex-wrap items-center justify-between gap-3 ${look[0]}`;
+          $("promoStatusDot").className = `h-3 w-3 rounded-full shrink-0 ${look[1]}`;
+          $("promoStatusTitle").textContent = look[2];
+          $("promoStatusText").textContent = look[3];
+          $("stopPromoBtn").classList.toggle("hidden", state === "off");
+          $("stopPromoBtn").textContent = state === "scheduled" ? "Cancel promotion" : state === "ended" ? "Clear" : "Stop promotion";
+          $("savePromoBtn").textContent = state === "off" || state === "ended"
+            ? (promoWhen() === "dates" ? "Schedule promotion" : "Start promotion")
+            : "Update promotion";
         }
 
         // Devuelve un texto de error si la promo no tiene sentido
@@ -623,6 +829,11 @@
               return `${p.bundleQty} boxes already cost $${fmt(p.bundleQty * price)}. The combo price must be lower.`;
           }
           if (p.type === "percent" && !(p.percent >= 1 && p.percent <= 90)) return "The discount must be between 1% and 90%.";
+          if (promoWhen() === "dates") {
+            if (!p.startDate || !p.endDate) return "Choose the start and end dates.";
+            if (p.endDate < p.startDate) return "The end date is before the start date.";
+            if (p.endDate < todayNJ()) return "That end date already passed.";
+          }
           return "";
         }
 
@@ -639,12 +850,13 @@
           $("promoPreviewError").textContent = err ? "⚠️ " + err : "";
           $("promoPreviewError").classList.toggle("hidden", !err);
           $("savePromoBtn").disabled = !!err;
+          if (currentSettings) renderPromoStatus();
           $("savePromoBtn").classList.toggle("opacity-50", !!err);
           const list = $("promoPreview");
           list.replaceChildren();
           if (err) return;
           for (let q = 1; q <= 4; q++) {
-            const r = calc(q, price, p);
+            const r = calc(q, price, { ...p, startDate: "", endDate: "" });
             const li = document.createElement("li");
             const name = document.createElement("span");
             name.className = "font-semibold";
@@ -689,7 +901,9 @@
           try {
             await saveSettings({ promo: p });
             fillPromoForm(currentSettings.promo);
-            setStatus(statusEl, okMsg, "ok");
+            afterSave();
+            const st = promoState(currentSettings.promo);
+            setStatus(statusEl, active && st === "scheduled" ? "✓ Scheduled! It will turn on by itself." : okMsg, "ok");
           } catch (err) {
             setStatus(statusEl, "✗ " + err.message, "error");
           }
@@ -699,6 +913,371 @@
         $("stopPromoBtn").addEventListener("click", () => {
           if (confirm("Stop the promotion? Customers will pay the regular price again.")) savePromo(false, "✓ Promotion stopped.");
         });
+        // ---------- interruptores (on/off) ----------
+        function setSwitch(btn, on) {
+          btn.setAttribute("aria-checked", String(on));
+          btn.classList.toggle("is-on", on);
+        }
+        const isOn = (btn) => btn.getAttribute("aria-checked") === "true";
+
+        // Después de guardar cualquier cosa: refresca lo que depende de la configuración
+        function afterSave() {
+          renderPromoStatus();
+          loadHistory();
+        }
+
+        // ---------- pedidos ----------
+        function renderOrdersText() {
+          const taking = isOn($("ordersToggle"));
+          $("ordersStateText").textContent = taking
+            ? "Customers can send orders."
+            : "Paused: customers see your message instead of the order form.";
+        }
+        function fillOrders(o = {}) {
+          setSwitch($("ordersToggle"), !o.paused);
+          $("ordersMsg").value = o.message || "";
+          renderOrdersText();
+        }
+        $("ordersToggle").addEventListener("click", () => { setSwitch($("ordersToggle"), !isOn($("ordersToggle"))); renderOrdersText(); });
+        $("saveOrdersBtn").addEventListener("click", async () => {
+          const statusEl = $("ordersStatus");
+          const paused = !isOn($("ordersToggle"));
+          setStatus(statusEl, "Saving…");
+          try {
+            await saveSettings({ orders: { paused, message: $("ordersMsg").value.trim() } });
+            fillOrders(currentSettings.orders);
+            afterSave();
+            setStatus(statusEl, paused ? "✓ Orders paused." : "✓ Taking orders.", "ok");
+          } catch (err) {
+            setStatus(statusEl, "✗ " + err.message, "error");
+          }
+        });
+
+        // ---------- anuncio ----------
+        function renderAnnounceText() {
+          const on = isOn($("announceToggle"));
+          $("announceCount").textContent = $("announceInput").value.length;
+          $("announceStateText").textContent = on ? "Shown on the website." : "Hidden.";
+        }
+        function fillAnnouncement(a = {}) {
+          setSwitch($("announceToggle"), !!a.active);
+          $("announceInput").value = a.text || "";
+          renderAnnounceText();
+        }
+        $("announceToggle").addEventListener("click", () => { setSwitch($("announceToggle"), !isOn($("announceToggle"))); renderAnnounceText(); });
+        $("announceInput").addEventListener("input", renderAnnounceText);
+        $("saveAnnounceBtn").addEventListener("click", async () => {
+          const statusEl = $("announceStatus");
+          const active = isOn($("announceToggle"));
+          const text = $("announceInput").value.trim();
+          if (active && !text) return setStatus(statusEl, "✗ Write the text first.", "error");
+          setStatus(statusEl, "Saving…");
+          try {
+            await saveSettings({ announcement: { active, text } });
+            fillAnnouncement(currentSettings.announcement);
+            afterSave();
+            setStatus(statusEl, active ? "✓ Announcement is live." : "✓ Saved (hidden).", "ok");
+          } catch (err) {
+            setStatus(statusEl, "✗ " + err.message, "error");
+          }
+        });
+
+        // ---------- orden de la galería ----------
+        function galleryUrls() {
+          return [...galleryGrid.querySelectorAll(".photo-card")].map((c) => c.dataset.url);
+        }
+        function moveCard(card, dir) {
+          const cards = [...galleryGrid.querySelectorAll(".photo-card")];
+          const i = cards.indexOf(card);
+          const j = i + dir;
+          if (j < 0 || j >= cards.length) return;
+          if (dir < 0) cards[j].before(card); else cards[j].after(card);
+          $("galleryOrderBar").classList.remove("hidden");
+          card.querySelector(dir < 0 ? ".move-left" : ".move-right")?.focus();
+        }
+        $("saveGalleryOrderBtn").addEventListener("click", async () => {
+          const statusEl = $("galleryOrderStatus");
+          setStatus(statusEl, "Saving…");
+          try {
+            await saveSettings({ galleryOrder: galleryUrls() });
+            afterSave();
+            setStatus(statusEl, "✓ Order saved!", "ok");
+            setTimeout(() => $("galleryOrderBar").classList.add("hidden"), 1500);
+          } catch (err) {
+            setStatus(statusEl, "✗ " + err.message, "error");
+          }
+        });
+
+        // ---------- preguntas frecuentes ----------
+        function faqRow(q = "", a = "") {
+          const row = document.createElement("div");
+          row.className = "faq-row rounded-2xl border-2 border-gray-100 p-4 space-y-2";
+          const qIn = document.createElement("input");
+          qIn.className = "input faq-q"; qIn.maxLength = 200; qIn.placeholder = "Question"; qIn.value = q;
+          qIn.setAttribute("aria-label", "Question");
+          const aIn = document.createElement("textarea");
+          aIn.className = "input faq-a"; aIn.rows = 3; aIn.maxLength = 1500; aIn.placeholder = "Answer"; aIn.value = a;
+          aIn.setAttribute("aria-label", "Answer");
+          const tools = document.createElement("div");
+          tools.className = "flex flex-wrap gap-3 text-xs font-semibold text-gray-500";
+          const mk = (label, fn) => {
+            const b = document.createElement("button");
+            b.type = "button"; b.textContent = label; b.className = "hover:text-[#0b0f19] underline";
+            b.addEventListener("click", fn);
+            return b;
+          };
+          tools.append(
+            mk("↑ Move up", () => row.previousElementSibling?.before(row)),
+            mk("↓ Move down", () => row.nextElementSibling?.after(row)),
+            mk("Delete", () => { if (confirm("Delete this question?")) row.remove(); }),
+          );
+          row.append(qIn, aIn, tools);
+          return row;
+        }
+        function fillFaq(list = []) {
+          $("faqEditor").replaceChildren(...list.map((f) => faqRow(f.q, f.a)));
+        }
+        $("addFaqBtn").addEventListener("click", () => {
+          const row = faqRow();
+          $("faqEditor").append(row);
+          row.querySelector(".faq-q").focus();
+        });
+        $("saveFaqBtn").addEventListener("click", async () => {
+          const statusEl = $("faqStatus");
+          const faq = [...document.querySelectorAll(".faq-row")].map((r) => ({
+            q: r.querySelector(".faq-q").value.trim(),
+            a: r.querySelector(".faq-a").value.trim(),
+          }));
+          const bad = faq.findIndex((f) => !f.q || !f.a);
+          if (bad >= 0) return setStatus(statusEl, `✗ Question ${bad + 1} needs both a question and an answer.`, "error");
+          if (faq.length === 0) return setStatus(statusEl, "✗ Keep at least one question.", "error");
+          setStatus(statusEl, "Saving…");
+          try {
+            await saveSettings({ faq });
+            fillFaq(currentSettings.faq);
+            afterSave();
+            setStatus(statusEl, "✓ Questions saved!", "ok");
+          } catch (err) {
+            setStatus(statusEl, "✗ " + err.message, "error");
+          }
+        });
+
+        // ---------- contacto ----------
+        const prettyPhone = (p) => {
+          const d = String(p || "").replace(/\D/g, "");
+          return d.length === 11 && d.startsWith("1") ? `(${d.slice(1, 4)}) ${d.slice(4, 7)}-${d.slice(7)}` : String(p || "");
+        };
+        const phoneOk = (p) => { const d = String(p).replace(/\D/g, ""); return d.length === 10 || (d.length >= 11 && d.length <= 15); };
+        function phoneRow(value = "") {
+          const row = document.createElement("div");
+          row.className = "phone-row flex items-center gap-2";
+          const input = document.createElement("input");
+          input.type = "tel"; input.className = "input phone-in"; input.value = prettyPhone(value); input.placeholder = "(973) 459-5443";
+          input.setAttribute("aria-label", "Phone number");
+          const del = document.createElement("button");
+          del.type = "button"; del.textContent = "✕"; del.setAttribute("aria-label", "Remove phone");
+          del.className = "shrink-0 h-11 w-11 rounded-xl border-2 border-gray-100 text-gray-400 hover:text-red-500 hover:border-red-200";
+          del.addEventListener("click", () => row.remove());
+          row.append(input, del);
+          return row;
+        }
+        function fillContact(c = {}) {
+          $("orderPhoneInput").value = prettyPhone(c.orderPhone);
+          $("emailInput").value = c.email || "";
+          $("phonesEditor").replaceChildren(...(c.phones || []).map(phoneRow));
+        }
+        $("addPhoneBtn").addEventListener("click", () => {
+          if (document.querySelectorAll(".phone-row").length >= 4) return;
+          const row = phoneRow();
+          $("phonesEditor").append(row);
+          row.querySelector("input").focus();
+        });
+        $("saveContactBtn").addEventListener("click", async () => {
+          const statusEl = $("contactStatus");
+          const orderPhone = $("orderPhoneInput").value.trim();
+          const email = $("emailInput").value.trim();
+          const phones = [...document.querySelectorAll(".phone-in")].map((i) => i.value.trim()).filter(Boolean);
+          if (!phoneOk(orderPhone)) return setStatus(statusEl, "✗ Check the phone that receives orders.", "error");
+          if (phones.some((p) => !phoneOk(p))) return setStatus(statusEl, "✗ One of the phones is not valid.", "error");
+          if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return setStatus(statusEl, "✗ Check the email.", "error");
+          const before = currentSettings?.contact?.orderPhone?.replace(/\D/g, "");
+          if (before && before !== orderPhone.replace(/\D/g, "").replace(/^(\d{10})$/, "1$1") &&
+              !confirm(`Orders will now go to ${orderPhone}. Is that right?`)) return;
+          setStatus(statusEl, "Saving…");
+          try {
+            await saveSettings({ contact: { orderPhone, phones, email } });
+            fillContact(currentSettings.contact);
+            afterSave();
+            setStatus(statusEl, "✓ Contact info saved!", "ok");
+          } catch (err) {
+            setStatus(statusEl, "✗ " + err.message, "error");
+          }
+        });
+
+        // ---------- estadísticas ----------
+        const dayKey = (iso) => todayNJ(new Date(iso));
+        function statCard(label, value, sub = "") {
+          const d = document.createElement("div");
+          d.className = "rounded-2xl bg-gray-50 border border-gray-100 p-4";
+          const l = document.createElement("p"); l.className = "text-xs font-bold text-gray-400 uppercase tracking-wider"; l.textContent = label;
+          const v = document.createElement("p"); v.className = "text-2xl font-extrabold text-[#0b0f19] mt-1"; v.textContent = value;
+          d.append(l, v);
+          if (sub) { const s = document.createElement("p"); s.className = "text-xs text-gray-500 mt-1"; s.textContent = sub; d.append(s); }
+          return d;
+        }
+        async function loadStats() {
+          const statusEl = $("statsStatus");
+          setStatus(statusEl, "Loading…");
+          try {
+            const { events } = await api("/api/stats");
+            const now = Date.now();
+            const within = (days) => events.filter((e) => now - Date.parse(e.at) < days * 86400000);
+            const sum = (list, f) => list.reduce((t, e) => t + f(e), 0);
+            const w = within(7), m = within(30);
+            const ch = (list, c) => list.filter((e) => e.channel === c).length;
+            $("statsCards").replaceChildren(
+              statCard("Last 7 days", `${w.length} order${w.length === 1 ? "" : "s"}`, `${sum(w, (e) => e.qty)} boxes · $${fmt(sum(w, (e) => e.total))}`),
+              statCard("Last 30 days", `${m.length} order${m.length === 1 ? "" : "s"}`, `${sum(m, (e) => e.qty)} boxes · $${fmt(sum(m, (e) => e.total))}`),
+              statCard("With a promo (30 days)", String(m.filter((e) => e.promo).length), "orders that got a discount"),
+              statCard("How they ordered (30 days)", `${ch(m, "sms")} · ${ch(m, "whatsapp")} · ${ch(m, "email")}`, "iMessage/SMS · WhatsApp · Email"),
+            );
+            // Barras de los últimos 14 días
+            const counts = new Map();
+            events.forEach((e) => counts.set(dayKey(e.at), (counts.get(dayKey(e.at)) || 0) + 1));
+            const days = [];
+            for (let i = 13; i >= 0; i--) days.push(todayNJ(new Date(now - i * 86400000)));
+            const max = Math.max(1, ...days.map((d) => counts.get(d) || 0));
+            $("statsDays").replaceChildren(...days.map((d) => {
+              const n = counts.get(d) || 0;
+              const row = document.createElement("div");
+              row.className = "flex items-center gap-3 text-xs";
+              const label = document.createElement("span");
+              label.className = "w-24 shrink-0 text-gray-500";
+              label.textContent = new Date(d + "T12:00:00").toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
+              const track = document.createElement("div");
+              track.className = "flex-1 h-4 rounded-full bg-gray-100 overflow-hidden";
+              const bar = document.createElement("div");
+              bar.className = "h-full rounded-full bg-[#ffca44]";
+              bar.style.width = `${(n / max) * 100}%`;
+              track.append(bar);
+              const num = document.createElement("span");
+              num.className = "w-6 text-right font-bold text-[#0b0f19]";
+              num.textContent = n;
+              row.append(label, track, num);
+              return row;
+            }));
+            setStatus(statusEl, events.length ? "" : "No orders counted yet. They'll show up here from now on.");
+          } catch (err) {
+            setStatus(statusEl, "✗ " + err.message, "error");
+          }
+        }
+        $("refreshStatsBtn").addEventListener("click", loadStats);
+
+        // ---------- historial (deshacer) ----------
+        function describeChange(now, before) {
+          if (!before) return ["First saved version"];
+          const out = [];
+          if (now.price !== before.price) out.push(`Price → $${fmt(now.price)}`);
+          const pn = now.promo, pb = before.promo;
+          if (JSON.stringify(pn) !== JSON.stringify(pb)) {
+            if (pn.active && !pb.active) out.push(`Promotion on: ${pn.label || autoLabel(pn)}`);
+            else if (!pn.active && pb.active) out.push("Promotion stopped");
+            else out.push(`Promotion edited: ${pn.label || autoLabel(pn)}`);
+          }
+          if (now.orders.paused !== before.orders.paused) out.push(now.orders.paused ? "Orders paused" : "Orders reopened");
+          else if (now.orders.message !== before.orders.message) out.push("Pause message edited");
+          if (JSON.stringify(now.announcement) !== JSON.stringify(before.announcement))
+            out.push(now.announcement.active ? `Announcement: "${now.announcement.text}"` : "Announcement hidden");
+          if (JSON.stringify(now.faq) !== JSON.stringify(before.faq)) out.push("FAQ edited");
+          if (JSON.stringify(now.contact) !== JSON.stringify(before.contact)) out.push("Contact info edited");
+          if (JSON.stringify(now.galleryOrder) !== JSON.stringify(before.galleryOrder)) out.push("Photo order changed");
+          if (now.heroImage !== before.heroImage || now.instructionsImage !== before.instructionsImage) out.push("Site photo changed");
+          return out.length ? out : ["Saved with no changes"];
+        }
+        async function loadHistory() {
+          const list = $("historyList"), statusEl = $("historyStatus");
+          try {
+            const { versions } = await api("/api/settings?history=1&fresh=1");
+            list.replaceChildren(...versions.map((v, i) => {
+              const li = document.createElement("li");
+              li.className = "py-3 flex flex-wrap items-center gap-3";
+              const info = document.createElement("div");
+              info.className = "flex-1 min-w-[12rem]";
+              const when = document.createElement("p");
+              when.className = "text-xs text-gray-400";
+              when.textContent = new Date(v.savedAt).toLocaleString("en-US", { weekday: "short", month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }) + (i === 0 ? " · current" : "");
+              const what = document.createElement("p");
+              what.className = "text-sm font-semibold text-[#0b0f19]";
+              what.textContent = describeChange(v.settings, versions[i + 1]?.settings).join(" · ");
+              info.append(when, what);
+              li.append(info);
+              if (i > 0) {
+                const b = document.createElement("button");
+                b.className = "text-sm font-bold border-2 border-gray-200 hover:border-[#0b0f19] rounded-xl px-3 py-1.5 transition";
+                b.textContent = i === 1 ? "↶ Undo last change" : "Go back to this";
+                b.addEventListener("click", () => restoreVersion(v));
+                li.append(b);
+              }
+              return li;
+            }));
+            setStatus(statusEl, versions.length ? "" : "Nothing saved yet.");
+          } catch (err) {
+            setStatus(statusEl, "✗ " + err.message, "error");
+          }
+        }
+        async function restoreVersion(v) {
+          if (!confirm("Go back to this version? Price, promotion, orders, announcement, FAQ and contact info will change back.")) return;
+          const statusEl = $("historyStatus");
+          setStatus(statusEl, "Restoring…");
+          try {
+            currentSettings = await api("/api/settings", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ restore: v.id }),
+            });
+            fillAll();
+            await loadHistory();
+            setStatus(statusEl, "✓ Done! The website is back to that version.", "ok");
+          } catch (err) {
+            setStatus(statusEl, "✗ " + err.message, "error");
+          }
+        }
+
+        // ---------- contraseña ----------
+        $("passwordForm").addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const statusEl = $("pwStatus");
+          const pw = $("newPw").value, pw2 = $("newPw2").value;
+          if (pw.length < 8) return setStatus(statusEl, "✗ Use at least 8 characters.", "error");
+          if (pw.trim() !== pw) return setStatus(statusEl, "✗ No spaces at the start or end.", "error");
+          if (pw !== pw2) return setStatus(statusEl, "✗ The two passwords don't match.", "error");
+          setStatus(statusEl, "Saving…");
+          try {
+            await api("/api/password", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ newPassword: pw }),
+            });
+            adminPassword = pw;
+            try { sessionStorage.setItem(SESSION_KEY, pw); } catch {}
+            $("passwordForm").reset();
+            setStatus(statusEl, "✓ Password changed. Use the new one next time.", "ok");
+          } catch (err) {
+            setStatus(statusEl, "✗ " + err.message, "error");
+          }
+        });
+
+        // Llena todos los formularios con la configuración actual
+        function fillAll() {
+          const s = currentSettings;
+          if (!s) return;
+          $("priceInput").value = s.price;
+          fillPromoForm(s.promo);
+          fillOrders(s.orders);
+          fillAnnouncement(s.announcement);
+          fillFaq(s.faq);
+          fillContact(s.contact);
+        }
       })();
     </script>
   </body>

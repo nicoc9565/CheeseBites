@@ -1,101 +1,46 @@
-import { put, list, del } from "@vercel/blob";
 import { isAuthorized, rejectUnauthorized, isOwnBlobUrl } from "./_lib/auth.js";
-
-const SETTINGS_PREFIX = "config/settings-";
-
-const DEFAULT_PROMO = {
-  active: false,
-  type: "buyXpayY", // "buyXpayY" (2x1, 3x2…), "bundle" (X boxes for $Y), "percent" (% off)
-  buy: 2,
-  pay: 1,
-  bundleQty: 2,
-  bundlePrice: 25,
-  percent: 10,
-  label: "",
-  description: "",
-};
-
-const DEFAULTS = {
-  price: 15,
-  heroImage: null,
-  instructionsImage: null,
-  promo: DEFAULT_PROMO,
-};
-
-const fresh = () => ({ ...DEFAULTS, promo: { ...DEFAULT_PROMO } });
-
-const int = (v, min, max, fallback) => {
-  const n = Math.floor(Number(v));
-  return Number.isFinite(n) && n >= min && n <= max ? n : fallback;
-};
-const money = (v, min, max, fallback) => {
-  const n = Math.round(Number(v) * 100) / 100;
-  return Number.isFinite(n) && n >= min && n <= max ? n : fallback;
-};
-const text = (v, max) => (typeof v === "string" ? v.trim().slice(0, max) : "");
-
-// Deja la promo siempre en un formato válido. Una promo que no se puede
-// calcular (por ejemplo la vieja, que no tenía tipo) queda desactivada.
-function normalizePromo(p, price) {
-  const src = p && typeof p === "object" ? p : {};
-  const promo = {
-    active: src.active === true,
-    type: ["buyXpayY", "bundle", "percent"].includes(src.type) ? src.type : null,
-    buy: int(src.buy, 2, 20, DEFAULT_PROMO.buy),
-    pay: int(src.pay, 1, 19, DEFAULT_PROMO.pay),
-    bundleQty: int(src.bundleQty, 2, 20, DEFAULT_PROMO.bundleQty),
-    bundlePrice: money(src.bundlePrice, 1, 10000, DEFAULT_PROMO.bundlePrice),
-    percent: int(src.percent, 1, 90, DEFAULT_PROMO.percent),
-    label: text(src.label, 40),
-    description: text(src.description, 140),
-  };
-  if (promo.pay >= promo.buy) promo.pay = promo.buy - 1;
-
-  let valid = promo.type !== null;
-  if (promo.type === "bundle" && promo.bundlePrice >= promo.bundleQty * price) valid = false;
-  if (!valid) {
-    promo.active = false;
-    promo.type = promo.type || "buyXpayY";
-  }
-  return promo;
-}
-
-function normalize(data) {
-  const price = money(data.price, 1, 1000, DEFAULTS.price);
-  return {
-    price,
-    heroImage: typeof data.heroImage === "string" ? data.heroImage : null,
-    instructionsImage: typeof data.instructionsImage === "string" ? data.instructionsImage : null,
-    promo: normalizePromo(data.promo, price),
-  };
-}
-
-// Lanza error si no puede leer: así nunca se guarda la configuración de
-// fábrica encima de la real por un fallo pasajero.
-async function readSettings() {
-  const { blobs } = await list({ prefix: SETTINGS_PREFIX });
-  if (blobs.length === 0) return fresh();
-  blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
-  const r = await fetch(blobs[0].downloadUrl || blobs[0].url, { cache: "no-store" });
-  if (!r.ok) throw new Error(`Settings read failed (${r.status})`);
-  return normalize(await r.json());
-}
+import {
+  readSettings, writeSettings, readHistory, readVersion, normalize, money, cleanPhone, isEmail, RESTORABLE,
+} from "./_lib/settings.js";
 
 export default async function handler(req, res) {
   if (req.method === "GET") {
-    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate");
+    // La web pide la configuración en cada visita: la guardamos 30 segundos en la red
+    // de Vercel para no gastar operaciones. El panel pide "?fresh=…" y la lee al momento.
+    // (el navegador no guarda copia: siempre pregunta, y Vercel le contesta desde su copia)
+    const fresh = "fresh" in (req.query || {});
+    res.setHeader("Cache-Control", "no-store");
     try {
-      return res.status(200).json(await readSettings());
+      if ("history" in (req.query || {})) {
+        if (!(await isAuthorized(req))) return rejectUnauthorized(res);
+        return res.status(200).json({ versions: await readHistory() });
+      }
+      const settings = await readSettings();
+      if (!fresh) {
+        res.setHeader("Cache-Control", "no-cache");
+        res.setHeader("Vercel-CDN-Cache-Control", "max-age=30, stale-while-revalidate=60");
+      }
+      return res.status(200).json(settings);
     } catch {
       return res.status(503).json({ error: "Settings unavailable" });
     }
   }
 
   if (req.method === "POST") {
-    if (!isAuthorized(req)) return rejectUnauthorized(res);
+    if (!(await isAuthorized(req))) return rejectUnauthorized(res);
     try {
       const current = await readSettings();
       const u = req.body || {};
+
+      // Deshacer: vuelve a una versión anterior (todo menos las fotos)
+      if (typeof u.restore === "string") {
+        const old = await readVersion(u.restore);
+        if (!old) return res.status(404).json({ error: "That version no longer exists" });
+        const next = { ...current };
+        for (const k of RESTORABLE) next[k] = old[k];
+        return res.status(200).json(await writeSettings(next, current));
+      }
+
       const next = { ...current };
 
       if ("price" in u) {
@@ -109,38 +54,43 @@ export default async function handler(req, res) {
           next[field] = u[field];
         }
       }
-      if ("promo" in u) {
-        next.promo = { ...current.promo, ...(u.promo || {}) };
+      if ("promo" in u) next.promo = { ...current.promo, ...(u.promo || {}) };
+      if ("orders" in u) next.orders = { ...current.orders, ...(u.orders || {}) };
+      if ("announcement" in u) {
+        next.announcement = { ...current.announcement, ...(u.announcement || {}) };
+        if (next.announcement.active && !String(next.announcement.text || "").trim())
+          return res.status(400).json({ error: "Write the announcement text first." });
+      }
+      if ("faq" in u) {
+        if (!Array.isArray(u.faq)) return res.status(400).json({ error: "Invalid questions" });
+        if (u.faq.some((f) => !String(f?.q || "").trim() || !String(f?.a || "").trim()))
+          return res.status(400).json({ error: "Every question needs a question and an answer." });
+        next.faq = u.faq;
+      }
+      if ("contact" in u) {
+        const c = u.contact || {};
+        if (!cleanPhone(c.orderPhone)) return res.status(400).json({ error: "The order phone number is not valid." });
+        if (!Array.isArray(c.phones) || c.phones.some((p) => !cleanPhone(p)))
+          return res.status(400).json({ error: "One of the phone numbers is not valid." });
+        if (!isEmail(c.email)) return res.status(400).json({ error: "The email is not valid." });
+        next.contact = c;
+      }
+      if ("galleryOrder" in u) {
+        if (!Array.isArray(u.galleryOrder) || u.galleryOrder.some((x) => !isOwnBlobUrl(x, ["gallery"])))
+          return res.status(400).json({ error: "Invalid photo order" });
+        next.galleryOrder = u.galleryOrder;
       }
 
-      const saved = normalize(next);
+      const check = normalize(next);
       const wantsActive = u.promo && "active" in u.promo ? u.promo.active === true : current.promo.active;
-      if (wantsActive && !saved.promo.active) {
-        return res.status(400).json({
-          error: "This promo would not give a discount. Check the numbers.",
-        });
+      if (wantsActive && !check.promo.active) {
+        return res.status(400).json({ error: "This promo would not give a discount. Check the numbers." });
+      }
+      if (u.promo?.startDate && u.promo?.endDate && u.promo.endDate < u.promo.startDate) {
+        return res.status(400).json({ error: "The end date is before the start date." });
       }
 
-      await put(`${SETTINGS_PREFIX}${Date.now()}.json`, JSON.stringify(saved), {
-        access: "public",
-        contentType: "application/json",
-      });
-
-      // Limpieza: archivos de configuración viejos y fotos principales reemplazadas
-      try {
-        const { blobs } = await list({ prefix: SETTINGS_PREFIX });
-        blobs.sort((a, b) => new Date(b.uploadedAt) - new Date(a.uploadedAt));
-        const old = blobs.slice(1).map((b) => b.url);
-        for (const [field, prefix] of [["heroImage", "hero"], ["instructionsImage", "instructions"]]) {
-          const prev = current[field];
-          if (prev && prev !== saved[field] && isOwnBlobUrl(prev, [prefix])) old.push(prev);
-        }
-        if (old.length) await del(old);
-      } catch {
-        // Si la limpieza falla no pasa nada: lo importante ya se guardó
-      }
-
-      return res.status(200).json(saved);
+      return res.status(200).json(await writeSettings(next, current));
     } catch (err) {
       const msg = err instanceof Error ? err.message : String(err);
       return res.status(500).json({ error: "Failed to save settings", detail: msg });
