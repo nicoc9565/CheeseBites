@@ -35,7 +35,9 @@
       .lbl { display: block; font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.1em; color: #9ca3af; margin-bottom: 0.5rem; }
       .type-btn { border: 2px solid #f3f4f6; border-radius: 1rem; padding: 0.75rem; text-align: left; transition: all .15s; background: #fff; }
       .type-btn:hover { border-color: #fde68a; }
-      .type-btn.is-selected { border-color: #ffca44; background: #fffbeb; }
+      .type-btn.is-selected { border-color: #ffca44; background: #fffbeb; box-shadow: 0 0 0 1px #ffca44; }
+      .step-title { display: flex; align-items: center; gap: 0.5rem; font-weight: 800; color: #0b0f19; margin-bottom: 0.75rem; }
+      .step-num { display: inline-flex; align-items: center; justify-content: center; width: 1.5rem; height: 1.5rem; border-radius: 9999px; background: #0b0f19; color: #fff; font-size: 0.75rem; }
     </style>
   </head>
   <body class="bg-gray-50 min-h-screen">
@@ -102,90 +104,100 @@
 
           <!-- Promo -->
           <div class="border-t border-gray-100 pt-6">
-            <div class="flex items-center justify-between mb-5">
-              <div>
-                <p class="font-bold text-[#0b0f19]">Active Promotion</p>
-                <p class="text-xs text-gray-400 mt-0.5">When ON, customers see the offer and the total drops automatically</p>
+            <!-- Estado actual: se ve de un vistazo si hay promo o no -->
+            <div id="promoStatusCard" class="rounded-2xl border-2 border-gray-100 bg-gray-50 p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <span id="promoStatusDot" class="h-3 w-3 rounded-full shrink-0 bg-gray-300"></span>
+                <div>
+                  <p id="promoStatusTitle" class="font-extrabold text-[#0b0f19]">Loading…</p>
+                  <p id="promoStatusText" class="text-xs text-gray-500 mt-0.5"></p>
+                </div>
               </div>
-              <button id="promoToggleBtn" type="button" role="switch" aria-checked="false" aria-label="Promotion on/off" class="relative inline-flex h-7 w-12 shrink-0 items-center rounded-full bg-gray-200 transition-colors">
-                <span id="promoToggleKnob" class="inline-block h-5 w-5 translate-x-1 rounded-full bg-white shadow-md transition-transform"></span>
+              <button id="stopPromoBtn" type="button" class="hidden bg-white border-2 border-red-200 text-red-500 hover:bg-red-50 font-bold text-sm px-4 py-2 rounded-xl transition">Stop promotion</button>
+            </div>
+
+            <!-- Paso 1 -->
+            <p class="step-title"><span class="step-num">1</span> Pick a promotion</p>
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              <button type="button" class="type-btn" data-choice="2x1">
+                <div class="text-2xl font-extrabold text-[#0b0f19]">2x1</div>
+                <div class="text-xs text-gray-500 mt-1">Buy 2 boxes, pay for 1</div>
+              </button>
+              <button type="button" class="type-btn" data-choice="3x2">
+                <div class="text-2xl font-extrabold text-[#0b0f19]">3x2</div>
+                <div class="text-xs text-gray-500 mt-1">Buy 3 boxes, pay for 2</div>
+              </button>
+              <button type="button" class="type-btn" data-choice="bundle">
+                <div class="text-2xl font-extrabold text-[#0b0f19]">Combo</div>
+                <div class="text-xs text-gray-500 mt-1">Special price, e.g. 2 boxes for $25</div>
+              </button>
+              <button type="button" class="type-btn" data-choice="percent">
+                <div class="text-2xl font-extrabold text-[#0b0f19]">% OFF</div>
+                <div class="text-xs text-gray-500 mt-1">Discount on the whole order</div>
               </button>
             </div>
+            <button type="button" id="customChoiceBtn" class="mt-3 text-xs font-semibold text-gray-500 underline hover:text-[#0b0f19]">Other numbers (like 4x3)</button>
 
-            <div id="promoFields" class="space-y-5 opacity-50 pointer-events-none">
-              <div>
-                <span class="lbl">Promotion type</span>
-                <div class="grid sm:grid-cols-3 gap-3">
-                  <button type="button" class="type-btn" data-type="buyXpayY">
-                    <div class="font-extrabold text-[#0b0f19]">Buy X, pay Y</div>
-                    <div class="text-xs text-gray-400 mt-0.5">2x1, 3x2…</div>
-                  </button>
-                  <button type="button" class="type-btn" data-type="bundle">
-                    <div class="font-extrabold text-[#0b0f19]">X boxes for $Y</div>
-                    <div class="text-xs text-gray-400 mt-0.5">e.g. 2 boxes for $25</div>
-                  </button>
-                  <button type="button" class="type-btn" data-type="percent">
-                    <div class="font-extrabold text-[#0b0f19]">% off</div>
-                    <div class="text-xs text-gray-400 mt-0.5">e.g. 20% off the order</div>
-                  </button>
-                </div>
+            <!-- Datos que faltan según la promo elegida -->
+            <div data-for="custom" class="choice-fields hidden mt-4 rounded-2xl border-2 border-[#ffca44] bg-[#fffbeb] p-4">
+              <div class="flex flex-wrap items-center gap-2 font-semibold text-[#0b0f19]">
+                Customer buys <input id="promoBuy" type="number" inputmode="numeric" min="2" max="20" step="1" class="input !w-20 text-center" aria-label="Boxes the customer buys" />
+                boxes and pays for <input id="promoPay" type="number" inputmode="numeric" min="1" max="19" step="1" class="input !w-20 text-center" aria-label="Boxes the customer pays for" />
               </div>
-
-              <!-- Buy X pay Y -->
-              <div data-for="buyXpayY" class="type-fields flex flex-wrap items-end gap-3">
-                <div>
-                  <label for="promoBuy" class="lbl">Customer buys</label>
-                  <input id="promoBuy" type="number" min="2" max="20" step="1" class="input !w-24" />
-                </div>
-                <div>
-                  <label for="promoPay" class="lbl">Pays for</label>
-                  <input id="promoPay" type="number" min="1" max="19" step="1" class="input !w-24" />
-                </div>
-                <p class="text-xs text-gray-400 pb-3">boxes. For a 2x1 use 2 and 1.</p>
+            </div>
+            <div data-for="bundle" class="choice-fields hidden mt-4 rounded-2xl border-2 border-[#ffca44] bg-[#fffbeb] p-4">
+              <div class="flex flex-wrap items-center gap-2 font-semibold text-[#0b0f19]">
+                <input id="promoBundleQty" type="number" inputmode="numeric" min="2" max="20" step="1" class="input !w-20 text-center" aria-label="Number of boxes" />
+                boxes for $ <input id="promoBundlePrice" type="number" inputmode="decimal" min="1" step="0.01" class="input !w-28 text-center" aria-label="Combo price" />
               </div>
-
-              <!-- Bundle -->
-              <div data-for="bundle" class="type-fields hidden flex flex-wrap items-end gap-3">
-                <div>
-                  <label for="promoBundleQty" class="lbl">Boxes</label>
-                  <input id="promoBundleQty" type="number" min="2" max="20" step="1" class="input !w-24" />
-                </div>
-                <div>
-                  <label for="promoBundlePrice" class="lbl">For ($)</label>
-                  <input id="promoBundlePrice" type="number" min="1" step="0.01" class="input !w-28" />
-                </div>
-              </div>
-
-              <!-- Percent -->
-              <div data-for="percent" class="type-fields hidden flex flex-wrap items-end gap-3">
-                <div>
-                  <label for="promoPercent" class="lbl">Discount (%)</label>
-                  <input id="promoPercent" type="number" min="1" max="90" step="1" class="input !w-24" />
-                </div>
-              </div>
-
-              <div class="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <label for="promoLabelInput" class="lbl">Title (optional)</label>
-                  <input id="promoLabelInput" type="text" maxlength="40" class="input" />
-                </div>
-                <div>
-                  <label for="promoDescInput" class="lbl">Description (optional)</label>
-                  <input id="promoDescInput" type="text" maxlength="140" class="input" />
-                </div>
-              </div>
-
-              <!-- Preview -->
-              <div class="rounded-2xl bg-gray-50 border border-gray-100 p-4">
-                <p class="lbl !mb-2">What customers will pay</p>
-                <ul id="promoPreview" class="text-sm text-[#0b0f19] space-y-1"></ul>
-                <p id="promoPreviewError" class="hidden text-xs font-semibold text-red-500 mt-2"></p>
+              <p id="bundleHelp" class="text-xs text-gray-500 mt-2"></p>
+            </div>
+            <div data-for="percent" class="choice-fields hidden mt-4 rounded-2xl border-2 border-[#ffca44] bg-[#fffbeb] p-4">
+              <div class="flex flex-wrap items-center gap-2 font-semibold text-[#0b0f19]">
+                <input id="promoPercent" type="number" inputmode="numeric" min="1" max="90" step="1" class="input !w-20 text-center" aria-label="Discount percent" />
+                % off the whole order
               </div>
             </div>
 
-            <div class="mt-5">
-              <button id="savePromoBtn" class="bg-[#ffca44] hover:brightness-95 text-[#0b0f19] font-extrabold text-sm px-6 py-3 rounded-2xl transition">Save Promotion</button>
-              <span id="promoSaveStatus" class="text-xs text-gray-400 ml-2"></span>
+            <!-- Paso 2 -->
+            <p class="step-title mt-8"><span class="step-num">2</span> Check how it looks</p>
+            <div class="rounded-2xl bg-gray-50 border border-gray-100 p-4 space-y-4">
+              <div>
+                <p class="text-xs text-gray-500 mb-2">Customers will see this on the website:</p>
+                <div class="rounded-2xl bg-gradient-to-br from-[#75aadb] to-[#4d80b8] text-white px-4 py-3.5 max-w-sm">
+                  <div class="flex items-center gap-2 mb-1">
+                    <span class="text-base">🎉</span>
+                    <span id="previewLabel" class="font-extrabold text-sm uppercase tracking-wide"></span>
+                  </div>
+                  <p id="previewDesc" class="text-xs font-semibold text-white/80 leading-snug"></p>
+                </div>
+              </div>
+              <div>
+                <p class="text-xs text-gray-500 mb-2">And this is what they will pay:</p>
+                <ul id="promoPreview" class="text-sm text-[#0b0f19] space-y-1"></ul>
+              </div>
+              <p id="promoPreviewError" class="hidden text-sm font-semibold text-red-500"></p>
+              <details class="text-sm">
+                <summary class="cursor-pointer text-xs font-semibold text-gray-500 hover:text-[#0b0f19]">Change the text of the offer (optional)</summary>
+                <div class="grid sm:grid-cols-2 gap-4 mt-3">
+                  <div>
+                    <label for="promoLabelInput" class="lbl">Title</label>
+                    <input id="promoLabelInput" type="text" maxlength="40" class="input" />
+                  </div>
+                  <div>
+                    <label for="promoDescInput" class="lbl">Description</label>
+                    <input id="promoDescInput" type="text" maxlength="140" class="input" />
+                  </div>
+                </div>
+                <p class="text-xs text-gray-400 mt-2">Leave them empty to use the text shown above.</p>
+              </details>
+            </div>
+
+            <!-- Paso 3 -->
+            <p class="step-title mt-8"><span class="step-num">3</span> Publish it</p>
+            <div class="flex flex-wrap items-center gap-3">
+              <button id="savePromoBtn" class="bg-[#ffca44] hover:brightness-95 text-[#0b0f19] font-extrabold text-sm px-6 py-3 rounded-2xl transition">Start promotion</button>
+              <span id="promoSaveStatus" class="text-sm text-gray-400"></span>
             </div>
           </div>
         </section>
@@ -518,6 +530,7 @@
             await saveSettings({ price });
             $("priceInput").value = currentSettings.price;
             renderPromoPreview();
+            renderPromoStatus();
             setStatus(statusEl, "✓ Saved!", "ok");
           } catch (err) {
             setStatus(statusEl, "✗ " + err.message, "error");
@@ -526,33 +539,34 @@
         $("priceInput").addEventListener("input", renderPromoPreview);
 
         // ---------- promo ----------
-        let promoActive = false;
-        let promoType = "buyXpayY";
+        // "choice" es lo que el dueño elige en pantalla; se traduce al formato que guarda el servidor.
+        let promoChoice = "2x1";
 
-        function setPromoToggle(active) {
-          promoActive = active;
-          const btn = $("promoToggleBtn"), knob = $("promoToggleKnob"), fields = $("promoFields");
-          btn.setAttribute("aria-checked", String(active));
-          btn.classList.toggle("bg-[#ffca44]", active);
-          btn.classList.toggle("bg-gray-200", !active);
-          knob.classList.toggle("translate-x-6", active);
-          knob.classList.toggle("translate-x-1", !active);
-          fields.classList.toggle("opacity-50", !active);
-          fields.classList.toggle("pointer-events-none", !active);
+        function choiceFromPromo(p) {
+          if (p.type === "bundle" || p.type === "percent") return p.type;
+          if (p.buy === 2 && p.pay === 1) return "2x1";
+          if (p.buy === 3 && p.pay === 2) return "3x2";
+          return "custom";
+        }
+
+        function setChoice(choice) {
+          promoChoice = choice;
+          if (choice === "2x1") { $("promoBuy").value = 2; $("promoPay").value = 1; }
+          if (choice === "3x2") { $("promoBuy").value = 3; $("promoPay").value = 2; }
+          document.querySelectorAll(".type-btn").forEach((b) => {
+            const on = b.dataset.choice === choice;
+            b.classList.toggle("is-selected", on);
+            b.setAttribute("aria-pressed", String(on));
+          });
+          document.querySelectorAll(".choice-fields").forEach((f) => f.classList.toggle("hidden", f.dataset.for !== choice));
           renderPromoPreview();
         }
 
-        function setPromoType(type) {
-          promoType = type;
-          document.querySelectorAll(".type-btn").forEach((b) => b.classList.toggle("is-selected", b.dataset.type === type));
-          document.querySelectorAll(".type-fields").forEach((f) => f.classList.toggle("hidden", f.dataset.for !== type));
-          renderPromoPreview();
-        }
-
-        function readPromoForm() {
+        function readPromoForm(active) {
+          const type = promoChoice === "bundle" || promoChoice === "percent" ? promoChoice : "buyXpayY";
           return {
-            active: promoActive,
-            type: promoType,
+            active,
+            type,
             buy: parseInt($("promoBuy").value, 10),
             pay: parseInt($("promoPay").value, 10),
             bundleQty: parseInt($("promoBundleQty").value, 10),
@@ -571,58 +585,103 @@
           $("promoPercent").value = p.percent ?? 10;
           $("promoLabelInput").value = p.label || "";
           $("promoDescInput").value = p.description || "";
-          setPromoType(p.type || "buyXpayY");
-          setPromoToggle(!!p.active);
+          setChoice(choiceFromPromo(p));
+          renderPromoStatus();
+        }
+
+        // Cartel de arriba: dice claramente si hay una promo andando en la web
+        function renderPromoStatus() {
+          const p = currentSettings?.promo;
+          const live = !!p?.active;
+          const card = $("promoStatusCard");
+          card.classList.toggle("border-green-300", live);
+          card.classList.toggle("bg-green-50", live);
+          card.classList.toggle("border-gray-100", !live);
+          card.classList.toggle("bg-gray-50", !live);
+          $("promoStatusDot").classList.toggle("bg-green-500", live);
+          $("promoStatusDot").classList.toggle("bg-gray-300", !live);
+          $("promoStatusTitle").textContent = live
+            ? `Live now: ${p.label || autoLabel(p)}`
+            : "No promotion running";
+          $("promoStatusText").textContent = live
+            ? "Customers see this offer on the website and the total drops automatically."
+            : `Customers pay the regular price ($${fmt(currentSettings?.price ?? 15)} per box).`;
+          $("stopPromoBtn").classList.toggle("hidden", !live);
+          $("savePromoBtn").textContent = live ? "Update promotion" : "Start promotion";
         }
 
         // Devuelve un texto de error si la promo no tiene sentido
         function promoError(p, price) {
           if (p.type === "buyXpayY") {
-            if (!(p.buy >= 2 && p.buy <= 20)) return "“Customer buys” must be between 2 and 20.";
-            if (!(p.pay >= 1 && p.pay < p.buy)) return "“Pays for” must be at least 1 and less than “Customer buys”.";
+            if (!(p.buy >= 2 && p.buy <= 20)) return "The customer must buy between 2 and 20 boxes.";
+            if (!(p.pay >= 1 && p.pay < p.buy)) return "The boxes they pay for must be fewer than the boxes they get.";
           }
           if (p.type === "bundle") {
-            if (!(p.bundleQty >= 2 && p.bundleQty <= 20)) return "Boxes must be between 2 and 20.";
-            if (!(p.bundlePrice >= 1)) return "Enter the bundle price.";
+            if (!(p.bundleQty >= 2 && p.bundleQty <= 20)) return "The combo must have between 2 and 20 boxes.";
+            if (!(p.bundlePrice >= 1)) return "Enter the combo price.";
             if (p.bundlePrice >= p.bundleQty * price)
-              return `${p.bundleQty} boxes already cost $${fmt(p.bundleQty * price)} — the bundle price must be lower.`;
+              return `${p.bundleQty} boxes already cost $${fmt(p.bundleQty * price)}. The combo price must be lower.`;
           }
-          if (p.type === "percent" && !(p.percent >= 1 && p.percent <= 90)) return "Discount must be between 1% and 90%.";
+          if (p.type === "percent" && !(p.percent >= 1 && p.percent <= 90)) return "The discount must be between 1% and 90%.";
           return "";
         }
 
         function renderPromoPreview() {
-          const p = readPromoForm();
+          const p = readPromoForm(true);
           const price = parseFloat($("priceInput").value) || currentSettings?.price || 15;
           const err = promoError(p, price);
-          $("promoLabelInput").placeholder = autoLabel(p) || "Title";
-          $("promoDescInput").placeholder = autoDescription(p) || "Description";
-          $("promoPreviewError").textContent = err;
+          const qty = parseInt($("promoBundleQty").value, 10);
+          $("bundleHelp").textContent = qty >= 2 ? `Regular price for ${qty} boxes: $${fmt(qty * price)}` : "";
+          $("promoLabelInput").placeholder = autoLabel(p);
+          $("promoDescInput").placeholder = autoDescription(p);
+          $("previewLabel").textContent = p.label || autoLabel(p);
+          $("previewDesc").textContent = p.description || autoDescription(p);
+          $("promoPreviewError").textContent = err ? "⚠️ " + err : "";
           $("promoPreviewError").classList.toggle("hidden", !err);
+          $("savePromoBtn").disabled = !!err;
+          $("savePromoBtn").classList.toggle("opacity-50", !!err);
           const list = $("promoPreview");
-          list.innerHTML = "";
+          list.replaceChildren();
           if (err) return;
           for (let q = 1; q <= 4; q++) {
-            const r = calc(q, price, { ...p, active: true });
+            const r = calc(q, price, p);
             const li = document.createElement("li");
-            li.innerHTML = `<span class="font-semibold">${q} box${q > 1 ? "es" : ""}:</span> ` +
-              (r.applied
-                ? `<span class="line-through text-gray-400">$${fmt(r.subtotal)}</span> <strong>$${fmt(r.total)}</strong> <span class="text-green-600 font-semibold">(save $${fmt(r.savings)})</span>`
-                : `<strong>$${fmt(r.total)}</strong>`);
+            const name = document.createElement("span");
+            name.className = "font-semibold";
+            name.textContent = `${q} box${q > 1 ? "es" : ""}: `;
+            li.append(name);
+            if (r.applied) {
+              const old = document.createElement("span");
+              old.className = "line-through text-gray-400";
+              old.textContent = `$${fmt(r.subtotal)}`;
+              const now = document.createElement("strong");
+              now.textContent = ` $${fmt(r.total)} `;
+              const save = document.createElement("span");
+              save.className = "text-green-600 font-semibold";
+              save.textContent = `(saves $${fmt(r.savings)})`;
+              li.append(old, now, save);
+            } else {
+              const now = document.createElement("strong");
+              now.textContent = `$${fmt(r.total)}`;
+              const note = document.createElement("span");
+              note.className = "text-gray-400";
+              note.textContent = " (regular price)";
+              li.append(now, note);
+            }
             list.append(li);
           }
         }
 
-        $("promoToggleBtn").addEventListener("click", () => setPromoToggle(!promoActive));
-        document.querySelectorAll(".type-btn").forEach((b) => b.addEventListener("click", () => setPromoType(b.dataset.type)));
+        document.querySelectorAll(".type-btn").forEach((b) => b.addEventListener("click", () => setChoice(b.dataset.choice)));
+        $("customChoiceBtn").addEventListener("click", () => setChoice("custom"));
         ["promoBuy", "promoPay", "promoBundleQty", "promoBundlePrice", "promoPercent", "promoLabelInput", "promoDescInput"]
           .forEach((id) => $(id).addEventListener("input", renderPromoPreview));
 
-        $("savePromoBtn").addEventListener("click", async () => {
+        async function savePromo(active, okMsg) {
           const statusEl = $("promoSaveStatus");
           if (!currentSettings) return setStatus(statusEl, "Settings not loaded. Refresh the page.", "error");
-          const p = readPromoForm();
-          if (p.active) {
+          const p = active ? readPromoForm(true) : { ...currentSettings.promo, active: false };
+          if (active) {
             const err = promoError(p, currentSettings.price);
             if (err) return setStatus(statusEl, "✗ " + err, "error");
           }
@@ -630,10 +689,15 @@
           try {
             await saveSettings({ promo: p });
             fillPromoForm(currentSettings.promo);
-            setStatus(statusEl, p.active ? "✓ Saved! The promotion is live." : "✓ Saved! Promotion is off.", "ok");
+            setStatus(statusEl, okMsg, "ok");
           } catch (err) {
             setStatus(statusEl, "✗ " + err.message, "error");
           }
+        }
+
+        $("savePromoBtn").addEventListener("click", () => savePromo(true, "✓ Done! The promotion is live on the website."));
+        $("stopPromoBtn").addEventListener("click", () => {
+          if (confirm("Stop the promotion? Customers will pay the regular price again.")) savePromo(false, "✓ Promotion stopped.");
         });
       })();
     </script>
