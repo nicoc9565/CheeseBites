@@ -163,7 +163,8 @@
                 <p class="font-bold text-[#0b0f19]">Last 7 days</p>
                 <button type="button" data-go="stats" class="text-sm font-semibold text-gray-500 hover:text-[#0b0f19]">See stats →</button>
               </div>
-              <div class="grid grid-cols-3 gap-3">
+              <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="metric"><p class="ecard-label">Visitors</p><p id="homeWeekVisitors" class="metric-value">–</p></div>
                 <div class="metric"><p class="ecard-label">Orders</p><p id="homeWeekOrders" class="metric-value">–</p></div>
                 <div class="metric"><p class="ecard-label">Boxes</p><p id="homeWeekBoxes" class="metric-value">–</p></div>
                 <div class="metric"><p class="ecard-label">With promo</p><p id="homeWeekPromo" class="metric-value">–</p></div>
@@ -539,6 +540,22 @@
               <h1 class="view-title">Stats</h1>
             </div>
             <div class="ecard">
+              <div class="flex items-center justify-between gap-3 mb-1">
+                <p class="font-bold text-[#0b0f19]">Visitors</p>
+                <button id="refreshVisitsBtn" class="text-sm text-gray-500 hover:text-[#0b0f19] transition">⟳ Refresh</button>
+              </div>
+              <p class="text-sm text-gray-400 mb-6">People who opened the website. Counted since Nov 20, 2026.</p>
+              <div id="visitsCards" class="grid grid-cols-2 md:grid-cols-4 gap-3"></div>
+              <p class="lbl mt-6">Visitors per day · last 14 days</p>
+              <div id="visitsDays" class="flex items-end gap-1 h-28"></div>
+              <div id="visitsDayLabels" class="flex justify-between text-[11px] text-gray-400 mt-1"></div>
+              <div class="grid md:grid-cols-2 gap-6 mt-6">
+                <div><p class="lbl">Where they come from · 30 days</p><div id="visitsSources" class="space-y-1.5"></div></div>
+                <div><p class="lbl">Device · 30 days</p><div id="visitsDevices" class="space-y-1.5"></div></div>
+              </div>
+              <p id="visitsStatus" class="text-sm text-gray-400 mt-3"></p>
+            </div>
+            <div class="ecard">
 
           <div class="flex items-center justify-between gap-3 mb-1">
             <p class="font-bold text-[#0b0f19]">Orders</p>
@@ -852,6 +869,7 @@
             fillAll();
             loadHistory();
             loadStats();
+            loadVisits();
           } catch (err) {
             console.error(err);
             setStatus($("promoSaveStatus"), "Could not load current settings. Refresh the page before saving.", "error");
@@ -1313,6 +1331,8 @@
             const sum = (list, f) => list.reduce((t, e) => t + f(e), 0);
             const w = within(7), m = within(30);
             $("homeWeekOrders").textContent = w.length;
+            lastOrders7 = w.length;
+            renderConversion();
             $("homeWeekBoxes").textContent = w.reduce((t, e) => t + e.qty, 0);
             $("homeWeekPromo").textContent = w.filter((e) => e.promo).length;
             const ch = (list, c) => list.filter((e) => e.channel === c).length;
@@ -1566,6 +1586,101 @@
             alert(`Could not save: ${err.message}`);
           }
         });
+
+        // ---------- visitas (Vercel Analytics) ----------
+        let lastOrders7 = null, lastVisitors7 = null;
+        function renderConversion() {
+          const el = $("visitsConversion");
+          if (!el || lastOrders7 === null || lastVisitors7 === null) return;
+          el.textContent = lastVisitors7 ? `${Math.round((lastOrders7 / lastVisitors7) * 100)}%` : "–";
+        }
+        // "l.instagram.com" → "Instagram", vacío → "Direct or shared link"
+        function sourceName(host) {
+          const h = String(host || "").toLowerCase().replace(/^www\./, "");
+          if (!h) return "Direct or shared link";
+          if (h.includes("instagram")) return "Instagram";
+          if (h.includes("facebook") || h === "fb.com" || h.startsWith("m.facebook")) return "Facebook";
+          if (h.includes("google")) return "Google";
+          if (h.includes("whatsapp")) return "WhatsApp";
+          if (h.includes("bing")) return "Bing";
+          if (h.includes("cheese-bites")) return "Cheese Bites (inside the site)";
+          return h;
+        }
+        function barRows(rows, labelOf) {
+          const total = rows.reduce((t, r) => t + r.visitors, 0) || 1;
+          return rows.map((r) => {
+            const row = document.createElement("div");
+            row.className = "flex items-center gap-3 text-xs";
+            const label = document.createElement("span");
+            label.className = "w-32 shrink-0 truncate text-gray-600";
+            label.textContent = labelOf(r.key);
+            const track = document.createElement("div");
+            track.className = "flex-1 h-3 rounded-full bg-gray-100 overflow-hidden";
+            const bar = document.createElement("div");
+            bar.className = "h-full rounded-full bg-[#75aadb]";
+            bar.style.width = `${(r.visitors / total) * 100}%`;
+            track.append(bar);
+            const pct = document.createElement("span");
+            pct.className = "w-10 text-right font-bold text-[#0b0f19]";
+            pct.textContent = `${Math.round((r.visitors / total) * 100)}%`;
+            row.append(label, track, pct);
+            return row;
+          });
+        }
+        async function loadVisits() {
+          const statusEl = $("visitsStatus");
+          setStatus(statusEl, "Loading…");
+          try {
+            const v = await api("/api/visits");
+            lastVisitors7 = v.week.visitors;
+            $("homeWeekVisitors").textContent = v.week.visitors;
+            $("visitsCards").replaceChildren(
+              statCard("Last 7 days", `${v.week.visitors} visitor${v.week.visitors === 1 ? "" : "s"}`, `${v.week.pageviews} page views`),
+              statCard("Last 30 days", `${v.month.visitors} visitor${v.month.visitors === 1 ? "" : "s"}`, `${v.month.pageviews} page views`),
+              statCard("Visitors who ordered (7 days)", "–", "of visitors sent an order"),
+              statCard("Top source (30 days)", v.sources[0] ? sourceName(v.sources[0].key) : "–", v.sources[0] ? `${v.sources[0].visitors} visitors` : ""),
+            );
+            $("visitsCards").children[2].querySelector("p:nth-child(2)").id = "visitsConversion";
+            renderConversion();
+
+            // Barras por día (los días sin visitas cuentan como 0)
+            const byDay = new Map(v.days.map((d) => [String(d.key).slice(0, 10), d.visitors]));
+            const days = [];
+            for (let i = 13; i >= 0; i--) days.push(new Date(Date.now() - i * 86400000).toISOString().slice(0, 10));
+            const max = Math.max(1, ...days.map((d) => byDay.get(d) || 0));
+            $("visitsDays").replaceChildren(...days.map((d) => {
+              const n = byDay.get(d) || 0;
+              const col = document.createElement("div");
+              col.className = "flex-1 h-full flex flex-col justify-end items-center gap-1";
+              const num = document.createElement("span");
+              num.className = "text-[10px] font-bold text-[#0b0f19]";
+              num.textContent = n || "";
+              const bar = document.createElement("div");
+              bar.className = "w-full rounded-t-md bg-[#ffca44]";
+              bar.style.height = `${Math.max(n ? 6 : 2, (n / max) * 88)}%`;
+              if (!n) bar.className = "w-full rounded-t-md bg-gray-100";
+              bar.title = `${d}: ${n} visitors`;
+              col.append(num, bar);
+              return col;
+            }));
+            const fmtDay = (d) => new Date(d + "T12:00:00Z").toLocaleDateString("en-US", { month: "short", day: "numeric" });
+            $("visitsDayLabels").replaceChildren(...[days[0], days[6], days[13]].map((d) => { const s = document.createElement("span"); s.textContent = fmtDay(d); return s; }));
+
+            $("visitsSources").replaceChildren(...(v.sources.length ? barRows(v.sources, sourceName) : [emptyNote()]));
+            const deviceName = (k) => ({ mobile: "Phone", desktop: "Computer", tablet: "Tablet" })[String(k).toLowerCase()] || k || "Other";
+            $("visitsDevices").replaceChildren(...(v.devices.length ? barRows(v.devices, deviceName) : [emptyNote()]));
+            setStatus(statusEl, v.month.visitors ? "" : "No visits counted yet. They'll show up here as people open the website.");
+          } catch (err) {
+            setStatus(statusEl, "✗ " + err.message, "error");
+          }
+        }
+        function emptyNote() {
+          const p = document.createElement("p");
+          p.className = "text-xs text-gray-400";
+          p.textContent = "No data yet.";
+          return p;
+        }
+        $("refreshVisitsBtn").addEventListener("click", loadVisits);
       })();
     </script>
   </body>
