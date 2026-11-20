@@ -36,6 +36,30 @@
       .type-btn { border: 2px solid #f3f4f6; border-radius: 1rem; padding: 0.75rem; text-align: left; transition: all .15s; background: #fff; }
       .type-btn:hover { border-color: #fde68a; }
       .type-btn.is-selected { border-color: #ffca44; background: #fffbeb; box-shadow: 0 0 0 1px #ffca44; }
+      .nav-item { display: flex; align-items: center; gap: 0.75rem; padding: 0.6rem 0.75rem; border-radius: 0.9rem; font-weight: 600; font-size: 0.9rem; color: #6b7280; text-align: left; transition: background .15s, color .15s; }
+      .nav-item:hover { background: #f9fafb; color: #0b0f19; }
+      .nav-item.is-active { background: #fffbeb; color: #0b0f19; box-shadow: inset 0 0 0 1px #fde68a; }
+      .tab-item { display: flex; flex-direction: column; align-items: center; gap: 0.1rem; padding: 0.5rem 0 0.6rem; font-size: 0.65rem; font-weight: 700; color: #9ca3af; }
+      .tab-item.is-active { color: #0b0f19; }
+      .tab-item.is-active span { transform: scale(1.1); }
+      .view-title { font-family: Poppins, sans-serif; font-size: 1.6rem; font-weight: 800; color: #0b0f19; line-height: 1.2; }
+      .view-sub { font-size: 0.9rem; color: #9ca3af; margin-top: 0.25rem; }
+      .ecard, .hcard { display: block; width: 100%; background: #fff; border: 1px solid #f3f4f6; border-radius: 1.5rem; padding: 1.25rem; }
+      .hcard { transition: border-color .15s; }
+      button.hcard:hover { border-color: #fde68a; }
+      .ecard-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+      .ecard-label { font-size: 0.75rem; font-weight: 700; color: #9ca3af; }
+      .ecard-value { font-weight: 700; color: #0b0f19; margin-top: 0.15rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .ecard-btn { font-size: 0.85rem; font-weight: 700; border: 1px solid #e5e7eb; border-radius: 0.75rem; padding: 0.45rem 0.9rem; color: #0b0f19; }
+      .ecard-btn:hover { border-color: #0b0f19; }
+      .ecard-body { border-top: 1px solid #f3f4f6; margin-top: 1rem; padding-top: 1.25rem; }
+      .hcard-value { font-family: Poppins, sans-serif; font-size: 1.35rem; font-weight: 800; color: #0b0f19; margin-top: 0.4rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .hcard-text { font-size: 0.8rem; color: #6b7280; margin-top: 0.15rem; }
+      .metric { background: #f9fafb; border-radius: 1rem; padding: 0.75rem 1rem; }
+      .metric-value { font-family: Poppins, sans-serif; font-size: 1.5rem; font-weight: 800; color: #0b0f19; }
+      .pill { font-size: 0.7rem; font-weight: 700; padding: 0.15rem 0.6rem; border-radius: 9999px; }
+      .quick { background: #fff; border: 1px solid #f3f4f6; border-radius: 1rem; padding: 0.85rem 1rem; font-weight: 700; font-size: 0.9rem; color: #0b0f19; text-align: left; }
+      .quick:hover { border-color: #fde68a; }
       .chip { border-radius: 9999px; background: #fff; border: 1px solid #f3f4f6; padding: 0.4rem 0.8rem; color: #4b5563; }
       .chip:hover { border-color: #ffca44; color: #0b0f19; }
       .switch { position: relative; display: inline-flex; height: 1.75rem; width: 3rem; flex-shrink: 0; align-items: center; border-radius: 9999px; background: #e5e7eb; transition: background .15s; }
@@ -72,86 +96,99 @@
     </div>
 
     <!-- ADMIN DASHBOARD -->
-    <div id="dashboard" class="hidden">
-      <header class="bg-white border-b border-gray-100 sticky top-0 z-10">
-        <div class="max-w-5xl mx-auto px-4 py-4 flex items-center justify-between">
-          <div class="flex items-center gap-3">
-            <span class="text-2xl">🧀</span>
-            <div>
-              <h1 class="text-lg font-bold text-[#0b0f19] leading-none">Cheese Bites</h1>
-              <p class="text-xs text-gray-400">Admin Panel</p>
-            </div>
-          </div>
-          <div class="flex items-center gap-3">
-            <a href="/" target="_blank" rel="noopener" class="text-sm text-gray-500 hover:text-[#0b0f19] transition">View Site ↗</a>
-            <button id="logoutBtn" class="text-sm text-gray-500 hover:text-red-500 transition">Sign Out</button>
+    <div id="dashboard" class="hidden"><div class="md:flex min-h-screen">
+      <!-- Menú lateral (compu) -->
+      <aside class="hidden md:flex md:flex-col w-60 shrink-0 bg-white border-r border-gray-100 sticky top-0 h-screen p-4">
+        <div class="flex items-center gap-3 px-2 pb-6 pt-2">
+          <span class="text-2xl">🧀</span>
+          <div>
+            <p class="font-bold text-[#0b0f19] leading-none" style="font-family:Poppins,sans-serif">Cheese Bites</p>
+            <p class="text-xs text-gray-400">Admin Panel</p>
           </div>
         </div>
-      </header>
-
-      <main class="max-w-5xl mx-auto px-4 py-8 space-y-8">
-
-        <!-- Accesos rápidos -->
-        <nav class="flex flex-wrap gap-2 text-xs font-bold" aria-label="Sections">
-          <a href="#secOrders" class="chip">Orders &amp; announcement</a>
-          <a href="#secPromo" class="chip">Price &amp; promo</a>
-          <a href="#secGallery" class="chip">Photos</a>
-          <a href="#secFaq" class="chip">FAQ</a>
-          <a href="#secContact" class="chip">Contact</a>
-          <a href="#secStats" class="chip">Stats</a>
-          <a href="#secHistory" class="chip">Undo</a>
-          <a href="#secPassword" class="chip">Password</a>
+        <nav class="flex flex-col gap-1" aria-label="Sections">
+          <a href="#home" data-nav="home" class="nav-item"><span aria-hidden="true">🏠</span>Home</a>
+          <a href="#promo" data-nav="promo" class="nav-item"><span aria-hidden="true">🏷️</span>Price & promo</a>
+          <a href="#photos" data-nav="photos" class="nav-item"><span aria-hidden="true">📷</span>Photos</a>
+          <a href="#texts" data-nav="texts" class="nav-item"><span aria-hidden="true">✏️</span>Website texts</a>
+          <a href="#stats" data-nav="stats" class="nav-item"><span aria-hidden="true">📊</span>Stats</a>
+          <a href="#settings" data-nav="settings" class="nav-item"><span aria-hidden="true">⚙️</span>Settings</a>
         </nav>
+        <div class="mt-auto flex flex-col gap-1 text-sm">
+          <a href="/" target="_blank" rel="noopener" class="nav-item">↗ View site</a>
+          <button id="logoutBtn" class="nav-item hover:!text-red-500">⎋ Sign out</button>
+        </div>
+      </aside>
 
-        <!-- Orders & announcement -->
-        <section id="secOrders" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 scroll-mt-24">
-          <h2 class="text-lg font-bold text-[#0b0f19] mb-1">Orders &amp; Announcement</h2>
-          <p class="text-sm text-gray-400 mb-6">Stop taking orders for a while, or show a short message at the top of the website.</p>
-
-          <div class="grid md:grid-cols-2 gap-6">
-            <!-- Pausar pedidos -->
-            <div class="rounded-2xl border-2 border-gray-100 p-5">
-              <div class="flex items-center justify-between gap-3 mb-4">
-                <div>
-                  <p class="font-extrabold text-[#0b0f19]">Taking orders</p>
-                  <p id="ordersStateText" class="text-xs text-gray-500 mt-0.5"></p>
-                </div>
-                <button id="ordersToggle" type="button" role="switch" aria-checked="true" aria-label="Taking orders" class="switch is-on"><span></span></button>
-              </div>
-              <label for="ordersMsg" class="lbl">Message when orders are paused</label>
-              <input id="ordersMsg" type="text" maxlength="200" class="input" placeholder="We're not taking orders right now. Follow us on Instagram to know when we're back!" />
-              <p class="text-xs text-gray-400 mt-2">Example: "Sold out this week, back on Monday!"</p>
-              <div class="mt-4 flex flex-wrap items-center gap-3">
-                <button id="saveOrdersBtn" class="btn-dark">Save</button>
-                <span id="ordersStatus" class="text-sm text-gray-400"></span>
-              </div>
-            </div>
-
-            <!-- Anuncio -->
-            <div class="rounded-2xl border-2 border-gray-100 p-5">
-              <div class="flex items-center justify-between gap-3 mb-4">
-                <div>
-                  <p class="font-extrabold text-[#0b0f19]">Announcement</p>
-                  <p id="announceStateText" class="text-xs text-gray-500 mt-0.5"></p>
-                </div>
-                <button id="announceToggle" type="button" role="switch" aria-checked="false" aria-label="Show announcement" class="switch"><span></span></button>
-              </div>
-              <label for="announceInput" class="lbl">Text</label>
-              <input id="announceInput" type="text" maxlength="120" class="input" placeholder="Delivery this Saturday only!" />
-              <p class="text-xs text-gray-400 mt-2"><span id="announceCount">0</span>/120 · Shown under the menu on every page.</p>
-              <div class="mt-4 flex flex-wrap items-center gap-3">
-                <button id="saveAnnounceBtn" class="btn-dark">Save</button>
-                <span id="announceStatus" class="text-sm text-gray-400"></span>
-              </div>
-            </div>
+      <div class="flex-1 min-w-0">
+        <!-- Barra de arriba (celular) -->
+        <header class="md:hidden bg-white border-b border-gray-100 sticky top-0 z-20 px-4 py-3 flex items-center justify-between">
+          <div class="flex items-center gap-2"><span class="text-xl">🧀</span><span class="font-bold text-[#0b0f19]" style="font-family:Poppins,sans-serif">Cheese Bites</span></div>
+          <div class="flex items-center gap-4 text-sm text-gray-500">
+            <a href="/" target="_blank" rel="noopener">View site ↗</a>
+            <button id="logoutBtnMobile">Sign out</button>
           </div>
-        </section>
+        </header>
 
-        <!-- Price & Promo -->
-        <section id="secPromo" class="scroll-mt-24 bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
-          <h2 class="text-lg font-bold text-[#0b0f19] mb-1">Price & Promotions</h2>
-          <p class="text-sm text-gray-400 mb-6">Set the box price and activate special offers. The website calculates the discount automatically.</p>
+        <main class="max-w-4xl mx-auto px-4 md:px-10 py-6 md:py-10 pb-28 md:pb-10">
 
+          <!-- INICIO -->
+          <section data-view="home" class="space-y-4">
+            <div>
+              <h1 id="greeting" class="view-title">Hello!</h1>
+              <p class="view-sub">Everything on your website at a glance.</p>
+            </div>
+            <div class="grid sm:grid-cols-3 gap-4">
+              <div class="hcard">
+                <div class="flex items-center justify-between gap-2"><p class="ecard-label">Orders</p><button id="homeOrdersToggle" type="button" role="switch" aria-checked="true" aria-label="Taking orders" class="switch is-on"><span></span></button></div>
+                <p id="homeOrdersValue" class="hcard-value">…</p>
+                <p id="homeOrdersText" class="hcard-text"></p>
+              </div>
+              <button type="button" class="hcard text-left" data-go="promo">
+                <div class="flex items-center justify-between gap-2"><p class="ecard-label">Promotion</p><span id="homePromoPill" class="pill"></span></div>
+                <p id="homePromoValue" class="hcard-value">…</p>
+                <p id="homePromoText" class="hcard-text"></p>
+              </button>
+              <button type="button" class="hcard text-left" data-go="texts" data-open="announce">
+                <div class="flex items-center justify-between gap-2"><p class="ecard-label">Announcement</p><span id="homeAnnPill" class="pill"></span></div>
+                <p id="homeAnnValue" class="hcard-value">…</p>
+                <p id="homeAnnText" class="hcard-text"></p>
+              </button>
+            </div>
+            <div class="hcard">
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <p class="font-bold text-[#0b0f19]">Last 7 days</p>
+                <button type="button" data-go="stats" class="text-sm font-semibold text-gray-500 hover:text-[#0b0f19]">See stats →</button>
+              </div>
+              <div class="grid grid-cols-3 gap-3">
+                <div class="metric"><p class="ecard-label">Orders</p><p id="homeWeekOrders" class="metric-value">–</p></div>
+                <div class="metric"><p class="ecard-label">Boxes</p><p id="homeWeekBoxes" class="metric-value">–</p></div>
+                <div class="metric"><p class="ecard-label">With promo</p><p id="homeWeekPromo" class="metric-value">–</p></div>
+              </div>
+            </div>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <button type="button" class="quick" data-go="photos">📷 Upload photos</button>
+              <button type="button" class="quick" data-go="promo" data-open="price">🏷️ Change price</button>
+              <button type="button" class="quick" data-go="texts" data-open="faq">✏️ Edit FAQ</button>
+            </div>
+          </section>
+
+          <!-- PRECIO Y PROMO -->
+          <section data-view="promo" class="hidden space-y-4">
+            <div>
+              <h1 class="view-title">Price &amp; promo</h1>
+              <p class="view-sub">The website calculates discounts automatically.</p>
+            </div>
+
+          <div class="ecard" id="ec-price">
+            <div class="ecard-head">
+              <div class="min-w-0">
+                <p class="ecard-label">Box price</p>
+                <p class="ecard-value" id="sum-price">…</p>
+              </div>
+              <div class="flex items-center gap-2 shrink-0"><button type="button" class="ecard-btn" data-edit="price">Edit</button></div>
+            </div>
+            <div class="ecard-body hidden">
           <!-- Price -->
           <div class="mb-6">
             <label for="priceInput" class="lbl">Box Price (USD)</label>
@@ -166,10 +203,13 @@
             <p class="text-xs text-gray-400 mt-2">To discount every box, just lower the price here.</p>
           </div>
 
-          <!-- Promo -->
-          <div class="border-t border-gray-100 pt-6">
+
+            </div>
+          </div>
+            <!-- Promo -->
+          
             <!-- Estado actual: se ve de un vistazo si hay promo o no -->
-            <div id="promoStatusCard" class="rounded-2xl border-2 border-gray-100 bg-gray-50 p-4 mb-6 flex flex-wrap items-center justify-between gap-3">
+            <div id="promoStatusCard" class="rounded-2xl border-2 border-gray-100 bg-gray-50 p-4 flex flex-wrap items-center justify-between gap-3">
               <div class="flex items-center gap-3">
                 <span id="promoStatusDot" class="h-3 w-3 rounded-full shrink-0 bg-gray-300"></span>
                 <div>
@@ -179,9 +219,10 @@
               </div>
               <button id="stopPromoBtn" type="button" class="hidden bg-white border-2 border-red-200 text-red-500 hover:bg-red-50 font-bold text-sm px-4 py-2 rounded-xl transition">Stop promotion</button>
             </div>
-
+            <div class="ecard">
+              <p id="promoPickTitle" class="font-bold text-[#0b0f19] mb-4">New promotion</p>
             <!-- Paso 1 -->
-            <p class="step-title"><span class="step-num">1</span> Pick a promotion</p>
+            <p class="step-title"><span class="step-num">1</span> Pick one</p>
             <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
               <button type="button" class="type-btn" data-choice="2x1">
                 <div class="text-2xl font-extrabold text-[#0b0f19]">2x1</div>
@@ -223,6 +264,8 @@
               </div>
             </div>
 
+
+              <div id="promoWizardRest" class="hidden">
             <!-- Paso 2: cuándo -->
             <p class="step-title mt-8"><span class="step-num">2</span> When?</p>
             <div class="space-y-3">
@@ -283,26 +326,33 @@
               <button id="savePromoBtn" class="bg-[#ffca44] hover:brightness-95 text-[#0b0f19] font-extrabold text-sm px-6 py-3 rounded-2xl transition">Start promotion</button>
               <span id="promoSaveStatus" class="text-sm text-gray-400"></span>
             </div>
-          </div>
-        </section>
 
-        <!-- Upload zone -->
-        <section id="secGallery" class="scroll-mt-24 bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
-          <h2 class="text-lg font-bold text-[#0b0f19] mb-4">Upload Gallery Photos</h2>
-          <div id="dropzone" role="button" tabindex="0" class="border-2 border-dashed border-gray-200 rounded-2xl p-10 text-center cursor-pointer hover:border-[#ffca44] hover:bg-yellow-50 transition">
-            <div class="text-4xl mb-3">📸</div>
+              </div>
+            </div>
+          </section>
+
+          <!-- FOTOS -->
+          <section data-view="photos" class="hidden space-y-4">
+            <div>
+              <h1 class="view-title">Photos</h1>
+              <p class="view-sub">Gallery photos and the two main photos of the website.</p>
+            </div>
+            <div class="ecard">
+
+          <div id="dropzone" role="button" tabindex="0" class="border-2 border-dashed border-gray-200 rounded-2xl p-6 text-center cursor-pointer hover:border-[#ffca44] hover:bg-yellow-50 transition">
+            <div class="text-3xl mb-2">📸</div>
             <p class="font-semibold text-gray-600">Drag & drop photos here</p>
             <p class="text-sm text-gray-400 mt-1">or click to browse · JPG, PNG, WebP · photos are resized automatically</p>
             <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" multiple class="hidden" />
           </div>
           <ul id="uploadQueue" class="mt-4 space-y-2"></ul>
-        </section>
+        
+            </div>
+            <div class="ecard">
 
-        <!-- Gallery grid -->
-        <section class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
           <div class="flex items-center justify-between mb-4">
             <div>
-              <h2 class="text-lg font-bold text-[#0b0f19]">Current Gallery Photos</h2>
+              <p class="font-bold text-[#0b0f19]">Gallery</p>
               <p class="text-xs text-gray-400 mt-0.5">Use ◀ ▶ to change the order. The first one shows first on the website.</p>
             </div>
             <button id="refreshBtn" class="text-sm text-gray-500 hover:text-[#0b0f19] transition">⟳ Refresh</button>
@@ -318,11 +368,11 @@
             <button id="saveGalleryOrderBtn" class="btn-dark">Save order</button>
             <span id="galleryOrderStatus" class="text-sm text-gray-400"></span>
           </div>
-        </section>
+        
+            </div>
+            <div class="ecard">
 
-        <!-- Site Images -->
-        <section class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6">
-          <h2 class="text-lg font-bold text-[#0b0f19] mb-1">Site Images</h2>
+          <p class="font-bold text-[#0b0f19] mb-1">Main photos</p>
           <p class="text-sm text-gray-400 mb-6">Change the main photos shown on the website.</p>
           <div class="grid sm:grid-cols-2 gap-6">
             <div>
@@ -350,11 +400,88 @@
               <div id="instructionsUploadStatus" class="text-xs text-gray-400 mt-2 min-h-[1rem]"></div>
             </div>
           </div>
-        </section>
+        
+            </div>
+          </section>
 
-        <!-- FAQ -->
-        <section id="secFaq" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 scroll-mt-24">
-          <h2 class="text-lg font-bold text-[#0b0f19] mb-1">FAQ</h2>
+          <!-- TEXTOS DE LA WEB -->
+          <section data-view="texts" class="hidden space-y-4">
+            <div>
+              <h1 class="view-title">Website texts</h1>
+              <p class="view-sub">Announcement, pause message, questions and contact info.</p>
+            </div>
+
+          <div class="ecard" id="ec-announce">
+            <div class="ecard-head">
+              <div class="min-w-0">
+                <p class="ecard-label">Announcement bar</p>
+                <p class="ecard-value" id="sum-announce">…</p>
+              </div>
+              <div class="flex items-center gap-2 shrink-0"><button type="button" class="ecard-btn" data-edit="announce">Edit</button></div>
+            </div>
+            <div class="ecard-body hidden">
+            <!-- Anuncio -->
+            <div class="">
+              <div class="flex items-center justify-between gap-3 mb-4">
+                <div>
+                  <p class="font-bold text-[#0b0f19]">Show it on the website</p>
+                  <p id="announceStateText" class="text-xs text-gray-500 mt-0.5"></p>
+                </div>
+                <button id="announceToggle" type="button" role="switch" aria-checked="false" aria-label="Show announcement" class="switch"><span></span></button>
+              </div>
+              <label for="announceInput" class="lbl">Text</label>
+              <input id="announceInput" type="text" maxlength="120" class="input" placeholder="Delivery this Saturday only!" />
+              <p class="text-xs text-gray-400 mt-2"><span id="announceCount">0</span>/120 · Shown under the menu on every page.</p>
+              <div class="mt-4 flex flex-wrap items-center gap-3">
+                <button id="saveAnnounceBtn" class="btn-dark">Save</button>
+                <span id="announceStatus" class="text-sm text-gray-400"></span>
+              </div>
+            </div>
+
+            </div>
+          </div>
+
+          <div class="ecard" id="ec-pause">
+            <div class="ecard-head">
+              <div class="min-w-0">
+                <p class="ecard-label">Orders</p>
+                <p class="ecard-value" id="sum-pause">…</p>
+              </div>
+              <div class="flex items-center gap-2 shrink-0"><button type="button" class="ecard-btn" data-edit="pause">Edit</button></div>
+            </div>
+            <div class="ecard-body hidden">
+            <!-- Pausar pedidos -->
+            <div class="">
+              <div class="flex items-center justify-between gap-3 mb-4">
+                <div>
+                  <p class="font-bold text-[#0b0f19]">Taking orders</p>
+                  <p id="ordersStateText" class="text-xs text-gray-500 mt-0.5"></p>
+                </div>
+                <button id="ordersToggle" type="button" role="switch" aria-checked="true" aria-label="Taking orders" class="switch is-on"><span></span></button>
+              </div>
+              <label for="ordersMsg" class="lbl">Message when orders are paused</label>
+              <input id="ordersMsg" type="text" maxlength="200" class="input" placeholder="We're not taking orders right now. Follow us on Instagram to know when we're back!" />
+              <p class="text-xs text-gray-400 mt-2">Example: "Sold out this week, back on Monday!"</p>
+              <div class="mt-4 flex flex-wrap items-center gap-3">
+                <button id="saveOrdersBtn" class="btn-dark">Save</button>
+                <span id="ordersStatus" class="text-sm text-gray-400"></span>
+              </div>
+            </div>
+
+
+            </div>
+          </div>
+
+          <div class="ecard" id="ec-faq">
+            <div class="ecard-head">
+              <div class="min-w-0">
+                <p class="ecard-label">FAQ</p>
+                <p class="ecard-value" id="sum-faq">…</p>
+              </div>
+              <div class="flex items-center gap-2 shrink-0"><button type="button" class="ecard-btn" data-edit="faq">Edit</button></div>
+            </div>
+            <div class="ecard-body hidden">
+
           <p class="text-sm text-gray-400 mb-6">The questions at the bottom of the website. Write <strong class="text-gray-600">{price}</strong> where you want the box price to appear. Emails become links automatically.</p>
           <div id="faqEditor" class="space-y-4"></div>
           <button id="addFaqBtn" type="button" class="mt-4 text-sm font-bold text-[#0b0f19] underline">+ Add a question</button>
@@ -362,11 +489,20 @@
             <button id="saveFaqBtn" class="btn-dark">Save questions</button>
             <span id="faqStatus" class="text-sm text-gray-400"></span>
           </div>
-        </section>
+        
+            </div>
+          </div>
 
-        <!-- Contact -->
-        <section id="secContact" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 scroll-mt-24">
-          <h2 class="text-lg font-bold text-[#0b0f19] mb-1">Contact Info</h2>
+          <div class="ecard" id="ec-contact">
+            <div class="ecard-head">
+              <div class="min-w-0">
+                <p class="ecard-label">Contact info</p>
+                <p class="ecard-value" id="sum-contact">…</p>
+              </div>
+              <div class="flex items-center gap-2 shrink-0"><button type="button" class="ecard-btn" data-edit="contact">Edit</button></div>
+            </div>
+            <div class="ecard-body hidden">
+
           <p class="text-sm text-gray-400 mb-6">Where orders arrive and what customers see at the bottom of the website.</p>
           <div class="grid md:grid-cols-2 gap-6">
             <div>
@@ -389,12 +525,20 @@
             <button id="saveContactBtn" class="btn-dark">Save contact info</button>
             <span id="contactStatus" class="text-sm text-gray-400"></span>
           </div>
-        </section>
+        
+            </div>
+          </div>
+          </section>
 
-        <!-- Stats -->
-        <section id="secStats" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 scroll-mt-24">
+          <!-- ESTADÍSTICAS -->
+          <section data-view="stats" class="hidden space-y-4">
+            <div>
+              <h1 class="view-title">Stats</h1>
+            </div>
+            <div class="ecard">
+
           <div class="flex items-center justify-between gap-3 mb-1">
-            <h2 class="text-lg font-bold text-[#0b0f19]">Order Stats</h2>
+            <p class="font-bold text-[#0b0f19]">Orders</p>
             <button id="refreshStatsBtn" class="text-sm text-gray-500 hover:text-[#0b0f19] transition">⟳ Refresh</button>
           </div>
           <p class="text-sm text-gray-400 mb-6">How many times customers tapped a "Send order" button. Some may not finish sending the message, so it's a close estimate.</p>
@@ -402,19 +546,34 @@
           <p class="lbl mt-6">Last 14 days</p>
           <div id="statsDays" class="space-y-1.5"></div>
           <p id="statsStatus" class="text-sm text-gray-400 mt-3"></p>
-        </section>
+        
+            </div>
+          </section>
 
-        <!-- History / undo -->
-        <section id="secHistory" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 scroll-mt-24">
-          <h2 class="text-lg font-bold text-[#0b0f19] mb-1">Undo Changes</h2>
+          <!-- AJUSTES -->
+          <section data-view="settings" class="hidden space-y-4">
+            <div>
+              <h1 class="view-title">Settings</h1>
+            </div>
+            <div class="ecard">
+
+          <p class="font-bold text-[#0b0f19] mb-1">Recent changes</p>
           <p class="text-sm text-gray-400 mb-6">The last saved changes. Going back restores price, promotion, orders, announcement, FAQ and contact info (not photos).</p>
           <ul id="historyList" class="divide-y divide-gray-100"></ul>
           <p id="historyStatus" class="text-sm text-gray-400 mt-3"></p>
-        </section>
+        
+            </div>
 
-        <!-- Password -->
-        <section id="secPassword" class="bg-white rounded-3xl shadow-sm border border-gray-100 p-6 scroll-mt-24">
-          <h2 class="text-lg font-bold text-[#0b0f19] mb-1">Change Password</h2>
+          <div class="ecard" id="ec-password">
+            <div class="ecard-head">
+              <div class="min-w-0">
+                <p class="ecard-label">Password</p>
+                <p class="ecard-value" id="sum-password">…</p>
+              </div>
+              <div class="flex items-center gap-2 shrink-0"><button type="button" class="ecard-btn" data-edit="password">Edit</button></div>
+            </div>
+            <div class="ecard-body hidden">
+
           <p class="text-sm text-gray-400 mb-6">At least 8 characters. You'll use the new one next time you sign in.</p>
           <form id="passwordForm" class="grid md:grid-cols-2 gap-4 max-w-2xl">
             <div>
@@ -430,10 +589,23 @@
               <span id="pwStatus" class="text-sm text-gray-400"></span>
             </div>
           </form>
-        </section>
+        
+            </div>
+          </div>
+          </section>
+        </main>
+      </div>
 
-      </main>
-    </div>
+      <!-- Menú de abajo (celular) -->
+      <nav class="md:hidden fixed bottom-0 inset-x-0 z-30 bg-white border-t border-gray-100 grid grid-cols-6 pb-[env(safe-area-inset-bottom)]" aria-label="Sections">
+        <a href="#home" data-nav="home" class="tab-item"><span class="text-lg" aria-hidden="true">🏠</span>Home</a>
+        <a href="#promo" data-nav="promo" class="tab-item"><span class="text-lg" aria-hidden="true">🏷️</span>Promo</a>
+        <a href="#photos" data-nav="photos" class="tab-item"><span class="text-lg" aria-hidden="true">📷</span>Photos</a>
+        <a href="#texts" data-nav="texts" class="tab-item"><span class="text-lg" aria-hidden="true">✏️</span>Texts</a>
+        <a href="#stats" data-nav="stats" class="tab-item"><span class="text-lg" aria-hidden="true">📊</span>Stats</a>
+        <a href="#settings" data-nav="settings" class="tab-item"><span class="text-lg" aria-hidden="true">⚙️</span>Settings</a>
+      </nav>
+    </div></div>
 
     <script src="./js/promo.js"></script>
     <script>
@@ -523,6 +695,7 @@
           try { sessionStorage.setItem(SESSION_KEY, pw); } catch {}
           loginScreen.classList.add("hidden");
           dashboard.classList.remove("hidden");
+          showView(location.hash.slice(1));
           loadGallery();
           loadSettings();
         }
@@ -676,7 +849,8 @@
             fillAll();
             loadHistory();
             loadStats();
-          } catch {
+          } catch (err) {
+            console.error(err);
             setStatus($("promoSaveStatus"), "Could not load current settings. Refresh the page before saving.", "error");
           }
         }
@@ -805,7 +979,7 @@
             ended: ["border-gray-200 bg-gray-50", "bg-gray-400", `Ended: ${name}`, `It ended after ${niceDate(p?.endDate)}. ${regular}`],
             off: ["border-gray-100 bg-gray-50", "bg-gray-300", "No promotion running", regular],
           }[state];
-          $("promoStatusCard").className = `rounded-2xl border-2 p-4 mb-6 flex flex-wrap items-center justify-between gap-3 ${look[0]}`;
+          $("promoStatusCard").className = `rounded-3xl border-2 p-5 flex flex-wrap items-center justify-between gap-3 ${look[0]}`;
           $("promoStatusDot").className = `h-3 w-3 rounded-full shrink-0 ${look[1]}`;
           $("promoStatusTitle").textContent = look[2];
           $("promoStatusText").textContent = look[3];
@@ -923,6 +1097,7 @@
         // Después de guardar cualquier cosa: refresca lo que depende de la configuración
         function afterSave() {
           renderPromoStatus();
+          renderSummaries();
           loadHistory();
         }
 
@@ -1134,6 +1309,9 @@
             const within = (days) => events.filter((e) => now - Date.parse(e.at) < days * 86400000);
             const sum = (list, f) => list.reduce((t, e) => t + f(e), 0);
             const w = within(7), m = within(30);
+            $("homeWeekOrders").textContent = w.length;
+            $("homeWeekBoxes").textContent = w.reduce((t, e) => t + e.qty, 0);
+            $("homeWeekPromo").textContent = w.filter((e) => e.promo).length;
             const ch = (list, c) => list.filter((e) => e.channel === c).length;
             $("statsCards").replaceChildren(
               statCard("Last 7 days", `${w.length} order${w.length === 1 ? "" : "s"}`, `${sum(w, (e) => e.qty)} boxes · $${fmt(sum(w, (e) => e.total))}`),
@@ -1277,7 +1455,114 @@
           fillAnnouncement(s.announcement);
           fillFaq(s.faq);
           fillContact(s.contact);
+          renderSummaries();
         }
+        // ---------- pantallas (menú) ----------
+        const VIEWS = ["home", "promo", "photos", "texts", "stats", "settings"];
+        function showView(view, open) {
+          if (!VIEWS.includes(view)) view = "home";
+          document.querySelectorAll("[data-view]").forEach((v) => v.classList.toggle("hidden", v.dataset.view !== view));
+          document.querySelectorAll("[data-nav]").forEach((n) => {
+            const on = n.dataset.nav === view;
+            n.classList.toggle("is-active", on);
+            if (on) n.setAttribute("aria-current", "page"); else n.removeAttribute("aria-current");
+          });
+          if (location.hash !== `#${view}`) history.replaceState(null, "", `#${view}`);
+          window.scrollTo(0, 0);
+          if (open) openEdit(open, true);
+        }
+        document.addEventListener("click", (e) => {
+          const link = e.target.closest("[data-nav], [data-go]");
+          if (!link || !dashboard.contains(link)) return;
+          e.preventDefault();
+          showView(link.dataset.nav || link.dataset.go, link.dataset.open);
+        });
+        window.addEventListener("hashchange", () => showView(location.hash.slice(1)));
+        $("logoutBtnMobile").addEventListener("click", () => showLogin());
+
+        // ---------- tarjetas que se abren para editar ----------
+        function openEdit(id, force) {
+          const card = $(`ec-${id}`);
+          if (!card) return;
+          const body = card.querySelector(".ecard-body");
+          const show = force ?? body.classList.contains("hidden");
+          body.classList.toggle("hidden", !show);
+          card.querySelector(".ecard-btn").textContent = show ? "Close" : "Edit";
+          if (show) {
+            setTimeout(() => card.scrollIntoView({ behavior: "smooth", block: "start" }), 50);
+            card.querySelector(".ecard-body input:not([type=hidden]), .ecard-body textarea")?.focus({ preventScroll: true });
+          }
+        }
+        document.querySelectorAll("[data-edit]").forEach((b) => b.addEventListener("click", () => openEdit(b.dataset.edit)));
+
+        // ---------- armado de promo: los pasos 2 a 4 aparecen al elegir ----------
+        const showWizard = () => $("promoWizardRest").classList.remove("hidden");
+        document.querySelectorAll(".type-btn").forEach((b) => b.addEventListener("click", showWizard));
+        $("customChoiceBtn").addEventListener("click", showWizard);
+
+        // ---------- resúmenes (inicio y tarjetas) ----------
+        function renderSummaries() {
+          const s = currentSettings;
+          if (!s) return;
+          const h = new Date().getHours();
+          $("greeting").textContent = h < 12 ? "Good morning!" : h < 19 ? "Good afternoon!" : "Good evening!";
+
+          // Tarjetas cerradas
+          $("sum-price").textContent = `$${fmt(s.price)} per box`;
+          $("sum-announce").textContent = s.announcement.active ? `“${s.announcement.text}”` : "Hidden";
+          $("sum-pause").textContent = s.orders.paused ? "Paused" : "Taking orders";
+          $("sum-faq").textContent = `${s.faq.length} question${s.faq.length === 1 ? "" : "s"}`;
+          $("sum-contact").textContent = `Orders to ${prettyPhone(s.contact.orderPhone)} · ${s.contact.email}`;
+          $("sum-password").textContent = "••••••••";
+
+          // Inicio: pedidos
+          const paused = s.orders.paused;
+          setSwitch($("homeOrdersToggle"), !paused);
+          $("homeOrdersValue").textContent = paused ? "Paused" : "Open";
+          $("homeOrdersText").textContent = paused ? "Customers see your pause message" : "Customers can order";
+
+          // Inicio: promo
+          const p = s.promo;
+          const st = promoState(p);
+          const pill = {
+            live: ["Live", "bg-green-100 text-green-800"],
+            scheduled: ["Scheduled", "bg-amber-100 text-amber-800"],
+            ended: ["Ended", "bg-gray-100 text-gray-600"],
+            off: ["Off", "bg-gray-100 text-gray-500"],
+          }[st];
+          $("homePromoPill").textContent = pill[0];
+          $("homePromoPill").className = `pill ${pill[1]}`;
+          $("homePromoValue").textContent = st === "off" ? "None" : p.label || autoLabel(p);
+          $("homePromoText").textContent =
+            st === "live" ? (p.endDate ? `Ends after ${niceDate(p.endDate)}` : "Running until you stop it")
+            : st === "scheduled" ? `Starts ${niceDate(p.startDate)}`
+            : st === "ended" ? `Ended after ${niceDate(p.endDate)}`
+            : "Tap to create one";
+          $("promoPickTitle").textContent = st === "live" || st === "scheduled" ? "Change the promotion" : "New promotion";
+
+          // Inicio: anuncio
+          const ann = s.announcement;
+          $("homeAnnPill").textContent = ann.active ? "On" : "Off";
+          $("homeAnnPill").className = `pill ${ann.active ? "bg-green-100 text-green-800" : "bg-gray-100 text-gray-500"}`;
+          $("homeAnnValue").textContent = ann.active ? ann.text : "Hidden";
+          $("homeAnnText").textContent = ann.active ? "Shown at the top of the website" : "Tap to write one";
+        }
+
+        // Pausar o reabrir pedidos desde el inicio, con un toque
+        $("homeOrdersToggle").addEventListener("click", async () => {
+          if (!currentSettings) return;
+          const pausing = !currentSettings.orders.paused;
+          if (pausing && !confirm("Pause orders? Customers will see your pause message instead of the order form.")) return;
+          setSwitch($("homeOrdersToggle"), !pausing);
+          try {
+            await saveSettings({ orders: { paused: pausing, message: currentSettings.orders.message } });
+            fillOrders(currentSettings.orders);
+            afterSave();
+          } catch (err) {
+            setSwitch($("homeOrdersToggle"), pausing);
+            alert(`Could not save: ${err.message}`);
+          }
+        });
       })();
     </script>
   </body>
