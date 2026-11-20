@@ -287,3 +287,9 @@ h3,
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
 }
+
+/* Precios ocultos hasta saber el precio real (evita mostrar $15 y después cambiarlo) */
+.js-price-loading {
+  visibility: hidden;
+}
+

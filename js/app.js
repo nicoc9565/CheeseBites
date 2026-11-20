@@ -1,7 +1,10 @@
 (() => {
   let UNIT_PRICE = 15;
+  let PROMO = null;
+  const { calc, fmt, isUsable, autoLabel, autoDescription } = window.CBPromo;
   const WA_NUMBER = "19083464064";
-  const SMS_NUMBER = "19083464064";
+  const SMS_NUMBER = "+19083464064";
+  const isAndroid = /Android/i.test(navigator.userAgent);
   const prefersReduced = window.matchMedia(
     "(prefers-reduced-motion: reduce)",
   ).matches;
@@ -61,11 +64,25 @@
     if (!Number.isFinite(n)) return 1;
     return Math.max(1, Math.floor(n));
   };
+  const priceOriginal = document.getElementById("priceOriginal");
+  const priceOriginalValue = document.getElementById("priceOriginalValue");
+  const promoSavings = document.getElementById("promoSavings");
+  const promoHint = document.getElementById("promoHint");
+
   const refreshTotal = () => {
     if (!qtyEl || !totalEl) return;
     const q = clampQty(qtyEl.value || 1);
     qtyEl.value = String(q);
-    totalEl.textContent = String(q * UNIT_PRICE);
+    const r = calc(q, UNIT_PRICE, PROMO);
+    totalEl.textContent = fmt(r.total);
+    // Con promo aplicada: precio tachado + "You save $X"
+    priceOriginal?.classList.toggle("hidden", !r.applied);
+    if (priceOriginalValue) priceOriginalValue.textContent = fmt(r.subtotal);
+    promoSavings?.classList.toggle("hidden", !r.applied);
+    if (promoSavings) promoSavings.textContent = `🎉 You save $${fmt(r.savings)}`;
+    // Sin promo aplicada todavía: "Add 1 more box to get the 2x1 Deal!"
+    promoHint?.classList.toggle("hidden", !r.hint);
+    if (promoHint) promoHint.textContent = r.hint;
   };
   window.stepQty = (delta) => {
     if (!qtyEl) return;
@@ -162,15 +179,20 @@
 
   // === ORDER MESSAGE ===
   const buildMessage = (data) => {
-    const qty = data.get("quantity");
-    const total = Number(qty) * UNIT_PRICE;
+    const qty = clampQty(data.get("quantity"));
+    const r = calc(qty, UNIT_PRICE, PROMO);
+    const orderLine = r.applied
+      ? `Order: ${qty} box${qty > 1 ? "es" : ""}\n` +
+        `Promo: ${PROMO.label || autoLabel(PROMO)} (-$${fmt(r.savings)})\n` +
+        `Total: $${fmt(r.total)}\n`
+      : `Order: ${qty} box${qty > 1 ? "es" : ""} ($${fmt(r.total)})\n`;
     return (
       `🧀 NEW CHEESE BITES ORDER 🧀\n\n` +
       `Name: ${data.get("name")}\n` +
       `Phone: ${data.get("phone")}\n` +
       `Email: ${data.get("email")}\n` +
       `Address: ${data.get("address")}\n\n` +
-      `Order: ${qty} box${Number(qty) > 1 ? "es" : ""} ($${total})\n` +
+      orderLine +
       `Notes: ${data.get("notes") || "No notes"}`
     );
   };
@@ -185,7 +207,9 @@
     smsBtn.disabled = true;
     smsBtn.textContent = "Opening Messages...";
     const message = buildMessage(new FormData(orderForm));
-    window.open(`sms:${SMS_NUMBER}&body=${encodeURIComponent(message)}`, "_self");
+    // iPhone usa "&body=" y Android "?body="
+    const sep = isAndroid ? "?" : "&";
+    window.location.href = `sms:${SMS_NUMBER}${sep}body=${encodeURIComponent(message)}`;
     setTimeout(() => {
       smsBtn.disabled = false;
       smsBtn.innerHTML =
@@ -368,45 +392,78 @@
   }
 
   // === DYNAMIC SETTINGS (price, promo, images) ===
+  const revealPrices = () => {
+    document.querySelectorAll(".js-price-loading").forEach((el) => el.classList.remove("js-price-loading"));
+  };
+
+  // Foto del panel si hay; si no (o si falla), la que viene con la web
+  const setImage = (id, url) => {
+    const img = document.getElementById(id);
+    if (!img) return;
+    const fallback = img.dataset.fallback;
+    if (fallback) img.onerror = () => { img.onerror = null; img.src = fallback; };
+    img.src = url || fallback;
+  };
+
+  // Mantiene el precio que lee Google igual al de la web
+  const updateSeoPrice = (price) => {
+    const p = fmt(price);
+    const ld = document.querySelector('script[type="application/ld+json"]');
+    if (ld) {
+      try {
+        const data = JSON.parse(ld.textContent);
+        for (const node of data["@graph"] || []) {
+          if (node["@type"] === "Product" && node.offers) node.offers.price = Number(price).toFixed(2);
+          if (node["@type"] === "FAQPage") {
+            for (const q of node.mainEntity || []) {
+              q.acceptedAnswer.text = q.acceptedAnswer.text.replace(/\$\d+(\.\d+)?/, `$${p}`);
+            }
+          }
+        }
+        ld.textContent = JSON.stringify(data);
+      } catch {}
+    }
+    const desc = document.querySelector('meta[name="description"]');
+    if (desc) desc.content = desc.content.replace(/\$\d+(\.\d+)?/, `$${p}`);
+  };
+
+  const applySettings = (s) => {
+    if (s && s.price > 0) {
+      UNIT_PRICE = Number(s.price);
+      document.querySelectorAll(".js-price").forEach((el) => {
+        el.textContent = fmt(UNIT_PRICE);
+      });
+      updateSeoPrice(UNIT_PRICE);
+    }
+
+    setImage("heroImg", s?.heroImage);
+    setImage("instructionsImg", s?.instructionsImage);
+
+    // Promo: solo se muestra si está activa y se puede calcular
+    PROMO = s && isUsable(s.promo, UNIT_PRICE) ? s.promo : null;
+    const banner = document.getElementById("promoBanner");
+    if (banner) {
+      banner.classList.toggle("hidden", !PROMO);
+      if (PROMO) {
+        document.getElementById("promoLabel").textContent = PROMO.label || autoLabel(PROMO);
+        document.getElementById("promoDesc").textContent = PROMO.description || autoDescription(PROMO);
+      }
+    }
+
+    refreshTotal();
+    revealPrices();
+  };
+
+  // Si la configuración tarda más de 3 segundos, mostramos lo que viene con la web
+  const settingsTimeout = setTimeout(() => applySettings(null), 3000);
   fetch("/api/settings")
     .then((r) => (r.ok ? r.json() : null))
     .then((s) => {
-      if (!s) return;
-
-      // Price — update every .js-price span on the page at once
-      if (s.price) {
-        UNIT_PRICE = s.price;
-        refreshTotal();
-        document.querySelectorAll(".js-price").forEach((el) => {
-          el.textContent = String(s.price);
-        });
-      }
-
-      // Hero image
-      if (s.heroImage) {
-        const heroImg = document.getElementById("heroImg");
-        const heroWebp = document.getElementById("heroImgWebp");
-        if (heroImg) heroImg.src = s.heroImage;
-        if (heroWebp) heroWebp.srcset = s.heroImage;
-      }
-
-      // Instructions image
-      if (s.instructionsImage) {
-        const instImg = document.getElementById("instructionsImg");
-        const instWebp = document.getElementById("instructionsImgWebp");
-        if (instImg) instImg.src = s.instructionsImage;
-        if (instWebp) instWebp.srcset = s.instructionsImage;
-      }
-
-      // Promo banner
-      if (s.promo?.active) {
-        const banner = document.getElementById("promoBanner");
-        const label = document.getElementById("promoLabel");
-        const desc = document.getElementById("promoDesc");
-        if (banner) banner.classList.remove("hidden");
-        if (label) label.textContent = s.promo.label || "";
-        if (desc) desc.textContent = s.promo.description || "";
-      }
+      clearTimeout(settingsTimeout);
+      applySettings(s);
     })
-    .catch(() => {});
+    .catch(() => {
+      clearTimeout(settingsTimeout);
+      applySettings(null);
+    });
 })();
