@@ -27,11 +27,11 @@ export const DEFAULT_FAQ = [
   },
   {
     q: "How should I store them before baking?",
-    a: "Keep them refrigerated until you're ready to bake. They stay fresh for up to 7 days in the fridge. You can also freeze them for up to 2 months — just bake straight from frozen, adding 5 extra minutes.",
+    a: "Keep them refrigerated until you're ready to bake. They stay fresh for up to 10 days in the fridge. You can also freeze them for up to 3 months — just bake straight from frozen, adding 5 extra minutes.",
   },
   {
     q: "Are they really gluten free?",
-    a: "Yes! Cheese Bites are made with yuca (cassava) flour, which is 100% gluten free. However, they are prepared in a kitchen that may handle wheat products, so we recommend caution if you have a severe gluten allergy.",
+    a: "Yes! Cheese Bites are made with tapioca flour, which is 100% gluten free. However, they are prepared in a kitchen that may handle wheat products, so we recommend caution if you have a severe gluten allergy.",
   },
   {
     q: "How many come in a box and what's the price?",
